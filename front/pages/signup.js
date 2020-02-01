@@ -97,6 +97,16 @@ const Signup = memo(() => {
         회원가입
       </div>
       <Form onSubmit={onSubmit}>
+        <Form.Item>
+          {getFieldDecorator("test", {
+            rules: [
+              {
+                required: true,
+                message: "입력해줘입력!"
+              }
+            ]
+          })(<Input />)}
+        </Form.Item>
         <Form.Item hasFeedback validateStatus={isIdStatus}>
           <Input
             onBlur={onDuplicateCheck}
