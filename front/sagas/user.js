@@ -1,4 +1,5 @@
-import { all, call, fork, takeEvery, delay } from 'redux-saga/effects';
+import { all, fork, takeEvery, delay, put } from 'redux-saga/effects';
+import axios from 'axios';
 import { 
     ID_CHECK_REQUEST,
     ID_CHECK_SUCCESS,
@@ -7,27 +8,22 @@ import {
 
 //ID 중복 확인 (시작)
 function idCheckAPI(userId) {
-    // return 'success';
+    return axios.post('/login');
 }
 
 function* idCheck(action) {
-    yield delay(2000);
+    try {
+        // const result = yield call(idCheckAPI, action);
+        yield delay(2000);
         yield put({
             type: ID_CHECK_SUCCESS,
         });
-    // try {
-    //     // const result = yield call(idCheckAPI, action);
-    //     yield delay(2000);
-    //     yield put({
-    //         type: ID_CHECK_SUCCESS,
-    //     });
-    // } catch (e) {
-    //     console.error(e);
-    //     yield put({
-    //         type: ID_CHECK_FAILURE,
-    //         reason: e.response && e.response.data,
-    //     });
-    // }
+    } catch (e) {
+        console.error(e);
+        yield put({
+            type: ID_CHECK_FAILURE,
+        });
+    }
 }
 
 function* watchId() {

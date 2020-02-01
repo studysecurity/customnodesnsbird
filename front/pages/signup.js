@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import Link from 'next/link';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { ID_CHECK_REQUEST } from '../reducers/user';
+import { ID_CHECK_REQUEST, ID_CHECK_NULLURE } from '../reducers/user';
 
 const SignupError = styled.div`
     color: red;
@@ -38,9 +38,18 @@ const Signup = memo(() => {
     }, [id]);
 
     const onDuplicateCheck = useCallback((e) => {
-        return dispatch({
-            type: ID_CHECK_REQUEST,
-            userId: id,
+        if(id) {
+            console.log('id 존재');
+            return dispatch({
+                type: ID_CHECK_REQUEST,
+                userId: id,
+            });
+        }
+    }, [id]);
+
+    const onDuplicateCheckOut = useCallback((e) => {
+        return dispatch({   
+            type: ID_CHECK_NULLURE,
         });
     }, []);
 
@@ -66,6 +75,7 @@ const Signup = memo(() => {
                 <Form.Item hasFeedback validateStatus={isIdStatus}>
                     <Input
                         onBlur={onDuplicateCheck}
+                        onFocus={onDuplicateCheckOut}
                         required
                         name="user-id"
                         style={{height: '40px'}}
