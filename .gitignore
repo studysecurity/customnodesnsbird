@@ -1,0 +1,8 @@
+#next 폴더 제외
+.next
+
+#nodemodule 제외
+node_modules
+
+#env 파일 제외
+.env
