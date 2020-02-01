@@ -39,7 +39,7 @@ const Signup = memo(() => {
 
     const onDuplicateCheck = useCallback((e) => {
         if(id) {
-            console.log('id 존재');
+            // console.log('id 존재');
             return dispatch({
                 type: ID_CHECK_REQUEST,
                 userId: id,
