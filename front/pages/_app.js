@@ -56,11 +56,11 @@ const NodeSnsBird = ({ Component, store, pageProps }) => {
     );
 }
 
-NodeSnsBird.propTypes = {
-    Component: PropTypes.elementType.isRequired,
-    store: PropTypes.object.isRequired,
-    pageProps: PropTypes.object.isRequired,
-};
+// NodeSnsBird.propTypes = {
+//     Component: PropTypes.elementType.isRequired,
+//     store: PropTypes.object.isRequired,
+//     pageProps: PropTypes.object.isRequired,
+// };
 
 const configureStore = (initialState, options) => {
     // console.log("congiureStore 시작");

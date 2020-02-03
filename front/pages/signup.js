@@ -2,86 +2,168 @@ import React, { useCallback, useState, useEffect, memo } from "react";
 import { Form, Input, Button } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
-import { useInput } from "./index";
-import styled from "styled-components";
 import Link from "next/link";
-import useForm from "rc-form-hooks";
 
 import { useDispatch, useSelector } from "react-redux";
-import { ID_CHECK_REQUEST, ID_CHECK_NULLURE } from "../reducers/user";
-
-const SignupError = styled.div`
-  color: red;
-`;
+import { 
+  ID_CHECK_REQUEST, 
+  ID_CHECK_NULLURE,
+  NICK_CHECK_REQUEST,
+  NICK_CHECK_NULLURE
+} from "../reducers/user";
 
 const Signup = memo(() => {
   const [id, setId] = useState("");
-  const [password, onChangePassword] = useInput("");
+  const [password, setPassword] = useState("");
+  const [passwordStatus, setPasswordStatus] = useState("");
+  const [passwordErrorReason, setPasswordErrorReason] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
-  //패스워드, 패스워드 확인 같은지 여부
-  const [passwordError, setPasswordError] = useState(false);
+  const [passwordCheckStatus, setPasswordCheckStatus] = useState("");
+  const [passwordCompareErrorReason, setPasswordCompareErrorReason] = useState("");
   const [nick, setNick] = useState("");
-
-  const { getFieldDecorator } = useForm();
 
   //redux
   const dispatch = useDispatch();
-  const { isIdStatus } = useSelector(state => state.user);
+  const { isIdStatus, isNickStatus } = useSelector(state => state.user);
+
+  //패스워드 정규식
+  //패스워드 유효성 검사 함수 (최소 8자, 최소 하나의 문자, 하나의 숫자 및 하나의 특수문자)
+  const passwordRegExp = /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*()*+=-])(?=.*[0-9]).{8,12}$/;
 
   //가입하기 클릭시(회원가입)
-  const onSubmit = useCallback(
-    e => {
-      e.preventDefault();
-    },
-    [id, password, passwordCheck, nick]
-  );
+  const onSubmit = useCallback(data => {
+      // e.preventDefault();
+  }, [id, password, passwordCheck, nick]);
 
-  //아이디 (중복 체크 및 변화감지)
-  const onChangeId = useCallback(
-    e => {
-      //아이디 중복 체크하는 부분을 실시간으로 해줘야 할거 같음
+  //아이디 값 변화
+  const onChangeId = useCallback((e) => {
       setId(e.target.value);
-    },
-    [id]
-  );
+  }, [id]);
 
-  const onDuplicateCheck = useCallback(
-    e => {
+  //ID 중복 체크
+  const onDuplicateCheckBlur = useCallback((e) => {
       if (id) {
-        console.log("id 존재");
+        // console.log("id 존재");
         return dispatch({
           type: ID_CHECK_REQUEST,
           userId: id
         });
       }
-    },
-    [id]
-  );
+  }, [id]);
 
-  const onDuplicateCheckOut = useCallback(e => {
+  //ID 입력란에 포커스가 주어질 때 아이디 중복확인 표시 v 없애기
+  const onDuplicateCheckFocus = useCallback((e) => {
     return dispatch({
       type: ID_CHECK_NULLURE
     });
   }, []);
 
-  //비밀번호, 비밀번호 확인 체크
-  const onChangePasswordCheck = useCallback(
-    e => {
-      //패스워드, 패스워드 확인이 다르면 true로 변경
-      setPasswordError(e.target.value !== password);
-      setPasswordCheck(e.target.value);
-    },
-    [password]
-  );
+  //패스워드
+  const onChangePassword = useCallback((e) => {
+      setPassword(e.target.value);
+  }, [password]);
 
-  //닉네임 변경 감지
-  const onChangeNick = useCallback(
-    e => {
-      //여기도 추후에 실시간 닉네임 중복검사 해줘야 할듯
+  //패스워드 포커스일 때 status 상태를 ""로 표현해서 v나 x 표시있으면 지우기
+  const onPasswordRegexCheckFocus = useCallback((e) => {
+      setPasswordStatus("");
+  }, [password]);
+
+  const onPasswordRegexCheckBlur = useCallback((e) => {
+      // console.log(password);
+      if (password.match(passwordRegExp)) {
+        // console.log('정규식 표현 만족');
+        setPasswordStatus("success");
+        setPasswordErrorReason("");
+      } else if (password.length >= 1) {
+        setPasswordStatus("error");
+        setPasswordErrorReason("조건 : 최소 8자, 최소 하나의 문자, 하나의 숫자 및 하나의 특수문자");
+      } else if (password.length === 0) {
+        setPasswordStatus("");
+        setPasswordErrorReason("");
+      }
+  }, [password]);
+
+  useEffect(() => {
+      //패스워드 정규식 표현 체크
+      if (password.match(passwordRegExp)) {
+        // console.log('정규식 표현 만족');
+        setPasswordStatus("success");
+        setPasswordErrorReason("");
+      } else if (password.length >= 1) {
+        setPasswordStatus("error");
+        setPasswordErrorReason("조건 : 최소 8자, 최소 하나의 문자, 하나의 숫자 및 하나의 특수문자");
+      } else if (password.length === 0) {
+        setPasswordStatus("");
+        setPasswordErrorReason("");
+      }
+
+      //비밀번호가 일치하지 않으면 x 표시 일치하면 v표시
+      if(password.length !== 0 & passwordCheck.length !== 0) {
+        if (password !== passwordCheck) {
+          setPasswordCheckStatus("error");
+          setPasswordCompareErrorReason("비밀번호가 일치하지 않습니다.");
+        } else {
+          setPasswordCompareErrorReason("");
+          setPasswordCheckStatus("success");
+        }
+      } else if(passwordCheck.length === 0) {
+          setPasswordCheckStatus("");
+      }
+  }, [password, passwordCheck]);
+
+  //패스워드 확인 체크
+  const onChangePasswordCheck = useCallback((e) => {
+      if(password.length === 0) {
+        setPasswordCheckStatus("");
+        setPasswordCompareErrorReason("");
+      }
+      setPasswordCheck(e.target.value);
+  }, [password]);
+
+  //패스워드 확인 체크의 포커스가 주어졌을 때 에러 및 성공 아이콘 삭제
+  const onPasswordCheckFocus = useCallback((e) => {
+      setPasswordCheckStatus("");
+      
+      //패스워드 확인 입력란이 빈칸이면 에러문구 삭제
+      if (passwordCheck.length === 0) {
+        setPasswordCompareErrorReason("");
+      }
+  }, [passwordCheck]);
+
+  //패스워드 확인 입력란을 벗어났을 때 패스워드와 패스워드 확인 내용 확인
+  const onPasswordCheckBlur = useCallback((e) => {
+      //패스워드와 패스워드 확인이 같지 않다면
+      if (password.length !== 0 & passwordCheck.length !== 0) {
+        if (password !== passwordCheck) {
+            setPasswordCheckStatus("error");
+            setPasswordCompareErrorReason("비밀번호가 일치하지 않습니다.");
+        } else {
+            setPasswordCompareErrorReason("");
+            setPasswordCheckStatus("success");
+        }
+      } else if (passwordCheck.length === 0) {
+        setPasswordCompareErrorReason("");
+        setPasswordCheckStatus("");
+      }
+  }, [passwordCheck]);
+
+  //닉네임 값 변화
+  const onChangeNick = useCallback((e) => {
       setNick(e.target.value);
-    },
-    [nick]
-  );
+  }, [nick]);
+
+  //닉네임 값 중복 확인(백단 서버와 통신)
+  const onNickBlur = useCallback((e) => {
+      return dispatch({
+        type: NICK_CHECK_REQUEST
+      });
+  }, [nick]);
+
+  const onNickFocus = useCallback((e) => {
+      return dispatch({
+        type: NICK_CHECK_NULLURE
+      });
+  }, [nick]);
 
   return (
     <div style={{ margin: "0 auto", width: "80%" }}>
@@ -97,21 +179,11 @@ const Signup = memo(() => {
         회원가입
       </div>
       <Form onSubmit={onSubmit}>
-        <Form.Item>
-          {getFieldDecorator("test", {
-            rules: [
-              {
-                required: true,
-                message: "입력해줘입력!"
-              }
-            ]
-          })(<Input />)}
-        </Form.Item>
         <Form.Item hasFeedback validateStatus={isIdStatus}>
           <Input
-            onBlur={onDuplicateCheck}
-            onFocus={onDuplicateCheckOut}
             required
+            onBlur={onDuplicateCheckBlur}
+            onFocus={onDuplicateCheckFocus}
             name="user-id"
             style={{ height: "40px" }}
             value={id}
@@ -120,8 +192,12 @@ const Signup = memo(() => {
             onChange={onChangeId}
           />
         </Form.Item>
-        <Form.Item>
+        <Form.Item hasFeedback validateStatus={passwordStatus}
+          style={passwordErrorReason && {marginBottom: '2px'}}
+        >
           <Input.Password
+            onBlur={onPasswordRegexCheckBlur}
+            onFocus={onPasswordRegexCheckFocus}
             name="user-password"
             style={{ height: "40px" }}
             value={password}
@@ -131,8 +207,17 @@ const Signup = memo(() => {
             placeholder="Password"
           />
         </Form.Item>
-        <Form.Item>
+        {
+          passwordErrorReason && (
+            <div style={{color: 'red', fontSize: '11px', marginBottom: '15px', fontWeight: 'bold'}}>{passwordErrorReason}</div>
+          )
+        }
+        <Form.Item hasFeedback validateStatus={passwordCheckStatus}
+          style={passwordCompareErrorReason && {marginBottom: '2px'}}
+        >
           <Input.Password
+            onBlur={onPasswordCheckBlur}
+            onFocus={onPasswordCheckFocus}
             name="user-password-check"
             style={{ height: "40px" }}
             value={passwordCheck}
@@ -142,11 +227,15 @@ const Signup = memo(() => {
             placeholder="Password Check"
           />
         </Form.Item>
-        {passwordError && (
-          <SignupError>비밀번호가 일치하지 않습니다.</SignupError>
-        )}
-        <Form.Item>
+        {
+          passwordCompareErrorReason && (
+            <div style={{color: 'red', fontSize: '11px', marginBottom: '15px', fontWeight: 'bold'}}>{passwordCompareErrorReason}</div>
+          )
+        }
+        <Form.Item hasFeedback validateStatus={isNickStatus}>
           <Input
+            onBlur={onNickBlur}
+            onFocus={onNickFocus}
             name="user-nick"
             style={{ height: "40px" }}
             value={nick}
