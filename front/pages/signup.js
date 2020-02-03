@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect, memo } from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, InputNumber } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
@@ -9,7 +9,8 @@ import {
   ID_CHECK_REQUEST, 
   ID_CHECK_NULLURE,
   NICK_CHECK_REQUEST,
-  NICK_CHECK_NULLURE
+  NICK_CHECK_NULLURE,
+  SIGN_UP_REQUEST
 } from "../reducers/user";
 
 const Signup = memo(() => {
@@ -21,6 +22,9 @@ const Signup = memo(() => {
   const [passwordCheckStatus, setPasswordCheckStatus] = useState("");
   const [passwordCompareErrorReason, setPasswordCompareErrorReason] = useState("");
   const [nick, setNick] = useState("");
+  const [phone, setPhone] = useState("");
+  const [phoneErrorReason, setPhoneErrorReason] = useState("");
+  const [phoneCheckStatus, setPhoneCheckStatus] = useState("");
 
   //redux
   const dispatch = useDispatch();
@@ -29,11 +33,32 @@ const Signup = memo(() => {
   //패스워드 정규식
   //패스워드 유효성 검사 함수 (최소 8자, 최소 하나의 문자, 하나의 숫자 및 하나의 특수문자)
   const passwordRegExp = /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*()*+=-])(?=.*[0-9]).{8,12}$/;
+  const phoneRegExp = /^\d{11}$/;
 
   //가입하기 클릭시(회원가입)
-  const onSubmit = useCallback(data => {
-      // e.preventDefault();
-  }, [id, password, passwordCheck, nick]);
+  const onSubmit = useCallback((e) => {
+      e.preventDefault();
+      // console.log(isIdStatus);
+      // console.log(passwordStatus);
+      // console.log(passwordCheckStatus);
+      // console.log(isNickStatus);
+      // console.log(phoneCheckStatus);
+      //모든 입력 조건 만족시
+      if (isIdStatus, passwordStatus, passwordCheckStatus, 
+        isNickStatus, phoneCheckStatus === 'success') {
+        //console.log('모든 조건 만족');
+        return dispatch({
+          type: SIGN_UP_REQUEST,
+          data: {
+            userId: id,
+            password,
+            nickname: nick,
+            phone,
+          }
+        });
+      } 
+  }, [id, password, passwordCheck, nick, phone,
+    isIdStatus, passwordStatus, passwordCheckStatus, isNickStatus, phoneCheckStatus]);
 
   //아이디 값 변화
   const onChangeId = useCallback((e) => {
@@ -56,7 +81,7 @@ const Signup = memo(() => {
     return dispatch({
       type: ID_CHECK_NULLURE
     });
-  }, []);
+  }, [id]);
 
   //패스워드
   const onChangePassword = useCallback((e) => {
@@ -76,7 +101,7 @@ const Signup = memo(() => {
         setPasswordErrorReason("");
       } else if (password.length >= 1) {
         setPasswordStatus("error");
-        setPasswordErrorReason("조건 : 최소 8자, 최소 하나의 문자, 하나의 숫자 및 하나의 특수문자");
+        setPasswordErrorReason("최소 8자, 최대 12자 최소 하나의 문자, 하나의 숫자 및 하나의 특수문자");
       } else if (password.length === 0) {
         setPasswordStatus("");
         setPasswordErrorReason("");
@@ -91,7 +116,7 @@ const Signup = memo(() => {
         setPasswordErrorReason("");
       } else if (password.length >= 1) {
         setPasswordStatus("error");
-        setPasswordErrorReason("조건 : 최소 8자, 최소 하나의 문자, 하나의 숫자 및 하나의 특수문자");
+        setPasswordErrorReason("최소 8자, 최대 12자 최소 하나의 문자, 하나의 숫자 및 하나의 특수문자");
       } else if (password.length === 0) {
         setPasswordStatus("");
         setPasswordErrorReason("");
@@ -109,7 +134,21 @@ const Signup = memo(() => {
       } else if(passwordCheck.length === 0) {
           setPasswordCheckStatus("");
       }
-  }, [password, passwordCheck]);
+
+      //휴대폰 번호
+      if (phone.length !== 0) {
+        if(phoneRegExp.test(phone)) {
+          setPhoneErrorReason("");
+          setPhoneCheckStatus("success");
+        } else {
+          setPhoneErrorReason("규칙에 맞게 작성해주세요 ex)01012345678");
+          setPhoneCheckStatus("error");
+        }
+      } else {
+        setPhoneErrorReason("");
+        setPhoneCheckStatus("");
+      }
+  }, [password, passwordCheck, phone]);
 
   //패스워드 확인 체크
   const onChangePasswordCheck = useCallback((e) => {
@@ -154,16 +193,37 @@ const Signup = memo(() => {
 
   //닉네임 값 중복 확인(백단 서버와 통신)
   const onNickBlur = useCallback((e) => {
+    if (nick) {
       return dispatch({
-        type: NICK_CHECK_REQUEST
+        type: NICK_CHECK_REQUEST,
+        userNick: nick
       });
+    }
   }, [nick]);
 
+  //닉네임 값 포커스시 에러 및 성공 아이콘 삭제
   const onNickFocus = useCallback((e) => {
       return dispatch({
         type: NICK_CHECK_NULLURE
       });
   }, [nick]);
+
+  //휴대폰 번호 변화 감지
+  const onChangePhone = useCallback((e) => {
+      setPhone(e.target.value);
+  }, [phone]);
+
+  const onPhoneFocus = useCallback((e) => {
+      setPhoneCheckStatus("");
+  }, [phone]);
+
+  const onPhoneBlur = useCallback((e) => {
+      if (phone.match(phoneRegExp)) {
+        setPhoneCheckStatus("success");
+      } else {
+        setPhoneCheckStatus("error");
+      }
+  }, [phone]);
 
   return (
     <div style={{ margin: "0 auto", width: "80%" }}>
@@ -181,6 +241,7 @@ const Signup = memo(() => {
       <Form onSubmit={onSubmit}>
         <Form.Item hasFeedback validateStatus={isIdStatus}>
           <Input
+            maxLength={20}
             required
             onBlur={onDuplicateCheckBlur}
             onFocus={onDuplicateCheckFocus}
@@ -196,6 +257,7 @@ const Signup = memo(() => {
           style={passwordErrorReason && {marginBottom: '2px'}}
         >
           <Input.Password
+            maxLength={14}
             onBlur={onPasswordRegexCheckBlur}
             onFocus={onPasswordRegexCheckFocus}
             name="user-password"
@@ -209,13 +271,14 @@ const Signup = memo(() => {
         </Form.Item>
         {
           passwordErrorReason && (
-            <div style={{color: 'red', fontSize: '11px', marginBottom: '15px', fontWeight: 'bold'}}>{passwordErrorReason}</div>
+            <div style={{color: 'red', fontSize: '10px', marginBottom: '15px', fontWeight: 'bold'}}>{passwordErrorReason}</div>
           )
         }
         <Form.Item hasFeedback validateStatus={passwordCheckStatus}
           style={passwordCompareErrorReason && {marginBottom: '2px'}}
         >
           <Input.Password
+            maxLength={14}
             onBlur={onPasswordCheckBlur}
             onFocus={onPasswordCheckFocus}
             name="user-password-check"
@@ -234,6 +297,7 @@ const Signup = memo(() => {
         }
         <Form.Item hasFeedback validateStatus={isNickStatus}>
           <Input
+             maxLength={20}
             onBlur={onNickBlur}
             onFocus={onNickFocus}
             name="user-nick"
@@ -245,6 +309,27 @@ const Signup = memo(() => {
             placeholder="NickName"
           />
         </Form.Item>
+        <Form.Item hasFeedback validateStatus={phoneCheckStatus}
+          style={phoneErrorReason && {marginBottom: '2px'}}
+        >
+          <Input
+            onFocus={onPhoneFocus}
+            onBlur={onPhoneBlur}
+            maxLength={11}
+            required
+            name="user-phone"
+            value={phone}
+            onChange={onChangePhone}
+            style={{ height: "40px" }}
+            prefix={<FontAwesomeIcon icon={faLock} color="rgba(0,0,0,.25)" />}
+            placeholder="Phone Number ex)01012345678"
+          />
+        </Form.Item>
+        {
+          phoneErrorReason && (
+            <div style={{color: 'red', fontSize: '11px', marginBottom: '15px', fontWeight: 'bold'}}>{phoneErrorReason}</div>
+          )
+        }
         <Form.Item>
           <Button type="primary" htmlType="submit" style={{ width: "40%" }}>
             가입하기
