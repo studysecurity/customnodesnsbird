@@ -28,7 +28,7 @@ const Signup = memo(() => {
 
   //redux
   const dispatch = useDispatch();
-  const { isIdStatus, isNickStatus } = useSelector(state => state.user);
+  const { isIdStatus, isNickStatus, isIdErrorReason } = useSelector(state => state.user);
 
   //패스워드 정규식
   //패스워드 유효성 검사 함수 (최소 8자, 최소 하나의 문자, 하나의 숫자 및 하나의 특수문자)
@@ -67,11 +67,16 @@ const Signup = memo(() => {
 
   //ID 중복 체크
   const onDuplicateCheckBlur = useCallback((e) => {
+      //입력란이 글자가 있으면
       if (id) {
         // console.log("id 존재");
         return dispatch({
           type: ID_CHECK_REQUEST,
           userId: id
+        });
+      } else { //입력란이 비어있으면
+        return dispatch({
+          type: ID_CHECK_NULLURE,
         });
       }
   }, [id]);
@@ -239,7 +244,9 @@ const Signup = memo(() => {
         회원가입
       </div>
       <Form onSubmit={onSubmit}>
-        <Form.Item hasFeedback validateStatus={isIdStatus}>
+        <Form.Item hasFeedback validateStatus={isIdStatus}
+           style={isIdErrorReason && {marginBottom: '2px'}}
+        >
           <Input
             maxLength={20}
             required
@@ -253,6 +260,11 @@ const Signup = memo(() => {
             onChange={onChangeId}
           />
         </Form.Item>
+        {
+          isIdErrorReason && (
+            <div style={{color: 'blue', fontSize: '10px', marginBottom: '15px', fontWeight: 'bold'}}>{isIdErrorReason}</div>
+          )
+        }
         <Form.Item hasFeedback validateStatus={passwordStatus}
           style={passwordErrorReason && {marginBottom: '2px'}}
         >

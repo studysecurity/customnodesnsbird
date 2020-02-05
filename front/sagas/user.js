@@ -15,22 +15,27 @@ import {
 //ID 중복 확인 (시작)
 function idCheckAPI(userId) {
     // console.log('idCheckAPI : '+JSON.stringify(userId));
-    // return axios.post('/login');
+    return axios.post('/user/signup', userId);
 }
 
 function* idCheck(action) {
     try {
-        yield call(idCheckAPI, action);
+        const result = yield call(idCheckAPI, action.userId);
+        // console.log('백그라운드 응답 값 : ', result);
+        // console.log('idCheck action 값 : ', action);
         // const result = yield call(idCheckAPI, action);
         // yield delay(2000);
         // console.log("sagas에 유저 아이디 값 : ",action.userId);
         yield put({
             type: ID_CHECK_SUCCESS,
+            data: result.data, //사용 가능한 아이디입니다. 라는 문구
         });
     } catch (e) {
         console.error(e);
+        // console.log('궁금 : ',JSON.stringify(e));
         yield put({
             type: ID_CHECK_FAILURE,
+            error: '이미 사용중인 아이디입니다.',
         });
     }
 }
@@ -43,6 +48,7 @@ function* watchId() {
 //닉네임 중복 확인 (시작)
 function nickCheckAPI(userNick) {
     // console.log("userNick 값 : "+JSON.stringify(userNick));
+    return axios.post('/user/signup', userNick);
 }
 
 function* nickCheck(action) {

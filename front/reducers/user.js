@@ -32,16 +32,19 @@ export default (state = initialState, action) => {
 
             case ID_CHECK_SUCCESS: {
                 draft.isIdStatus = 'success';
+                draft.isIdErrorReason = action.data;
                 break;
             }
 
             case ID_CHECK_FAILURE: {
                 draft.isIdStatus = 'error';
+                draft.isIdErrorReason = action.error;
                 break;
             }
 
             case ID_CHECK_NULLURE: {
                 draft.isIdStatus = '';
+                draft.isIdErrorReason = '';
                 break;
             }
 
