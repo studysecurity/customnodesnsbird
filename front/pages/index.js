@@ -1,16 +1,14 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import { Form, Input, Checkbox, Button, Divider } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
+import { useDispatch, useSelector } from 'react-redux';
+import { SIGN_UP_FAILURE, LOGIN_REQUEST } from '../reducers/user';
 
 //styled component 리로드시 적용 안되는 문제점 해결
 //https://velog.io/@sbinha/next.js-styled-components-%EC%8A%A4%ED%83%80%EC%9D%BC%EC%9D%B4-%EC%A0%81%EC%9A%A9%EC%A0%84%EC%97%90-%EB%A0%8C%EB%8D%94%EA%B0%80-%EB%90%98%EB%8A%94-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0%EB%B2%95
-
-const LoginError = styled.div`
-    color: red;
-`;
 
 const CircleLogo = styled.img`
   display: block;
@@ -35,15 +33,31 @@ export const useInput = (initValue = null) => {
 const Index = () => {
     const [id, onChangeId] = useInput('');
     const [password, onChangePassword] = useInput('');
-    //임시로 로그인 에러 넣어둠
-    const logInErrorReason = "아이디 또는 비밀번호를 확인하세요.";
+    //회원가입이 true 로 되어있으면 다시 회원가입 화면으로 못넘어가므로 false로 변경
+    const dispatch = useDispatch();
+    const { isSignedUp, isLoggingIn } = useSelector(state => state.user);
     
     // 로그인 버튼 클릭
     const onSubmitForm = useCallback((e) => {
         e.preventDefault();
 
-    });
+        return dispatch({
+            type: LOGIN_REQUEST,
+            data: {
+                userId: id,
+                password,
+            },
+        });
+    }, [id, password]);
 
+    useEffect(() => {
+        //회원가입이 true 로 되어있으면 다시 회원가입 화면으로 못넘어가므로 false로 변경
+        if (isSignedUp) {
+            return dispatch({
+                type: SIGN_UP_FAILURE,
+            });
+        }
+    }, [isSignedUp]);
 
     return (
         <div style={{margin: '0 auto', width: '80%'}}>
@@ -74,7 +88,10 @@ const Index = () => {
                 <Form.Item>
                     <Checkbox>자동 로그인</Checkbox>
                     <a style={{float: "right"}}>비밀번호 찾기</a>
-                    <Button type="primary" htmlType="submit" style={{width: '100%'}}>
+                    <Button 
+                        type="primary" htmlType="submit" style={{width: '100%'}}
+                        loading={isLoggingIn}
+                    >
                         로그인
                     </Button>
                     <Divider type="horizontal" style={{margin: "16px 0", backgroundColor: '#FFB6C1'}}/>

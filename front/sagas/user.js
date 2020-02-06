@@ -10,17 +10,20 @@ import {
     SIGN_UP_REQUEST,
     SIGN_UP_SUCCESS,
     SIGN_UP_FAILURE,
+    LOGIN_REQUEST,
+    LOGIN_SUCCESS,
+    LOGIN_FAILURE,
 } from '../reducers/user';
 
 //ID 중복 확인 (시작)
 function idCheckAPI(userId) {
     // console.log('idCheckAPI : '+JSON.stringify(userId));
-    return axios.post('/user/signup', userId);
+    return axios.post('/user/signup/check', userId);
 }
 
 function* idCheck(action) {
     try {
-        const result = yield call(idCheckAPI, action.userId);
+        const result = yield call(idCheckAPI, action);
         // console.log('백그라운드 응답 값 : ', result);
         // console.log('idCheck action 값 : ', action);
         // const result = yield call(idCheckAPI, action);
@@ -48,21 +51,23 @@ function* watchId() {
 //닉네임 중복 확인 (시작)
 function nickCheckAPI(userNick) {
     // console.log("userNick 값 : "+JSON.stringify(userNick));
-    return axios.post('/user/signup', userNick);
+    return axios.post('/user/signup/check', userNick);
 }
 
 function* nickCheck(action) {
     try {
-        yield call(nickCheckAPI, action);
+        const result = yield call(nickCheckAPI, action);
         // yield delay(2000);
         // console.log("sagas에 닉네임 값 : ",action.userNick);
         yield put({
             type: NICK_CHECK_SUCCESS,
+            data: result.data,
         });
     } catch (e) {
         console.error(e);
         yield put({
             type: NICK_CHECK_FAILURE,
+            error: '이미 사용중인 닉네임입니다.',
         });
     }
 }
@@ -75,6 +80,7 @@ function* watchNick() {
 //회원가입 (시작)
 function signUpAPI(signUpData) {
     // console.log("signUpAPI : "+JSON.stringify(signUpData));
+    return axios.post('/user/signup', signUpData);
 }
 
 function* signUp(action) {
@@ -99,10 +105,39 @@ function* watchSignUp() {
 
 //회원가입 (끝)
 
+//로그인 (시작)
+function logInAPI(logInData) {
+    // console.log("signUpAPI : "+JSON.stringify(signUpData));
+    return axios.post('/user/login', logInData);
+}
+
+function* login(action) {
+    try {
+        yield call(logInAPI, action.data);
+        // console.log(action);
+        // console.log(action.data);
+        yield put({
+            type: LOGIN_SUCCESS,
+        });
+    } catch (e) {
+        console.error(e);
+        yield put({
+            type: LOGIN_FAILURE,
+            error: e,
+        });
+    }
+}
+
+function* watchLogin() {
+    yield takeEvery(LOGIN_REQUEST, login);
+}
+//로그인 (끝)
+
 export default function* userSaga() {
     yield all([
         fork(watchId),
         fork(watchNick),
         fork(watchSignUp),
+        fork(watchLogin),
     ]);
 }

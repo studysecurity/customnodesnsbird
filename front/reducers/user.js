@@ -8,6 +8,10 @@ export const initialState = {
     isSigningUp: false, //회원가입 시도중
     isSignedUp: false, //회원가입 성공
     isSignUpErrorReason: '', //회원가입 실패 사유
+    isLoggingOut: false, //로그아웃 시도중
+    isLoggingIn: false, //로그인 시도중
+    isLoginErrorReason: '',//로그인 실패사유
+    isLogin: false, //로그인 여부
 };
 
 export const ID_CHECK_REQUEST = 'ID_CHECK_REQUEST';
@@ -21,6 +25,10 @@ export const NICK_CHECK_NULLURE = 'NICK_CHECK_NULLURE';
 export const SIGN_UP_REQUEST = 'SIGN_UP_REQUEST';
 export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS';
 export const SIGN_UP_FAILURE = 'SIGN_UP_FAILURE';
+export const LOGIN_REQUEST = 'LOGIN_REQUEST';
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const LOGIN_FAILURE = 'LOGIN_FAILURE';
+
 
 export default (state = initialState, action) => {
     return produce(state, (draft) => {
@@ -55,16 +63,19 @@ export default (state = initialState, action) => {
 
             case NICK_CHECK_SUCCESS: {
                 draft.isNickStatus = 'success';
+                draft.isNickErrorReason = action.data;
                 break;
             }
 
             case NICK_CHECK_FAILURE: {
                 draft.isNickStatus = 'error';
+                draft.isNickErrorReason = action.error;
                 break;
             }
 
             case NICK_CHECK_NULLURE: {
                 draft.isNickStatus = '';
+                draft.isNickErrorReason = '';
                 break;
             }
 
@@ -83,7 +94,29 @@ export default (state = initialState, action) => {
 
             case SIGN_UP_FAILURE: {
                 draft.isSigningUp = false;
+                draft.isSignedUp = false;
                 draft.isSignUpErrorReason = action.error; 
+                break;
+            }
+
+            case LOGIN_REQUEST: {
+                draft.isLoggingIn = true;
+                draft.isLoginErrorReason = '';
+                draft.isLogin = false;
+                break;
+            }
+
+            case LOGIN_SUCCESS: {
+                draft.isLoggingIn = false;
+                draft.isLoginErrorReason = '';
+                draft.isLogin = true;
+                break;
+            }
+
+            case LOGIN_FAILURE: {
+                draft.isLoggingIn = false;
+                draft.isLoginErrorReason = action.error;
+                draft.isLogin = false;
                 break;
             }
         }
