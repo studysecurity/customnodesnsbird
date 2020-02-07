@@ -1,26 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Row } from 'antd';
+import { Col, Row, Menu, Input, Layout } from 'antd';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faUserFriends, faComment } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faSearch, 
+  faUserFriends, 
+  faComment, 
+  faUser, 
+  faHeart, 
+  faDove,
+  faHome,
+} from '@fortawesome/free-solid-svg-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import Link from 'next/link';
 
 const IntroWraper = styled.div`
     min-width: 360px;
-    
-    /* @media only screen and (max-width: 767px) {
-          position:absolute;
-          top:0;
-          left:0;
-          background-size:100%;
-          opacity: 1;
-          z-index:-1;
-          width:100%;
-          height:100%;
-          background: url(https://cdn.crowdpic.net/detail-thumb/thumb_d_8EDF1F0D1B8C702C289B5B9C52A7B384.jpeg);
-          background-repeat: no-repeat;
-          background-position: center center;
-          background-size: cover;
-    } */
 `;
 
 const useWindowSize = () => {
@@ -54,8 +49,85 @@ const useWindowSize = () => {
 const AppLayout = ({children}) => {
     //반응형 디바이스 가로 크기 측정 
     const size = useWindowSize();
+    const dispatch = useDispatch();
+    const { isLogin } = useSelector(state => state.user);
+    const { Header, Footer, Content, Sider } = Layout;
+
+    const onSearch = (() => {
+
+    });
 
     return (
+      <>
+        <IntroWraper>
+            {
+              size.width < 768 ?
+              (
+              <>
+              <Row style={{height: '45px', width: '100%', position: 'fixed', borderBottom: '1px solid #87CEFA'}}>
+                <Col md={24}>
+                  <div style={{height: '45px',  display: 'flex'}}>
+                    <FontAwesomeIcon icon={faDove} style={{color: '#87CEFA', margin: 'auto 10'}} size="2x"/>
+                    <Link href="/">
+                      <a style={{fontWeight: 'bold', fontStyle: 'italic', fontSize: '17px', margin: 'auto 0'}}>
+                        NodeSNSBird
+                      </a>
+                    </Link>
+                  </div>
+                </Col>
+              </Row>
+              <Row style={{top: '45px', bottom: '45px', width: '100%'}}>
+                <Col md={24}>
+                  본문 내용
+                  {/* 나중에 손봐야함*/}
+                </Col>
+              </Row>
+              <Row type="flex" style={{height: '45px', position: 'fixed', bottom: '0', width: '100%', borderTop: '1px solid #87CEFA'}}>
+                <Col md={6} span={6} style={{margin: 'auto auto', textAlign: 'center'}}>
+                  <FontAwesomeIcon icon={faHome} size="2x" />
+                </Col>
+                <Col md={6} span={6} style={{margin: 'auto auto', textAlign: 'center'}}>
+                  <FontAwesomeIcon icon={faSearch} size="2x"/>
+                </Col>
+                <Col md={6} span={6} style={{margin: 'auto auto', textAlign: 'center'}}>
+                  <FontAwesomeIcon icon={faHeart} size="2x"/>
+                </Col>
+                <Col md={6} span={6} style={{margin: 'auto auto', textAlign: 'center'}}>
+                  <FontAwesomeIcon icon={faUser} size="2x"/>
+                </Col>
+              </Row>
+              </>
+              ) 
+              : 
+              (
+              <Row type="flex">
+                <Col md={24} style={{height: '77px', position: 'fixed', borderBottom: '1px solid gray'}}>
+                  <div style={{maxWidth: '975px', height: '77px', margin: '0 auto', display: 'flex'}}>
+                    <div style={{width: '33.3%', margin: 'auto 0', textAlign: 'center'}}>
+                      <Link href="/">
+                        <a style={{fontWeight: 'bold', fontStyle: 'italic', fontSize: '17px'}}>
+                          NodeSNSBird
+                        </a>
+                      </Link>
+                    </div>
+                    <div style={{width: '33.3%', margin: 'auto 0', textAlign: 'center'}}>
+                    <Input.Search
+                      enterButton
+                      style={{ verticalAlign: 'middle'}}
+                      onSearch={onSearch}
+                    />
+                    </div>
+                    <div style={{width: '33.3%', margin: 'auto 0', textAlign: 'center'}}>
+                      <FontAwesomeIcon icon={faHeart} size="2x" style={{marginRight: '25px', color: 'red'}}/>
+                      <FontAwesomeIcon icon={faUser} size="2x" />
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+              )
+            }
+        </IntroWraper>
+      {/* 
         <IntroWraper>
             <Row type="flex" style={{height: '100vh'}}>
                 {
@@ -107,7 +179,8 @@ const AppLayout = ({children}) => {
                   )
                 }
             </Row> 
-        </IntroWraper>
+        </IntroWraper> */}
+      </>
     );
 }
 

@@ -86,12 +86,12 @@ router.post('/login', async (req, res, next) => {
 
         const result = await bcrypt.compare(req.body.password, loginUser.password);
 
-        console.log('궁금 ', result);
-        // if (loginUser) {
-        //     return res.status(200).json(loginUser);
-        // } else {
-        //     return res.status(403).send('로그인 실패');
-        // }
+        // console.log('궁금 ', result);
+        if (loginUser) {
+            return res.status(200).json(loginUser);
+        } else {
+            return res.status(403).send('로그인 실패');
+        }
     } catch(e) {
         console.error(e);
         return next(e);

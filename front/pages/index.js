@@ -60,45 +60,45 @@ const Index = () => {
     }, [isSignedUp]);
 
     return (
-        <div style={{margin: '0 auto', width: '80%'}}>
-            <Form onSubmit={onSubmitForm}>
-                <CircleLogo />
-                <Form.Item>
-                    <Input 
-                        name="user-id"
-                        style={{height: '40px'}}
-                        value={id}
-                        onChange={onChangeId}
-                        required
-                        prefix={<FontAwesomeIcon icon={faUser} color="rgba(0,0,0,.25)" />}
-                        placeholder=" ID" />
-                </Form.Item>
-                <Form.Item>
-                    <Input 
-                        name="user-password"
-                        style={{height: '40px'}}
-                        value={password}
-                        onChange={onChangePassword}
-                        required
-                        prefix={<FontAwesomeIcon icon={faLock} color="rgba(0,0,0,.25)" />}
-                        type="password"
-                        placeholder="Password" />
-                </Form.Item>
-                {/* <LoginError>{logInErrorReason}</LoginError> */}
-                <Form.Item>
-                    <Checkbox>자동 로그인</Checkbox>
-                    <a style={{float: "right"}}>비밀번호 찾기</a>
-                    <Button 
-                        type="primary" htmlType="submit" style={{width: '100%'}}
-                        loading={isLoggingIn}
-                    >
-                        로그인
-                    </Button>
-                    <Divider type="horizontal" style={{margin: "16px 0", backgroundColor: '#FFB6C1'}}/>
-                    <Link href="/signup"><a><Button type="primary" style={{width: '100%'}}>회원가입</Button></a></Link>
-                </Form.Item>
-            </Form>
-        </div>
+            <div style={{margin: '0 auto', width: '80%'}}>
+                <Form onSubmit={onSubmitForm}>
+                    <CircleLogo />
+                    <Form.Item>
+                        <Input 
+                            name="user-id"
+                            style={{height: '40px'}}
+                            value={id}
+                            onChange={onChangeId}
+                            required
+                            prefix={<FontAwesomeIcon icon={faUser} color="rgba(0,0,0,.25)" />}
+                            placeholder=" ID" />
+                    </Form.Item>
+                    <Form.Item>
+                        <Input 
+                            name="user-password"
+                            style={{height: '40px'}}
+                            value={password}
+                            onChange={onChangePassword}
+                            required
+                            prefix={<FontAwesomeIcon icon={faLock} color="rgba(0,0,0,.25)" />}
+                            type="password"
+                            placeholder="Password" />
+                    </Form.Item>
+                    {/* <LoginError>{logInErrorReason}</LoginError> */}
+                    <Form.Item>
+                        <Checkbox>자동 로그인</Checkbox>
+                        <a style={{float: "right"}}>비밀번호 찾기</a>
+                        <Button 
+                            type="primary" htmlType="submit" style={{width: '100%'}}
+                            loading={isLoggingIn}
+                        >
+                            로그인
+                        </Button>
+                        <Divider type="horizontal" style={{margin: "16px 0", backgroundColor: '#FFB6C1'}}/>
+                        <Link href="/signup"><a><Button type="primary" style={{width: '100%'}}>회원가입</Button></a></Link>
+                    </Form.Item>
+                </Form>
+            </div>
     );
 }
 
