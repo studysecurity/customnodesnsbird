@@ -13,6 +13,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
+import UserProfile from '../containers/UserProfile';
+import SideMenu from './SidMenu';
+import PostForm from '../containers/PostForm';
+import PostCard from '../containers/PostCard';
 
 const IntroWraper = styled.div`
     min-width: 360px;
@@ -100,8 +104,9 @@ const AppLayout = ({children}) => {
               ) 
               : 
               (
-              <Row type="flex">
-                <Col md={24} style={{height: '77px', position: 'fixed', borderBottom: '1px solid gray'}}>
+              <>
+              <Row type="flex" style={{marginBottom: '10px' }}>
+                <Col md={24} style={{ height: '77px', position: 'relative', top: 0, borderBottom: '1px solid #CCEEFF'}}>
                   <div style={{maxWidth: '975px', height: '77px', margin: '0 auto', display: 'flex'}}>
                     <div style={{width: '33.3%', margin: 'auto 0', textAlign: 'center'}}>
                       <Link href="/">
@@ -124,6 +129,20 @@ const AppLayout = ({children}) => {
                   </div>
                 </Col>
               </Row>
+              <Row gutter={20} style={{ marginLeft: '0px', marginRight: '0px'}}>
+                <Col md={6}>
+                  <SideMenu />
+                </Col>
+                <Col md={12} >
+                  <PostForm />
+                  <hr style={{border: 'solid 5px rgb(230, 236, 240)', marginBottom: '2px', }} />
+                  <PostCard />
+                </Col>
+                <Col md={6} >
+                  <UserProfile /> 
+                </Col>
+              </Row>
+              </>
               )
             }
         </IntroWraper>
