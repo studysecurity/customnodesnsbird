@@ -54,7 +54,7 @@ const AppLayout = ({children}) => {
     //반응형 디바이스 가로 크기 측정 
     const size = useWindowSize();
     const dispatch = useDispatch();
-    const { isLogin } = useSelector(state => state.user);
+    const { me } = useSelector(state => state.user);
     const { Header, Footer, Content, Sider } = Layout;
 
     const onSearch = (() => {
@@ -63,7 +63,10 @@ const AppLayout = ({children}) => {
 
     return (
       <>
-        <IntroWraper>
+        { 
+          me ? 
+          (
+            <IntroWraper>
             {
               size.width < 768 ?
               (
@@ -105,8 +108,8 @@ const AppLayout = ({children}) => {
               : 
               (
               <>
-              <Row type="flex" style={{marginBottom: '10px' }}>
-                <Col md={24} style={{ height: '77px', position: 'relative', top: 0, borderBottom: '1px solid #CCEEFF'}}>
+              <Row type="flex" style={{zIndex: 2,marginBottom: '10px', width: '100%', height: '77px', top: 0, borderBottom: '1px solid #CCEEFF' }}>
+                <Col md={24} >
                   <div style={{maxWidth: '975px', height: '77px', margin: '0 auto', display: 'flex'}}>
                     <div style={{width: '33.3%', margin: 'auto 0', textAlign: 'center'}}>
                       <Link href="/">
@@ -129,7 +132,7 @@ const AppLayout = ({children}) => {
                   </div>
                 </Col>
               </Row>
-              <Row gutter={20} style={{ marginLeft: '0px', marginRight: '0px'}}>
+              <Row gutter={20} style={{zIndex: 1, marginLeft: '0px', marginRight: '0px'}}>
                 <Col md={6}>
                   <SideMenu />
                 </Col>
@@ -145,60 +148,64 @@ const AppLayout = ({children}) => {
               </>
               )
             }
-        </IntroWraper>
-      {/* 
-        <IntroWraper>
-            <Row type="flex" style={{height: '100vh'}}>
-                {
-                  size.width < 768 ? 
-                  (
-                    <>
-                      <Col xs={24} sm={24} >
-                        <Row type="flex" align="middle" style={{height: '100%', backgroundColor: '#40E0D0'}}>
-                          <Col xs={24} sm={24}>
-                            {children}
+            </IntroWraper>
+          )
+          :
+          (
+            <IntroWraper>
+                <Row type="flex" style={{height: '100vh'}}>
+                    {
+                      size.width < 768 ? 
+                      (
+                        <>
+                          <Col xs={24} sm={24} >
+                            <Row type="flex" align="middle" style={{height: '100%', backgroundColor: '#40E0D0'}}>
+                              <Col xs={24} sm={24}>
+                                {children}
+                              </Col>
+                            </Row>
                           </Col>
-                        </Row>
-                      </Col>
-                    </>
-                  )
-                  :
-                  (
-                  <>
-                    <Col md={12} lg={12} xl={12} xxl={12} style={{backgroundColor: '#40E0D0'}}>
-                        <Row type="flex" align="middle" style={{height: '100%'}}>
-                          <Col md={24} lg={24} xl={24} xxl={24}>
-                            <div style={{color: 'white', fontSize: '25px', margin: '0 auto', width: '80%'}}>
-                              <div style={{marginBottom: '25px'}}> 
-                                <FontAwesomeIcon icon={faSearch} />
-                                <span style={{marginLeft: '15px'}}>관심사를 팔로우하세요.</span>
-                              </div>
-                              <div style={{marginBottom: '25px'}}>
-                                <FontAwesomeIcon icon={faUserFriends} />
-                                <span style={{marginLeft: '15px'}}>
-                                  사람들이 무엇에 대해 이야기하고 있는지 알아보세요.
-                                </span>
-                              </div>
-                              <div>
-                                <FontAwesomeIcon icon={faComment} />
-                                <span style={{marginLeft: '15px'}}>대화에 참여하세요.</span>
-                              </div>
-                            </div>
-                          </Col>
-                        </Row>
-                    </Col>
-                    <Col md={12} lg={12} xl={12} xxl={12} >
-                      <Row type="flex" align="middle" style={{height: '100%'}}>
-                        <Col md={24} lg={24} xl={24} xxl={24} >
-                          {children}
+                        </>
+                      )
+                      :
+                      (
+                      <>
+                        <Col md={12} lg={12} xl={12} xxl={12} style={{backgroundColor: '#40E0D0'}}>
+                            <Row type="flex" align="middle" style={{height: '100%'}}>
+                              <Col md={24} lg={24} xl={24} xxl={24}>
+                                <div style={{color: 'white', fontSize: '25px', margin: '0 auto', width: '80%'}}>
+                                  <div style={{marginBottom: '25px'}}> 
+                                    <FontAwesomeIcon icon={faSearch} />
+                                    <span style={{marginLeft: '15px'}}>관심사를 팔로우하세요.</span>
+                                  </div>
+                                  <div style={{marginBottom: '25px'}}>
+                                    <FontAwesomeIcon icon={faUserFriends} />
+                                    <span style={{marginLeft: '15px'}}>
+                                      사람들이 무엇에 대해 이야기하고 있는지 알아보세요.
+                                    </span>
+                                  </div>
+                                  <div>
+                                    <FontAwesomeIcon icon={faComment} />
+                                    <span style={{marginLeft: '15px'}}>대화에 참여하세요.</span>
+                                  </div>
+                                </div>
+                              </Col>
+                            </Row>
                         </Col>
-                      </Row>
-                    </Col>
-                  </>
-                  )
-                }
-            </Row> 
-        </IntroWraper> */}
+                        <Col md={12} lg={12} xl={12} xxl={12} >
+                          <Row type="flex" align="middle" style={{height: '100%'}}>
+                            <Col md={24} lg={24} xl={24} xxl={24} >
+                              {children}
+                            </Col>
+                          </Row>
+                        </Col>
+                      </>
+                      )
+                    }
+                </Row> 
+            </IntroWraper>
+          )
+        }
       </>
     );
 }

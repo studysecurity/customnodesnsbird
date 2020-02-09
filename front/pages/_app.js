@@ -10,6 +10,8 @@ import createSagaMiddleware from 'redux-saga';
 import reducer from '../reducers';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import rootSaga from '../sagas';
+import axios from 'axios';
+import { LOAD_USER_REQUEST } from '../reducers/user';
 
 //Fontawesome SSR
 config.autoAddCss = false; // Tell Font Awesome to skip adding the CSS automatically since it's being imported above
@@ -61,6 +63,30 @@ const NodeSnsBird = ({ Component, store, pageProps }) => {
 //     store: PropTypes.object.isRequired,
 //     pageProps: PropTypes.object.isRequired,
 // };
+
+NodeSnsBird.getInitialProps = async (context) => {
+    // console.log("getInitialProps _app.js context 값 : ", context);
+    const { ctx, Component } = context;
+    let pageProps = {};
+    //서버 사이드렌더링
+    const state = ctx.store.getState();
+    const cookie = ctx.isServer ? ctx.req.headers.cookie : '';
+    //쿠키 넣기 (백엔드에 보내려고)
+    //서버인지, 클라이언트인지 구분
+    if (ctx.isServer && cookie) {
+        axios.defaults.headers.Cookie = cookie;
+    }
+    if(!state.user.me) {
+        ctx.store.dispatch({
+            type: LOAD_USER_REQUEST,
+        });
+    }
+    if(Component.getInitialProps) {
+        // 404 status 반환하는 문제가 있음 (서버에서 확인해야함)
+        pageProps = await Component.getInitialProps(ctx) || {};
+    }
+    return { pageProps };
+};
 
 const configureStore = (initialState, options) => {
     // console.log("congiureStore 시작");

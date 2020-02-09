@@ -1,6 +1,8 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const passport = require('passport');
 const db = require('../models');
+const { isLoggedIn } = require('./middleware');
 
 const router = express.Router();
 
@@ -73,29 +75,75 @@ router.post('/signup/check', async (req, res, next) => {
 });
 
 //POST /api/user/login
-router.post('/login', async (req, res, next) => {
-    try {
-        console.log('login 값 : ', req.body);
-
-        const loginUser = await db.User.findOne({
-            where: { 
-                userId: req.body.userId,
-            },
-            attributes: ['password'],
-        });
-
-        const result = await bcrypt.compare(req.body.password, loginUser.password);
-
-        // console.log('궁금 ', result);
-        if (loginUser) {
-            return res.status(200).json(loginUser);
-        } else {
-            return res.status(403).send('로그인 실패');
+router.post('/login', (req, res, next) => {
+    //passport폴더의 passport 정보를 가져온다.
+    //passport/local.js 실행 후의 인증 결과 값을 받아오는 역할
+    passport.authenticate('local', (err, user, info) => {
+        //로그인 요청 실패 사유
+        if(err) {
+            console.error(err);
+            return next(err);
         }
-    } catch(e) {
-        console.error(e);
-        return next(e);
-    }
+        //로그인 에러 사유
+        if(info) {
+            return res.status(401).send(info.reason);
+        }
+        return req.login(user, async (loginErr) => {
+            try{
+                //로그인 에러
+                if(loginErr) {
+                    return next(loginErr);
+                }
+
+                const fullUser = await db.User.findOne({
+                    where: { id: user.id },
+                    attributes: ['id', 'userNick', 'userId'], 
+                });
+                // console.log(fullUser);
+                return res.json(fullUser);
+            } catch(e) {
+                next(e);
+            }
+        });
+    })(req, res, next);
+
+    // try {
+    //     console.log('login 값 : ', req.body);
+
+    //     const loginUser = await db.User.findOne({
+    //         where: { 
+    //             userId: req.body.userId,
+    //         },
+    //         attributes: ['password'],
+    //     });
+
+    //     const result = await bcrypt.compare(req.body.password, loginUser.password);
+
+    //     // console.log('궁금 ', result);
+    //     if (loginUser) {
+    //         return res.status(200).json(loginUser);
+    //     } else {
+    //         return res.status(403).send('로그인 실패');
+    //     }
+    // } catch(e) {
+    //     console.error(e);
+    //     return next(e);
+    // }
+});
+
+router.get('/', isLoggedIn, (req, res) => {
+    //프론트에 password 정보 보여주면 안되서(보안)
+    const user = Object.assign({}, req.user.toJSON());
+    delete user.password;
+    delete user.phone;
+    return res.json(user);
+});
+
+//로그아웃 처리
+router.post('/logout', (req, res) => {
+    req.logout();
+    req.session.destroy();
+    res.send('logout 성공');
 });
 
 module.exports = router;

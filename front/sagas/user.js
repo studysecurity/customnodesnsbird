@@ -13,6 +13,12 @@ import {
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
     LOGIN_FAILURE,
+    LOAD_USER_REQUEST,
+    LOAD_USER_SUCCESS,
+    LOAD_USER_FAILURE,
+    LOGOUT_REQUEST,
+    LOGOUT_SUCCESS,
+    LOGOUT_FAILURE,
 } from '../reducers/user';
 
 //ID 중복 확인 (시작)
@@ -108,16 +114,20 @@ function* watchSignUp() {
 //로그인 (시작)
 function logInAPI(logInData) {
     // console.log("signUpAPI : "+JSON.stringify(signUpData));
-    return axios.post('/user/login', logInData);
+    return axios.post('/user/login', logInData, {
+        //쿠키 정보를 주고받음(백과 프론트쪽 통신)
+        withCredentials: true,
+    });
 }
 
 function* login(action) {
     try {
-        yield call(logInAPI, action.data);
+        const result = yield call(logInAPI, action.data);
         // console.log(action);
         // console.log(action.data);
         yield put({
             type: LOGIN_SUCCESS,
+            data: result.data,
         });
     } catch (e) {
         console.error(e);
@@ -133,11 +143,70 @@ function* watchLogin() {
 }
 //로그인 (끝)
 
+//유저 정보 쿠키로 불러오기 (시작)
+function loadUserAPI() {
+    return axios.get('/user', {
+        withCredentials: true, // 클라이언트에서 요청 보낼 때는 브라우저가 쿠키를 같이 동봉해준다.
+    }); // 서버 사이드 렌더링일 때는, 브라우저가 없다.
+}
+
+function* loadUser() {
+    try {
+        const result = yield call(loadUserAPI);
+        // console.log('사가 쪾 값 : ',result);
+        yield put({
+           type: LOAD_USER_SUCCESS,
+           data: result.data,
+        });
+    } catch(e) {
+        console.error(e);
+        yield put({
+            type: LOAD_USER_FAILURE,
+            error: e,
+        });
+    }
+}
+
+function* watchLoadUser() {
+    yield takeEvery(LOAD_USER_REQUEST, loadUser);
+}
+//유저 정보 쿠키로 불러오기 (끝)
+
+//로그아웃 (시작)
+function logOutAPI() {
+  // 서버에 요청을 보내는 부분
+  return axios.post('/user/logout', {}, {
+    withCredentials: true,
+  });
+}
+
+function* logOut() {
+    try {
+        yield call(logOutAPI);
+        yield put({ // put은 dispatch 동일
+            type: LOGOUT_SUCCESS,
+        });
+    } catch(e) {
+        console.error(e);
+        yield put({
+            type: LOGOUT_FAILURE,
+            error: e,
+        });
+    }
+}
+
+function* watchLogOut() {
+    yield takeEvery(LOGOUT_REQUEST, logOut);
+}
+//로그아웃 (끝)
+
 export default function* userSaga() {
     yield all([
         fork(watchId),
         fork(watchNick),
         fork(watchSignUp),
         fork(watchLogin),
+        fork(watchLoadUser),
+        fork(watchLogOut),
     ]);
 }
