@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Row, Menu, Input, Layout } from 'antd';
+import { Col, Row } from 'antd';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -14,14 +14,22 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
 import UserProfile from '../containers/UserProfile';
-import SideMenu from './SidMenu';
-import PostForm from '../containers/PostForm';
-import PostCard from '../containers/PostCard';
+import SideMenu from './SideMenu';
+import Header from '../components/Header';
 
 const IntroWraper = styled.div`
     min-width: 360px;
 `;
 
+const HeaderRow = styled.div`
+    /* margin-Bottom: 10px; */
+    width: 100%; 
+    height: 77px; 
+    top: 0; 
+    left: 0;
+    position: fixed;
+    z-index: 100;
+`;
 const useWindowSize = () => {
     const isClient = typeof window === 'object';
 
@@ -55,11 +63,6 @@ const AppLayout = ({children}) => {
     const size = useWindowSize();
     const dispatch = useDispatch();
     const { me } = useSelector(state => state.user);
-    const { Header, Footer, Content, Sider } = Layout;
-
-    const onSearch = (() => {
-
-    });
 
     return (
       <>
@@ -108,40 +111,19 @@ const AppLayout = ({children}) => {
               : 
               (
               <>
-              <Row type="flex" style={{zIndex: 2,marginBottom: '10px', width: '100%', height: '77px', top: 0, borderBottom: '1px solid #CCEEFF' }}>
+              <HeaderRow >
                 <Col md={24} >
-                  <div style={{maxWidth: '975px', height: '77px', margin: '0 auto', display: 'flex'}}>
-                    <div style={{width: '33.3%', margin: 'auto 0', textAlign: 'center'}}>
-                      <Link href="/">
-                        <a style={{fontWeight: 'bold', fontStyle: 'italic', fontSize: '17px'}}>
-                          NodeSNSBird
-                        </a>
-                      </Link>
-                    </div>
-                    <div style={{width: '33.3%', margin: 'auto 0', textAlign: 'center'}}>
-                    <Input.Search
-                      enterButton
-                      style={{ verticalAlign: 'middle'}}
-                      onSearch={onSearch}
-                    />
-                    </div>
-                    <div style={{width: '33.3%', margin: 'auto 0', textAlign: 'center'}}>
-                      <FontAwesomeIcon icon={faHeart} size="2x" style={{marginRight: '25px', color: 'red'}}/>
-                      <FontAwesomeIcon icon={faUser} size="2x" />
-                    </div>
-                  </div>
+                  <Header />
                 </Col>
-              </Row>
-              <Row gutter={20} style={{zIndex: 1, marginLeft: '0px', marginRight: '0px'}}>
-                <Col md={6}>
+              </HeaderRow>
+              <Row gutter={20} style={{zIndex: '50' ,top: '77px', marginLeft: '0px', marginRight: '0px'}}>
+                <Col md={6} style={{position: 'fixed', paddingTop: '5px'}}>
                   <SideMenu />
                 </Col>
-                <Col md={12} >
-                  <PostForm />
-                  <hr style={{border: 'solid 5px rgb(230, 236, 240)', marginBottom: '2px', }} />
-                  <PostCard />
+                <Col md={12} style={{left: '25%'}}>
+                  {children}
                 </Col>
-                <Col md={6} >
+                <Col md={6} style={{position: 'fixed', left: '75%', paddingTop: '5px'}}>
                   <UserProfile /> 
                 </Col>
               </Row>
@@ -159,7 +141,7 @@ const AppLayout = ({children}) => {
                       (
                         <>
                           <Col xs={24} sm={24} >
-                            <Row type="flex" align="middle" style={{height: '100%', backgroundColor: '#40E0D0'}}>
+                            <Row type="flex" align="middle" style={{height: '100%'}}>
                               <Col xs={24} sm={24}>
                                 {children}
                               </Col>

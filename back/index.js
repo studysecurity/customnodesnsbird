@@ -11,6 +11,7 @@ const helmet = require('helmet');
 const passportConfig = require('./passport')
 const db = require('./models');
 const userAPIRouter = require('./routes/user');
+const postAPIRouter = require('./routes/post');
 
 const prod = process.env.NODE_ENV === 'production';
 
@@ -25,7 +26,12 @@ passportConfig();
 
 //배포 모드일때
 if (prod) {
+    app.use(hpp());
+    app.use(helmet());
+    app.use(morgan('combined'));
+    app.use(cors({
 
+    }));
 } else {
     //서버의 로그기록 남기는데 사용 (express에서 로그를 안남겨주므로 별도로 해줘야함)
     app.use(morgan('dev'));
@@ -40,6 +46,9 @@ if (prod) {
 //json 형식의 본문 및 request body에 값을 넣어주는 역할
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+
+//파일 업로드 경로
+app.use('/', express.static('uploads'));
 
 //쿠키
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -71,6 +80,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/user', userAPIRouter);
+app.use('/api/post', postAPIRouter);
 
 app.listen(3065, () => {
     console.log('server is running on 3065');

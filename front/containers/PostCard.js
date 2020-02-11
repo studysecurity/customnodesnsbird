@@ -8,7 +8,8 @@ import { faHeart, faCommentDots } from '@fortawesome/free-regular-svg-icons';
 const CardWrapper = styled.div`
     /* border: solid 1px #CCEEFF;  */
     /* padding: 0 10px; */
-    
+    /* margin-top: 150px; */
+    z-index: 1;
 `;
 
 const PostCard = () => {
