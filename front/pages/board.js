@@ -1,8 +1,6 @@
 import React from 'react';
-import post from '../reducers/post';
 
-const Post = () => {
-
+const Board = () => {
     return (
         <>
             test
@@ -10,4 +8,4 @@ const Post = () => {
     );
 };
 
-export default Post;
+export default Board;

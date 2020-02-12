@@ -19,6 +19,9 @@ import {
     LOGOUT_REQUEST,
     LOGOUT_SUCCESS,
     LOGOUT_FAILURE,
+    LOAD_FOLLOWLIST_REQUEST,
+    LOAD_FOLLOWLIST_SUCCESS,
+    LOAD_FOLLOWLIST_FAILURE,
 } from '../reducers/user';
 
 //ID 중복 확인 (시작)
@@ -200,6 +203,36 @@ function* watchLogOut() {
 }
 //로그아웃 (끝)
 
+//팔로우 (자기 자신 빼고 전체 유저 목록 가져오기) (시작)
+function followListAPI() {
+    return axios.post('/user/followList', {}, {
+        withCredentials: true,
+    });
+}
+
+function* followList() {
+    try { 
+        const result = yield call(followListAPI);
+        // console.log('값 있냐? ', result);
+
+        yield put({
+            type: LOAD_FOLLOWLIST_SUCCESS,
+            data: result.data,
+        });
+    } catch (e) {
+        console.error(e);
+        yield put({
+            type: LOAD_FOLLOWLIST_FAILURE,
+            error: e,
+        });
+    }
+}
+
+function* watchLoadFollowList() {
+    yield takeEvery(LOAD_FOLLOWLIST_REQUEST, followList);
+}
+//팔로우 (자기 자신 빼고 전체 유저 목록 가져오기) (끝)
+
 export default function* userSaga() {
     yield all([
         fork(watchId),
@@ -208,5 +241,6 @@ export default function* userSaga() {
         fork(watchLogin),
         fork(watchLoadUser),
         fork(watchLogOut),
+        fork(watchLoadFollowList)
     ]);
 }

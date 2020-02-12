@@ -1,7 +1,7 @@
 import React from 'react';
 import { Menu } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserPlus, faChalkboard } from '@fortawesome/free-solid-svg-icons';
+import { faChalkboard } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 
 const SideMenu = () => {
@@ -24,22 +24,14 @@ const SideMenu = () => {
           }
         >
           <Menu.Item key="1">
-            <FontAwesomeIcon icon={faUserPlus} style={{marginRight: '20px'}}/>
+            <FontAwesomeIcon icon={faChalkboard} style={{marginRight: '20px'}}/>
             <div style={{display: 'inline-block'}}>
-              <Link href="/post">
+              <Link href="/board">
                 <a style={{color: 'inherit'}}>
-                  팔로워 현황
+                  자유 게시판
                 </a>
               </Link>
             </div>
-          </Menu.Item>
-          <Menu.Item key="2">
-            <FontAwesomeIcon icon={faUserPlus} style={{marginRight: '20px'}}/>
-            팔로잉 현황
-          </Menu.Item>
-          <Menu.Item key="3">
-            <FontAwesomeIcon icon={faChalkboard} style={{marginRight: '20px'}}/>
-            자유 게시판
           </Menu.Item>
         </Menu.SubMenu>
       </Menu>

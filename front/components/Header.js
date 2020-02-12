@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faUser, 
 } from '@fortawesome/free-solid-svg-icons';
-import { faHeart } from '@fortawesome/free-regular-svg-icons';
+import { faHeart, faCompass } from '@fortawesome/free-regular-svg-icons';
 
 const Header = () => {
 
@@ -31,6 +31,12 @@ const Header = () => {
             />
             </div>
             <div style={{width: '33.3%', margin: 'auto 0', textAlign: 'center'}}>
+                <Link href="/follow">
+                    <a style={{color :'inherit'}}>
+                        <FontAwesomeIcon icon={faCompass} size="2x" style={{marginRight: '25px'}}/>
+                    </a>
+                </Link>
+                
                 <FontAwesomeIcon icon={faHeart} size="2x" style={{marginRight: '25px'}}/>
                 <FontAwesomeIcon icon={faUser} size="2x" />
             </div>

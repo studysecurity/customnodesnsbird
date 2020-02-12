@@ -131,6 +131,7 @@ router.post('/login', (req, res, next) => {
     // }
 });
 
+//쿠키 정보 불러오기
 router.get('/', isLoggedIn, (req, res) => {
     //프론트에 password 정보 보여주면 안되서(보안)
     const user = Object.assign({}, req.user.toJSON());
@@ -145,5 +146,29 @@ router.post('/logout', (req, res) => {
     req.session.destroy();
     res.send('logout 성공');
 });
+
+//팔로우할 전체 유저 정보들 불러오기
+router.post('/followList', isLoggedIn, async (req, res, next) => {
+    try {
+        const user = Object.assign({}, req.user.toJSON());
+        delete user.password;
+        delete user.phone;
+        delete user.userId;
+
+        // console.log("값 머냐 : ",user.userNick);
+
+        const followUserList = await db.User.findAll({
+            where: { 
+                userNick: !user.userNick,
+            },
+            attributes: [ 'id', 'userNick'],
+        });
+
+        return res.status(200).json(followUserList);
+    } catch(e) {
+        console.error(e);
+        return next(e);
+    }
+})
 
 module.exports = router;
