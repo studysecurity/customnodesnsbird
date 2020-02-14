@@ -22,6 +22,9 @@ import {
     LOAD_FOLLOWLIST_REQUEST,
     LOAD_FOLLOWLIST_SUCCESS,
     LOAD_FOLLOWLIST_FAILURE,
+    FOLLOW_USER_REQUEST,
+    FOLLOW_USER_SUCCESS,
+    FOLLOW_USER_FAILURE,
 } from '../reducers/user';
 
 //ID 중복 확인 (시작)
@@ -233,6 +236,33 @@ function* watchLoadFollowList() {
 }
 //팔로우 (자기 자신 빼고 전체 유저 목록 가져오기) (끝)
 
+//팔로우 (시작)
+function followAPI(userId) {
+    return axios.post('/user/follow', { userId }, {
+        withCredentials: true,
+    });
+}
+
+function* follow(action) {
+    try {
+        yield call(followAPI, action.data); //action.data 값은 팔로우를 당한 유저의 아이디 값
+        yield put({
+            type: FOLLOW_USER_SUCCESS,
+        });
+    } catch(e) {
+        console.error(e);
+        yield put({
+            type: FOLLOW_USER_FAILURE,
+            error: e,
+        });
+    }
+}
+
+function* watchFollow() {
+    yield takeEvery(FOLLOW_USER_REQUEST, follow);
+}
+//팔로우 (끝)
+
 export default function* userSaga() {
     yield all([
         fork(watchId),
@@ -241,6 +271,7 @@ export default function* userSaga() {
         fork(watchLogin),
         fork(watchLoadUser),
         fork(watchLogOut),
-        fork(watchLoadFollowList)
+        fork(watchLoadFollowList),
+        fork(watchFollow),
     ]);
 }

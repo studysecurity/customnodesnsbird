@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect } from 'react';
 import { Card, Avatar, Button } from 'antd';
-import Link from 'next/link';
 import { useSelector, useDispatch } from 'react-redux';
 import { LOGOUT_REQUEST } from '../reducers/user';
-
+import Link from 'next/link';
 
 const UserProfile = () => {
     const { me } = useSelector(state => state.user);
@@ -13,7 +12,6 @@ const UserProfile = () => {
         dispatch({
             type: LOGOUT_REQUEST,
         });
-        
     }, []);
 
     return (

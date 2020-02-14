@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const db = require('../models');
+const Op = db.Sequelize.Op; //옵션
 const { isLoggedIn } = require('./middleware');
 
 const router = express.Router();
@@ -97,7 +98,7 @@ router.post('/login', (req, res, next) => {
 
                 const fullUser = await db.User.findOne({
                     where: { id: user.id },
-                    attributes: ['id', 'userNick', 'userId'], 
+                    attributes: ['id', 'userNick'], 
                 });
                 // console.log(fullUser);
                 return res.json(fullUser);
@@ -136,7 +137,8 @@ router.get('/', isLoggedIn, (req, res) => {
     //프론트에 password 정보 보여주면 안되서(보안)
     const user = Object.assign({}, req.user.toJSON());
     delete user.password;
-    delete user.phone;
+    delete user.userId;
+    delete user.userPhone;
     return res.json(user);
 });
 
@@ -150,17 +152,17 @@ router.post('/logout', (req, res) => {
 //팔로우할 전체 유저 정보들 불러오기
 router.post('/followList', isLoggedIn, async (req, res, next) => {
     try {
-        const user = Object.assign({}, req.user.toJSON());
-        delete user.password;
-        delete user.phone;
-        delete user.userId;
-
-        // console.log("값 머냐 : ",user.userNick);
-
         const followUserList = await db.User.findAll({
             where: { 
-                userNick: !user.userNick,
+                userNick: {
+                    [Op.ne]: req.user.userNick,
+                },
             },
+            include: [{
+                model: db.User,
+                as: 'Followers',
+                attributes: ['id'],
+            }],
             attributes: [ 'id', 'userNick'],
         });
 
@@ -169,6 +171,21 @@ router.post('/followList', isLoggedIn, async (req, res, next) => {
         console.error(e);
         return next(e);
     }
-})
+});
+
+//팔로우 요청
+router.post('/follow', isLoggedIn, async (req, res, next) => {
+    try {
+        const me = await db.User.findOne({
+            where: { id: req.user.id },
+        });
+        // console.log('프론트에서 받아온 userId 값 : ', req.body);
+        await me.addFollowing(req.body.userId);
+        return res.status(200).send('팔로우 요청 성공');
+    } catch(e) {
+        console.error(e);
+        return next(e);
+    }
+});
 
 module.exports = router;

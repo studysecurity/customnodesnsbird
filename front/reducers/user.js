@@ -14,6 +14,7 @@ export const initialState = {
     me: null, //내정보 (로그인 하면 내 정보가 있으므로 이걸로 판별)
     loadFollowList: [], //팔로우 리스트의 유저 정보들(팔로우 검색 및 유저 검색하여 팔로우 할 수 있게)
     loadFollowListErrorReason: '', //팔로우 리스트 에러 이유
+    followErrorReason: '', //팔로우 요청시 에러 이유
 };
 
 export const ID_CHECK_REQUEST = 'ID_CHECK_REQUEST';
@@ -45,6 +46,10 @@ export const LOGOUT_FAILURE = 'LOGOUT_FAILURE';
 export const LOAD_FOLLOWLIST_REQUEST = 'LOAD_FOLLOWLIST_REQUEST';
 export const LOAD_FOLLOWLIST_SUCCESS = 'LOAD_FOLLOWLIST_SUCCESS';
 export const LOAD_FOLLOWLIST_FAILURE = 'LOAD_FOLLOWLIST_FAILURE';
+
+export const FOLLOW_USER_REQUEST = 'FOLLOW_USER_REQUEST';
+export const FOLLOW_USER_SUCCESS = 'FOLLOW_USER_SUCCESS';
+export const FOLLOW_USER_FAILURE = 'FOLLOW_USER_FAILURE';
 
 export default (state = initialState, action) => {
     return produce(state, (draft) => {
@@ -178,6 +183,21 @@ export default (state = initialState, action) => {
                 draft.loadFollowList = [];
                 break;
             } 
+
+            case FOLLOW_USER_REQUEST: {
+                draft.followErrorReason = '';
+                break;
+            }
+
+            case FOLLOW_USER_SUCCESS: {
+                draft.followErrorReason = '';
+                break;
+            }
+
+            case FOLLOW_USER_FAILURE: {
+                draft.followErrorReason = action.error;
+                break;
+            }
         }
     });
 }
