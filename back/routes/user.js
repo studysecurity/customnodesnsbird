@@ -98,9 +98,18 @@ router.post('/login', (req, res, next) => {
 
                 const fullUser = await db.User.findOne({
                     where: { id: user.id },
+                    include: [{
+                        model: db.User,
+                        as: 'Followings',
+                        attributes: ['id'],
+                    }, {
+                        model: db.User,
+                        as: 'Followers',
+                        attributes: ['id'],
+                    }],
                     attributes: ['id', 'userNick'], 
                 });
-                // console.log(fullUser);
+                // console.log('로그인 : ', fullUser);
                 return res.json(fullUser);
             } catch(e) {
                 next(e);
@@ -158,13 +167,10 @@ router.post('/followList', isLoggedIn, async (req, res, next) => {
                     [Op.ne]: req.user.userNick,
                 },
             },
-            include: [{
-                model: db.User,
-                as: 'Followers',
-                attributes: ['id'],
-            }],
             attributes: [ 'id', 'userNick'],
         });
+
+        console.log('백엔드 값 : ',JSON.stringify(followUserList));
 
         return res.status(200).json(followUserList);
     } catch(e) {
@@ -174,18 +180,53 @@ router.post('/followList', isLoggedIn, async (req, res, next) => {
 });
 
 //팔로우 요청
-router.post('/follow', isLoggedIn, async (req, res, next) => {
+router.post('/follow/:id', isLoggedIn, async (req, res, next) => {
+    //이슈 : req.body의 값은 프론트 쪽으로 전달을 못함( 에러남 이유는 모르겠음..)
+    // console.log('팔로우 요청이 백엔드로 왔음.');
+    // console.log('req.params.id 값(백엔드) : ',req.params.id);
     try {
         const me = await db.User.findOne({
             where: { id: req.user.id },
         });
-        // console.log('프론트에서 받아온 userId 값 : ', req.body);
-        await me.addFollowing(req.body.userId);
-        return res.status(200).send('팔로우 요청 성공');
+        await me.addFollowing(req.params.id);
+        return res.status(200).send(req.params.id);
     } catch(e) {
         console.error(e);
         return next(e);
     }
 });
+
+//팔로잉 정보 가져오기
+router.post('/followings', isLoggedIn, async (req, res, next) => {
+    try {
+        const me = await db.User.findOne({
+            where: { id: req.user.id },
+        });
+        
+        const followings = await me.getFollowings({
+            attributes: ['id'],
+        });
+
+        return res.json(followings);
+    } catch(e) {
+        console.error(e);
+        return next(e);
+    }
+});
+
+//언팔로우
+// router.post('/unfollow', isLoggedIn, async (req, res, next) => {
+//     try {
+//         const me = await db.User.findOne({
+//             where: { id: req.user.id },
+//         });
+
+//         await me.removeFollowing(req.body.userId);
+//         res.send(req.body.userId);
+//     } catch(e) {
+//         console.error(e);
+//         return next(e);
+//     }
+// });
 
 module.exports = router;

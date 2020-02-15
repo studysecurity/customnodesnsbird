@@ -51,6 +51,15 @@ export const FOLLOW_USER_REQUEST = 'FOLLOW_USER_REQUEST';
 export const FOLLOW_USER_SUCCESS = 'FOLLOW_USER_SUCCESS';
 export const FOLLOW_USER_FAILURE = 'FOLLOW_USER_FAILURE';
 
+export const LOAD_FOLLOWINGS_REQUEST = 'LOAD_FOLLOWINGS_REQUEST';
+export const LOAD_FOLLOWINGS_SUCCESS = 'LOAD_FOLLOWINGS_SUCCESS';
+export const LOAD_FOLLOWINGS_FAILURE = 'LOAD_FOLLOWINGS_FAILURE';
+
+export const UNFOLLOW_USER_REQUEST = 'UNFOLLOW_USER_REQUEST';
+export const UNFOLLOW_USER_SUCCESS = 'UNFOLLOW_USER_SUCCESS';
+export const UNFOLLOW_USER_FAILURE = 'UNFOLLOW_USER_FAILURE';
+
+
 export default (state = initialState, action) => {
     return produce(state, (draft) => {
         switch (action.type) {
@@ -130,6 +139,7 @@ export default (state = initialState, action) => {
                 draft.isLoggingIn = false;
                 draft.isLoginErrorReason = '';
                 draft.me = action.data;
+                // console.log('로그인 me 값 : ', draft.me);
                 break;
             }
 
@@ -191,6 +201,7 @@ export default (state = initialState, action) => {
 
             case FOLLOW_USER_SUCCESS: {
                 draft.followErrorReason = '';
+                draft.me.Followings.unshift({ id: action.data });
                 break;
             }
 
@@ -198,6 +209,37 @@ export default (state = initialState, action) => {
                 draft.followErrorReason = action.error;
                 break;
             }
+
+            case UNFOLLOW_USER_REQUEST: {
+                break;
+            }
+
+            case UNFOLLOW_USER_SUCCESS: {
+                break;
+            }
+
+            case UNFOLLOW_USER_FAILURE: {
+                break;
+            }
+
+            case LOAD_FOLLOWINGS_REQUEST: {
+                break;
+            }
+
+            case LOAD_FOLLOWINGS_SUCCESS: {
+                // console.log('LOAD_FOLLOWINGS_SUCCESS 값 : ',action.data);
+                console.log('이거 궁금 : ', draft.me);
+                action.data.forEach((d) => {
+                    // draft.me.Followings.push(parseInt(d.Followings.followingId));
+                });
+                
+                console.log('이건 머임? : ', draft.me);
+                break;
+            }
+
+            case LOAD_FOLLOWINGS_FAILURE: {
+                break;
+            } 
         }
     });
 }

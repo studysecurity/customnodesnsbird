@@ -25,6 +25,12 @@ import {
     FOLLOW_USER_REQUEST,
     FOLLOW_USER_SUCCESS,
     FOLLOW_USER_FAILURE,
+    LOAD_FOLLOWINGS_REQUEST,
+    LOAD_FOLLOWINGS_SUCCESS,
+    LOAD_FOLLOWINGS_FAILURE,
+    UNFOLLOW_USER_REQUEST,
+    UNFOLLOW_USER_SUCCESS,
+    UNFOLLOW_USER_FAILURE,
 } from '../reducers/user';
 
 //ID 중복 확인 (시작)
@@ -131,6 +137,7 @@ function* login(action) {
         const result = yield call(logInAPI, action.data);
         // console.log(action);
         // console.log(action.data);
+        // console.log('login result.data 값 : ',JSON.stringify(result.data));
         yield put({
             type: LOGIN_SUCCESS,
             data: result.data,
@@ -216,7 +223,6 @@ function followListAPI() {
 function* followList() {
     try { 
         const result = yield call(followListAPI);
-        // console.log('값 있냐? ', result);
 
         yield put({
             type: LOAD_FOLLOWLIST_SUCCESS,
@@ -238,16 +244,19 @@ function* watchLoadFollowList() {
 
 //팔로우 (시작)
 function followAPI(userId) {
-    return axios.post('/user/follow', { userId }, {
+    return axios.post(`/user/follow/${userId}`, {}, {
         withCredentials: true,
     });
 }
 
 function* follow(action) {
+    // console.log('팔로우 요청 action.data 값 : ', action.data);
     try {
-        yield call(followAPI, action.data); //action.data 값은 팔로우를 당한 유저의 아이디 값
+        const result = yield call(followAPI, action.data); //action.data 값은 팔로우를 당한 유저의 아이디 값
+        
         yield put({
             type: FOLLOW_USER_SUCCESS,
+            data: result.data,
         });
     } catch(e) {
         console.error(e);
@@ -263,6 +272,63 @@ function* watchFollow() {
 }
 //팔로우 (끝)
 
+//팔로잉 정보 가져오기(시작)
+function loadFollowingsAPI() {
+    return axios.post('/user/followings' , {}, {
+        withCredentials: true,
+    });
+}
+
+function* loadFollowings() {
+    try {
+        const result = yield call(loadFollowingsAPI);
+        console.log('loadFollowings 값 : ', result.data);
+
+        yield put({
+            type: LOAD_FOLLOWINGS_SUCCESS,
+            data: result.data,
+        });
+    } catch(e) {
+        console.error(e);
+        yield put({
+            type: LOAD_FOLLOWINGS_FAILURE,
+        });
+    }
+}
+
+function* watchLoadFollowings() {
+    yield takeEvery(LOAD_FOLLOWINGS_REQUEST, loadFollowings);
+}
+//팔로잉 정보 가져오기(끝)
+
+//언팔로우 (시작)
+function unFollowAPI(userId) {
+    return axios.delete('/user/unfollow', { userId } , {
+        withCredentials: true,
+    });
+}
+
+function* unFollow(action) {
+    // try {
+    //     const result = yield call(unFollowAPI, action.data);
+
+    //     yield put({
+    //         type: UNFOLLOW_USER_SUCCESS,
+    //         data: result.data,
+    //     });
+    // } catch(e) {
+    //     console.error(e);
+    //     yield put({
+    //         type: UNFOLLOW_USER_FAILURE,
+    //     });
+    // }
+}
+
+function* watchUnFollow() {
+    yield takeEvery(UNFOLLOW_USER_REQUEST, unFollow);
+}
+//언팔로우 (끝)
+
 export default function* userSaga() {
     yield all([
         fork(watchId),
@@ -273,5 +339,7 @@ export default function* userSaga() {
         fork(watchLogOut),
         fork(watchLoadFollowList),
         fork(watchFollow),
+        fork(watchLoadFollowings),
+        fork(watchUnFollow),
     ]);
 }
