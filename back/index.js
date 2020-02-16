@@ -82,6 +82,6 @@ app.get('/', (req, res) => {
 app.use('/api/user', userAPIRouter);
 app.use('/api/post', postAPIRouter);
 
-app.listen(3065, () => {
-    console.log('server is running on 3065');
+app.listen(prod ? process.env.PORT : 3065, () => {
+    console.log(`server is running on ${process.env.PORT}`);
 });

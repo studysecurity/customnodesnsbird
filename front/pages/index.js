@@ -37,7 +37,7 @@ const Index = () => {
     const [password, onChangePassword] = useInput('');
     //회원가입이 true 로 되어있으면 다시 회원가입 화면으로 못넘어가므로 false로 변경
     const dispatch = useDispatch();
-    const { isSignedUp, isLoggingIn, me } = useSelector(state => state.user);
+    const { isSignedUp, isLoggingIn, me, isLoginErrorReason } = useSelector(state => state.user);
     
     // 로그인 버튼 클릭
     const onSubmitForm = useCallback((e) => {
@@ -79,7 +79,7 @@ const Index = () => {
                             prefix={<FontAwesomeIcon icon={faUser} color="rgba(0,0,0,.25)" />}
                             placeholder=" ID" />
                     </Form.Item>
-                    <Form.Item>
+                    <Form.Item style={isLoginErrorReason && {marginBottom: '2px'}}>
                         <Input 
                             name="user-password"
                             style={{height: '40px'}}
@@ -90,7 +90,7 @@ const Index = () => {
                             type="password"
                             placeholder="Password" />
                     </Form.Item>
-                    {/* <LoginError>{logInErrorReason}</LoginError> */}
+                    <div style={{color: 'red', fontWeight: 'bold'}}>{isLoginErrorReason}</div>
                     <Form.Item>
                         <Checkbox>자동 로그인</Checkbox>
                         <a style={{float: "right"}}>비밀번호 찾기</a>

@@ -4,7 +4,6 @@ import { Empty } from 'antd';
 import { 
     LOAD_FOLLOWLIST_REQUEST, 
     FOLLOW_USER_REQUEST,
-    LOAD_FOLLOWINGS_REQUEST,
     UNFOLLOW_USER_REQUEST, 
 } from '../reducers/user';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,19 +14,21 @@ const Follow = () => {
     const dispath = useDispatch();
     const { loadFollowList, me } = useSelector(state => state.user);
 
+    //팔로우 클릭
     const onFollow = useCallback(userId => () => {
-        console.log('onFollow 클릭');
+        // console.log('onFollow 클릭');
         //여기서 userId 값은 팔로우를 받은 유저의 아이디 값임 이 값으로 이 유저에게 팔로우를 걸거임.
-        console.log('onFollow userId 값 : ', userId);
+        // console.log('onFollow userId 값 : ', userId);
         dispath({
             type: FOLLOW_USER_REQUEST,
             data: userId, 
         });
     }, []);
 
+    //팔로잉 클릭 (언팔로우)
     const onUnFollow = useCallback(userId => () => {
-        console.log('onUnFOllow 클릭');
-        console.log('onUnFollow userId 값 : ', userId);
+        // console.log('onUnFOllow 클릭');
+        // console.log('onUnFollow userId 값 : ', userId);
 
         dispath({
             type: UNFOLLOW_USER_REQUEST,
@@ -79,12 +80,6 @@ Follow.getInitialProps = async (context) => {
     //팔로우할 유저의 목록들을 가져온다.
     context.store.dispatch({
         type: LOAD_FOLLOWLIST_REQUEST,
-    });
-
-    //me에 팔로잉 목록들을 가져온다. me의 팔로잉의 아이디 값과 팔로우 유저의 
-    //아이디 값이 같으면 me가 팔로우한 대상임을 판별
-    context.store.dispatch({
-        type: LOAD_FOLLOWINGS_REQUEST,
     });
 };
 

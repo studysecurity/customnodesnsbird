@@ -272,56 +272,27 @@ function* watchFollow() {
 }
 //팔로우 (끝)
 
-//팔로잉 정보 가져오기(시작)
-function loadFollowingsAPI() {
-    return axios.post('/user/followings' , {}, {
-        withCredentials: true,
-    });
-}
-
-function* loadFollowings() {
-    try {
-        const result = yield call(loadFollowingsAPI);
-        console.log('loadFollowings 값 : ', result.data);
-
-        yield put({
-            type: LOAD_FOLLOWINGS_SUCCESS,
-            data: result.data,
-        });
-    } catch(e) {
-        console.error(e);
-        yield put({
-            type: LOAD_FOLLOWINGS_FAILURE,
-        });
-    }
-}
-
-function* watchLoadFollowings() {
-    yield takeEvery(LOAD_FOLLOWINGS_REQUEST, loadFollowings);
-}
-//팔로잉 정보 가져오기(끝)
-
 //언팔로우 (시작)
 function unFollowAPI(userId) {
-    return axios.delete('/user/unfollow', { userId } , {
+    return axios.delete(`/user/follow/${userId}`, {
         withCredentials: true,
     });
 }
 
 function* unFollow(action) {
-    // try {
-    //     const result = yield call(unFollowAPI, action.data);
+    try {
+        const result = yield call(unFollowAPI, action.data);
 
-    //     yield put({
-    //         type: UNFOLLOW_USER_SUCCESS,
-    //         data: result.data,
-    //     });
-    // } catch(e) {
-    //     console.error(e);
-    //     yield put({
-    //         type: UNFOLLOW_USER_FAILURE,
-    //     });
-    // }
+        yield put({
+            type: UNFOLLOW_USER_SUCCESS,
+            data: result.data,
+        });
+    } catch(e) {
+        console.error(e);
+        yield put({
+            type: UNFOLLOW_USER_FAILURE,
+        });
+    }
 }
 
 function* watchUnFollow() {
@@ -339,7 +310,6 @@ export default function* userSaga() {
         fork(watchLogOut),
         fork(watchLoadFollowList),
         fork(watchFollow),
-        fork(watchLoadFollowings),
         fork(watchUnFollow),
     ]);
 }

@@ -109,36 +109,13 @@ router.post('/login', (req, res, next) => {
                     }],
                     attributes: ['id', 'userNick'], 
                 });
-                // console.log('로그인 : ', fullUser);
+                // console.log('백엔드 로그인시 fullUser 값 : ', fullUser);
                 return res.json(fullUser);
             } catch(e) {
                 next(e);
             }
         });
     })(req, res, next);
-
-    // try {
-    //     console.log('login 값 : ', req.body);
-
-    //     const loginUser = await db.User.findOne({
-    //         where: { 
-    //             userId: req.body.userId,
-    //         },
-    //         attributes: ['password'],
-    //     });
-
-    //     const result = await bcrypt.compare(req.body.password, loginUser.password);
-
-    //     // console.log('궁금 ', result);
-    //     if (loginUser) {
-    //         return res.status(200).json(loginUser);
-    //     } else {
-    //         return res.status(403).send('로그인 실패');
-    //     }
-    // } catch(e) {
-    //     console.error(e);
-    //     return next(e);
-    // }
 });
 
 //쿠키 정보 불러오기
@@ -148,6 +125,7 @@ router.get('/', isLoggedIn, (req, res) => {
     delete user.password;
     delete user.userId;
     delete user.userPhone;
+    // console.log('백엔드 쿠키값으로 인한 로그인 값 : ', user);
     return res.json(user);
 });
 
@@ -170,7 +148,7 @@ router.post('/followList', isLoggedIn, async (req, res, next) => {
             attributes: [ 'id', 'userNick'],
         });
 
-        console.log('백엔드 값 : ',JSON.stringify(followUserList));
+        // console.log('백엔드 값 : ',JSON.stringify(followUserList));
 
         return res.status(200).json(followUserList);
     } catch(e) {
@@ -196,37 +174,19 @@ router.post('/follow/:id', isLoggedIn, async (req, res, next) => {
     }
 });
 
-//팔로잉 정보 가져오기
-router.post('/followings', isLoggedIn, async (req, res, next) => {
+//언팔로우 (팔로잉)
+router.delete('/follow/:id', isLoggedIn, async (req, res, next) => {
     try {
         const me = await db.User.findOne({
             where: { id: req.user.id },
         });
-        
-        const followings = await me.getFollowings({
-            attributes: ['id'],
-        });
 
-        return res.json(followings);
+        await me.removeFollowing(req.params.id);
+        return res.status(200).send(req.params.id);
     } catch(e) {
         console.error(e);
         return next(e);
     }
 });
-
-//언팔로우
-// router.post('/unfollow', isLoggedIn, async (req, res, next) => {
-//     try {
-//         const me = await db.User.findOne({
-//             where: { id: req.user.id },
-//         });
-
-//         await me.removeFollowing(req.body.userId);
-//         res.send(req.body.userId);
-//     } catch(e) {
-//         console.error(e);
-//         return next(e);
-//     }
-// });
 
 module.exports = router;

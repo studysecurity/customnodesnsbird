@@ -51,10 +51,6 @@ export const FOLLOW_USER_REQUEST = 'FOLLOW_USER_REQUEST';
 export const FOLLOW_USER_SUCCESS = 'FOLLOW_USER_SUCCESS';
 export const FOLLOW_USER_FAILURE = 'FOLLOW_USER_FAILURE';
 
-export const LOAD_FOLLOWINGS_REQUEST = 'LOAD_FOLLOWINGS_REQUEST';
-export const LOAD_FOLLOWINGS_SUCCESS = 'LOAD_FOLLOWINGS_SUCCESS';
-export const LOAD_FOLLOWINGS_FAILURE = 'LOAD_FOLLOWINGS_FAILURE';
-
 export const UNFOLLOW_USER_REQUEST = 'UNFOLLOW_USER_REQUEST';
 export const UNFOLLOW_USER_SUCCESS = 'UNFOLLOW_USER_SUCCESS';
 export const UNFOLLOW_USER_FAILURE = 'UNFOLLOW_USER_FAILURE';
@@ -145,7 +141,7 @@ export default (state = initialState, action) => {
 
             case LOGIN_FAILURE: {
                 draft.isLoggingIn = false;
-                draft.isLoginErrorReason = action.error;
+                draft.isLoginErrorReason = '아이디 혹은 비밀번호가 일치하지 않습니다.';
                 draft.me = null;
                 break;
             }
@@ -215,31 +211,16 @@ export default (state = initialState, action) => {
             }
 
             case UNFOLLOW_USER_SUCCESS: {
+                //action.data user의 id 값, followings에서 id 값이 user의 id 값과
+                //같으면 팔로우 했다는 것이므로 팔로우 해제 
+                const index = draft.me.Followings.findIndex(v => v.id === action.data);
+                draft.me.Followings.splice(index, 1);
                 break;
             }
 
             case UNFOLLOW_USER_FAILURE: {
                 break;
             }
-
-            case LOAD_FOLLOWINGS_REQUEST: {
-                break;
-            }
-
-            case LOAD_FOLLOWINGS_SUCCESS: {
-                // console.log('LOAD_FOLLOWINGS_SUCCESS 값 : ',action.data);
-                console.log('이거 궁금 : ', draft.me);
-                action.data.forEach((d) => {
-                    // draft.me.Followings.push(parseInt(d.Followings.followingId));
-                });
-                
-                console.log('이건 머임? : ', draft.me);
-                break;
-            }
-
-            case LOAD_FOLLOWINGS_FAILURE: {
-                break;
-            } 
         }
     });
 }

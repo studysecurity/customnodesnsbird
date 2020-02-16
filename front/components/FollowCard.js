@@ -7,6 +7,8 @@ import { useSelector} from 'react-redux';
 const FollowCard = memo(({followList, onFollow, onUnFollow}) => {
     const { me } = useSelector(state => state.user);
 
+    // console.log('FollowCard me.Followings 값 : ', me.Followings);
+
     return (
         <div style={{padding: '8px 16px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             <FontAwesomeIcon icon={faUserCircle} style={{ height: '44px', width: '44px'}}/>

@@ -13,6 +13,15 @@ module.exports = () => {
         try {
             const user = await db.User.findOne({
                 where: { id },
+                include: [{
+                    model: db.User,
+                    as: 'Followings',
+                    attributes: ['id'],
+                }, {
+                    model: db.User,
+                    as: 'Followers',
+                    attributes: ['id'],
+                }],
             });
             return done(null, user);
         } catch (e) {
