@@ -7,7 +7,8 @@ import {
     REMOVE_IMAGE,
 } from '../reducers/post';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faImage } from '@fortawesome/free-solid-svg-icons';
+
 
 const PostForm = () => {
     const dispatch = useDispatch();
@@ -16,6 +17,7 @@ const PostForm = () => {
     const [disableButton, setdisableButton] = useState(true);
     const { imagePaths, isAddingPost, postAdded } = useSelector(state => state.post);
     const imageInput = useRef();
+    
 
     //텍스트 입력 변화 감지
     const onChangeText = useCallback((e) => {
@@ -64,12 +66,18 @@ const PostForm = () => {
         //게시글 작성
         const formData = new FormData();
 
+        //formData에 이미지 추가
+        imagePaths.forEach((i) => {
+            formData.append('image', i);
+        }); 
+        //formData에 글 추가
         formData.append('content', text);
+
         dispatch({
             type: ADD_POST_REQUEST,
             data: formData,
         });
-    }, [text]);
+    }, [text, imagePaths]);
 
     const onRemoveImage = useCallback(index => () => {
         dispatch({
@@ -93,7 +101,7 @@ const PostForm = () => {
             <Input.TextArea style={{height: '80px'}} maxLength={200} placeholder="무슨 일이 일어나고 있나요?" value={text} onChange={onChangeText} />
                 <div>
                     <input type="file" multiple hidden ref={imageInput} onChange={onChangeImages} />
-                    <Button onClick={onClickImageUpload}>이미지 업로드</Button>
+                    <FontAwesomeIcon cursor='pointer' style={{height: '32px', width: '50px'}} icon={faImage} onClick={onClickImageUpload} />
                     <Button type="primary" style={{float: 'right'}} htmlType="submit" loading={isAddingPost} disabled={disableButton}>등록</Button>
                 </div>
                 <div>
@@ -104,7 +112,6 @@ const PostForm = () => {
                             style={{
                                 width: '100%', 
                                 height: '300px',
-                                objectFit: 'contain'
                             }} 
                             alt={v} 
                         />

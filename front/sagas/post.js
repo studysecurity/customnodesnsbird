@@ -39,15 +39,18 @@ function* watchUploadImages() {
 
 //게시글 작성 (시작)
 function addPostAPI(postData) {
-    console.log('addPostAPI 값 : ', postData);
+    return axios.post('/post', postData, {
+        withCredentials: true,
+    });
 }
 
 function* addPost(action) {
     try {
         const result = yield call(addPostAPI, action.data);
-        // yield put({
-            
-        // });
+        yield put({
+           type: ADD_POST_SUCCESS,
+           data: result.data,
+        });
     } catch(e) {
         console.error(e);
         yield put({

@@ -28,4 +28,18 @@ router.post('/images', upload.array('image'), (req, res) => {
     res.json(req.files.map(v => v.filename));
 });
 
+//업로드한 게시물 DB에 저장
+router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
+    try {
+        const hashtags = req.body.content.match(/#[^\s]+/g);
+        console.log('백엔드 업로드한 게시물 요청 content 값 : ', req.body.content);
+        res.status(200);
+    } catch(e) {
+        console.error(e);
+        next(e);
+    }
+});
+
+
+
 module.exports = router;

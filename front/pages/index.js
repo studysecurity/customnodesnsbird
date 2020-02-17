@@ -110,7 +110,7 @@ const Index = () => {
             (
             <>
                 <PostForm />
-                <PostCard />
+                {/* <PostCard /> */}
             </>
             )
         }
