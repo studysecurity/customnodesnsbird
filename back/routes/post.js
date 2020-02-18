@@ -31,8 +31,11 @@ router.post('/images', upload.array('image'), (req, res) => {
 //업로드한 게시물 DB에 저장
 router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
     try {
-        //한글 및 영어 #태그 판별 
-        const hashtags = req.body.content.match(/#([ㄱ-ㅎ|ㅏ-ㅣ|가-힣|a-z|A-Z])+/gi);
+        //값 잘 넘어오나 테스트 
+        console.log('req.body.content 값 : ',req.body.content);
+        console.log('req.body.postVisibility 값 : ',req.body.postVisibility);
+        console.log('req.body.tags 값 : ', JSON.stringify(req.body.tags));
+
         res.status(200).send('');
     } catch(e) {
         console.error(e);

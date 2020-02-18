@@ -64,6 +64,7 @@ function* watchAddPost() {
     yield takeLatest(ADD_POST_REQUEST, addPost);
 }
 //게시글 작성 (끝)
+
 export default function* postSaga() {
     yield all([
         fork(watchUploadImages),

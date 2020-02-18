@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, Select } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
     ADD_POST_REQUEST, 
@@ -11,6 +11,7 @@ import { faTimes, faImage } from '@fortawesome/free-solid-svg-icons';
 
 import TagsInput from 'react-tagsinput';
 
+
 const PostForm = () => {
     const dispatch = useDispatch();
     const [text, setText] = useState('');
@@ -20,13 +21,18 @@ const PostForm = () => {
     const imageInput = useRef();
 
     //정규표현식 (한글, 영어 태그 인식)
-    const hashtags = /#([ㄱ-ㅎ|ㅏ-ㅣ|가-힣|a-z|A-Z])+/gi;
-    const hashtag = /#((\w|[\u00C0-\uFFDF])+)/gi;
+    // const hashtags = /#([ㄱ-ㅎ|ㅏ-ㅣ|가-힣|a-z|A-Z])+/gi;
+    // const hashtag = /#((\w|[\u00C0-\uFFDF])+)/gi;
 
+    //게시물 공개 여부 설정
+    const [setting, setSetting] = useState();
+
+    //react-tagsinput 라이브러리
     const [tags, setTags] = useState({
         tags: [],
     });
 
+    //react-tagsinput 라이브러리
     const onChangeTags = useCallback((tags) => {
         setTags({tags});
     }, []);
@@ -35,14 +41,14 @@ const PostForm = () => {
     const onChangeText = useCallback((e) => {
         setText(e.target.value);
 
-        //버튼 활성화 여부
-        if(e.target.value.trim() && e.target.value) {
-            //작성 내용이 있으면 작성 버튼 활성화
-            setdisableButton(false);
-        } else{
-            //작성 내용이 없으면 작성 버튼 비활성화
-            setdisableButton(true);
-        }
+        // //버튼 활성화 여부
+        // if(e.target.value.trim() && e.target.value) {
+        //     //작성 내용이 있으면 작성 버튼 활성화
+        //     setdisableButton(false);
+        // } else{
+        //     //작성 내용이 없으면 작성 버튼 비활성화
+        //     setdisableButton(true);
+        // }
     }, []);
 
     //이미지 변화 감지
@@ -66,10 +72,21 @@ const PostForm = () => {
 
     //게시글 업로드 성공시 글자 내용 다 삭제
     useEffect(() => {
+        //이부분 테스트 아직 안함 ####
         if (postAdded) {
             setText('');
+            setSetting();
+            //이부분ㄷ 애매함
+            // setTags({tags: []});
         }
-    }, [postAdded]);
+
+        if (text && text.trim() && setting && tags.tags.length !== 0) {
+            setdisableButton(false);
+        } else {
+            setdisableButton(true);
+        }
+
+    }, [postAdded, text, setting, tags.tags]);
 
     //게시물 업로드
     const onSubmit = useCallback((e) => {
@@ -84,13 +101,16 @@ const PostForm = () => {
         }); 
         //formData에 글 추가
         formData.append('content', text);
+        //formData에 게시물 공개여부 및 태그 내용 추가
+        formData.append('postVisibility', setting);
+        // console.log('tags.tags 값 : ',tags);
+        formData.append('tags', tags);
 
-        console.log('tags 값 : ', tags.tags);
-        // dispatch({
-        //     type: ADD_POST_REQUEST,
-        //     data: formData,
-        // });
-    }, [text, imagePaths, tags.tags]);
+        dispatch({
+            type: ADD_POST_REQUEST,
+            data: formData,
+        });
+    }, [text, imagePaths, tags.tags, setting]);
 
     const onRemoveImage = useCallback(index => () => {
         dispatch({
@@ -98,6 +118,12 @@ const PostForm = () => {
             index
         });
     });
+
+    //게시물 공개여부
+    const onChangeSetting = useCallback(value => {
+        // console.log(`selected ${value}`);
+        setSetting(value);
+    }, []);
 
     return (
         <>
@@ -111,6 +137,20 @@ const PostForm = () => {
                 encType="multipart/form-data" 
                 onSubmit={onSubmit}
             >
+            <Select
+                showSearch
+                style={{ width: '200px' }}
+                placeholder="게시물 공개 여부 설정"
+                optionFilterProp="children"
+                onChange={onChangeSetting}
+                filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+            >
+                <Select.Option value="0">전체공개</Select.Option>
+                <Select.Option value="1">친구만 공개</Select.Option>
+                <Select.Option value="2">나만보기</Select.Option>
+            </Select>
             <Input.TextArea style={{height: '80px'}} maxLength={200} placeholder="무슨 일이 일어나고 있나요?" value={text} onChange={onChangeText} />
             <TagsInput placeholder value={tags.tags} onChange={onChangeTags} />
                 <div style={{marginTop: '8px'}}>
@@ -118,14 +158,16 @@ const PostForm = () => {
                     <FontAwesomeIcon cursor='pointer' style={{height: '32px', width: '50px'}} icon={faImage} onClick={onClickImageUpload} />
                     <Button type="primary" style={{float: 'right'}} htmlType="submit" loading={isAddingPost} disabled={disableButton}>등록</Button>
                 </div>
-                <div>
+                <div style={{ overflow: 'auto', whiteSpace: 'nowrap'}}>
                     {imagePaths.map((v, i) => (
-                    <div key={v} style={{ position: 'relative', display: 'inline-block', width: '100%', border: '1px solid #E2E2E2', marginTop: '10px'}}>
+                    <div key={v} style={{position: 'relative', display: 'inline-block', border: '1px solid #E2E2E2', marginTop: '10px'}}>
                         <img 
                             src={`http://localhost:3065/${v}`} 
                             style={{
-                                width: '100%', 
-                                height: '300px',
+                                maxWidth: '250px', 
+                                maxHeight: '180px',
+                                width: 'auto',
+                                height: 'auto',
                             }} 
                             alt={v} 
                         />
