@@ -9,6 +9,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faImage } from '@fortawesome/free-solid-svg-icons';
 
+import TagsInput from 'react-tagsinput';
 
 const PostForm = () => {
     const dispatch = useDispatch();
@@ -17,7 +18,18 @@ const PostForm = () => {
     const [disableButton, setdisableButton] = useState(true);
     const { imagePaths, isAddingPost, postAdded } = useSelector(state => state.post);
     const imageInput = useRef();
-    
+
+    //정규표현식 (한글, 영어 태그 인식)
+    const hashtags = /#([ㄱ-ㅎ|ㅏ-ㅣ|가-힣|a-z|A-Z])+/gi;
+    const hashtag = /#((\w|[\u00C0-\uFFDF])+)/gi;
+
+    const [tags, setTags] = useState({
+        tags: [],
+    });
+
+    const onChangeTags = useCallback((tags) => {
+        setTags({tags});
+    }, []);
 
     //텍스트 입력 변화 감지
     const onChangeText = useCallback((e) => {
@@ -73,11 +85,12 @@ const PostForm = () => {
         //formData에 글 추가
         formData.append('content', text);
 
-        dispatch({
-            type: ADD_POST_REQUEST,
-            data: formData,
-        });
-    }, [text, imagePaths]);
+        console.log('tags 값 : ', tags.tags);
+        // dispatch({
+        //     type: ADD_POST_REQUEST,
+        //     data: formData,
+        // });
+    }, [text, imagePaths, tags.tags]);
 
     const onRemoveImage = useCallback(index => () => {
         dispatch({
@@ -99,7 +112,8 @@ const PostForm = () => {
                 onSubmit={onSubmit}
             >
             <Input.TextArea style={{height: '80px'}} maxLength={200} placeholder="무슨 일이 일어나고 있나요?" value={text} onChange={onChangeText} />
-                <div>
+            <TagsInput placeholder value={tags.tags} onChange={onChangeTags} />
+                <div style={{marginTop: '8px'}}>
                     <input type="file" multiple hidden ref={imageInput} onChange={onChangeImages} />
                     <FontAwesomeIcon cursor='pointer' style={{height: '32px', width: '50px'}} icon={faImage} onClick={onClickImageUpload} />
                     <Button type="primary" style={{float: 'right'}} htmlType="submit" loading={isAddingPost} disabled={disableButton}>등록</Button>

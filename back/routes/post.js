@@ -31,9 +31,9 @@ router.post('/images', upload.array('image'), (req, res) => {
 //업로드한 게시물 DB에 저장
 router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
     try {
-        const hashtags = req.body.content.match(/#[^\s]+/g);
-        console.log('백엔드 업로드한 게시물 요청 content 값 : ', req.body.content);
-        res.status(200);
+        //한글 및 영어 #태그 판별 
+        const hashtags = req.body.content.match(/#([ㄱ-ㅎ|ㅏ-ㅣ|가-힣|a-z|A-Z])+/gi);
+        res.status(200).send('');
     } catch(e) {
         console.error(e);
         next(e);

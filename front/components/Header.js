@@ -9,7 +9,7 @@ import { faHeart, faCompass } from '@fortawesome/free-regular-svg-icons';
 
 const Header = () => {
 
-    //검색
+    //??
     const onSearch = useCallback({
 
     }, []);
@@ -36,8 +36,11 @@ const Header = () => {
                         <FontAwesomeIcon icon={faCompass} size="2x" style={{marginRight: '25px'}}/>
                     </a>
                 </Link>
-                
-                <FontAwesomeIcon icon={faHeart} size="2x" style={{marginRight: '25px'}}/>
+                <Link href="/follow">
+                    <a style={{color : 'inherit'}}>
+                        <FontAwesomeIcon icon={faHeart} size="2x" style={{marginRight: '25px'}}/>
+                    </a>
+                </Link>
                 <FontAwesomeIcon icon={faUser} size="2x" />
             </div>
         </div>

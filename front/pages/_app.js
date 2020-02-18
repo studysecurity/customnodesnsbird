@@ -12,6 +12,7 @@ import { config } from '@fortawesome/fontawesome-svg-core';
 import rootSaga from '../sagas';
 import axios from 'axios';
 import { LOAD_USER_REQUEST } from '../reducers/user';
+import '../css/react-tagsinput.css';
 
 //Fontawesome SSR
 config.autoAddCss = false; // Tell Font Awesome to skip adding the CSS automatically since it's being imported above
