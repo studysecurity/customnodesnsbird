@@ -53,11 +53,13 @@ export default (state = initialState, action) => {
                 draft.isAddingPost = false;
                 draft.mainPosts.unshift(action.data);
                 draft.postAdded = true;
+                break;
             }
 
             case ADD_POST_FAILURE: {
                 draft.isAddingPost= false;
                 draft.addPostErrorReason = action.error;
+                draft.postAdded = false;
                 break;
             }
         }

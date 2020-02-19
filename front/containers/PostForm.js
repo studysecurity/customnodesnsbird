@@ -40,15 +40,7 @@ const PostForm = () => {
     //텍스트 입력 변화 감지
     const onChangeText = useCallback((e) => {
         setText(e.target.value);
-
-        // //버튼 활성화 여부
-        // if(e.target.value.trim() && e.target.value) {
-        //     //작성 내용이 있으면 작성 버튼 활성화
-        //     setdisableButton(false);
-        // } else{
-        //     //작성 내용이 없으면 작성 버튼 비활성화
-        //     setdisableButton(true);
-        // }
+        // console.log('작동함?', e.target.value);
     }, []);
 
     //이미지 변화 감지
@@ -72,21 +64,21 @@ const PostForm = () => {
 
     //게시글 업로드 성공시 글자 내용 다 삭제
     useEffect(() => {
-        //이부분 테스트 아직 안함 ####
         if (postAdded) {
             setText('');
-            setSetting();
-            //이부분ㄷ 애매함
-            // setTags({tags: []});
+            setTags({
+                tags: []
+            });
         }
+    }, [postAdded]);
 
+    useEffect(() => {
         if (text && text.trim() && setting && tags.tags.length !== 0) {
             setdisableButton(false);
         } else {
             setdisableButton(true);
         }
-
-    }, [postAdded, text, setting, tags.tags]);
+    }, [text, setting, tags.tags]);
 
     //게시물 업로드
     const onSubmit = useCallback((e) => {
@@ -104,7 +96,7 @@ const PostForm = () => {
         //formData에 게시물 공개여부 및 태그 내용 추가
         formData.append('postVisibility', setting);
         // console.log('tags.tags 값 : ',tags);
-        formData.append('tags', tags);
+        formData.append('tags', tags.tags);
 
         dispatch({
             type: ADD_POST_REQUEST,
@@ -112,6 +104,7 @@ const PostForm = () => {
         });
     }, [text, imagePaths, tags.tags, setting]);
 
+    //이미지 삭제
     const onRemoveImage = useCallback(index => () => {
         dispatch({
             type: REMOVE_IMAGE,
@@ -152,11 +145,11 @@ const PostForm = () => {
                 <Select.Option value="2">나만보기</Select.Option>
             </Select>
             <Input.TextArea style={{height: '80px'}} maxLength={200} placeholder="무슨 일이 일어나고 있나요?" value={text} onChange={onChangeText} />
-            <TagsInput placeholder value={tags.tags} onChange={onChangeTags} />
+            <TagsInput placeholder value={tags.tags} onChange={onChangeTags} maxLength={200}/>
                 <div style={{marginTop: '8px'}}>
                     <input type="file" multiple hidden ref={imageInput} onChange={onChangeImages} />
                     <FontAwesomeIcon cursor='pointer' style={{height: '32px', width: '50px'}} icon={faImage} onClick={onClickImageUpload} />
-                    <Button type="primary" style={{float: 'right'}} htmlType="submit" loading={isAddingPost} disabled={disableButton}>등록</Button>
+                    <Button type="primary" style={{float: 'right'}} htmlType="submit" loading={isAddingPost} >등록</Button>
                 </div>
                 <div style={{ overflow: 'auto', whiteSpace: 'nowrap'}}>
                     {imagePaths.map((v, i) => (

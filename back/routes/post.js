@@ -36,6 +36,15 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
         console.log('req.body.postVisibility 값 : ',req.body.postVisibility);
         console.log('req.body.tags 값 : ', JSON.stringify(req.body.tags));
 
+        //게시물
+        // const newPost = await db.Post.create({
+        //     publishPermission: req.body.postVisibility, //게시물 공개 권한 ex)전체공개, 팔로우만 보기, 나만 보기
+        //     content: req.body.content,
+        //     UserId: req.user.id, //association db.Post.belongsTo(db.User); 와 연관있음.
+        // });
+
+        
+
         res.status(200).send('');
     } catch(e) {
         console.error(e);
