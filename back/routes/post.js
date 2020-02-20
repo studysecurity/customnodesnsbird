@@ -43,8 +43,6 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
         //     UserId: req.user.id, //association db.Post.belongsTo(db.User); 와 연관있음.
         // });
 
-        
-
         res.status(200).send('');
     } catch(e) {
         console.error(e);
