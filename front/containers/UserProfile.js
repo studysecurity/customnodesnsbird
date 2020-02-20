@@ -17,19 +17,19 @@ const UserProfile = () => {
     return (
         <Card
           actions={[
-            <Link href="/profile" key="twit">
+            <Link href="/profile" key="twit" prefetch>
             <a>
-                <div>작성<br />{0}</div>
+                <div>작성<br />{me.Posts.length}</div>
             </a>
             </Link>,
-            <Link href="/profile" key="following">
+            <Link href="/profile" key="following" prefetch>
             <a>
-                <div>팔로잉<br />{0}</div>
+                <div>팔로잉<br />{me.Followings.length}</div>
             </a>
             </Link>,
-            <Link href="/profile" key="follower">
+            <Link href="/profile" key="follower" prefetch>
             <a>
-                <div>팔로워<br />{0}</div>
+                <div>팔로워<br />{me.Followers.length}</div>
             </a>
             </Link>,
           ]}
@@ -42,5 +42,7 @@ const UserProfile = () => {
         </Card>
     );
 };
+
+
 
 export default UserProfile;
