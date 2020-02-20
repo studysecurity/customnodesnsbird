@@ -53,6 +53,7 @@ export default (state = initialState, action) => {
                 draft.isAddingPost = false;
                 draft.mainPosts.unshift(action.data);
                 draft.postAdded = true;
+                draft.imagePaths = [];
                 break;
             }
 
