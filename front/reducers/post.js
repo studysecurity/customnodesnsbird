@@ -18,6 +18,10 @@ export const UPLOAD_IMAGES_FAILURE = 'UPLOAD_IMAGES_FAILURE';
 
 export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 
+export const LOAD_MAIN_POSTS_REQUEST = 'LOAD_MAIN_POSTS_REQUEST';
+export const LOAD_MAIN_POSTS_SUCCESS = 'LOAD_MAIN_POSTS_SUCCESS';
+export const LOAD_MAIN_POSTS_FAILURE = 'LOAD_MAIN_POSTS_FAILURE';
+
 export default (state = initialState, action) => {
     return produce(state, (draft) => {
         switch (action.type) {
@@ -61,6 +65,21 @@ export default (state = initialState, action) => {
                 draft.isAddingPost= false;
                 draft.addPostErrorReason = action.error;
                 draft.postAdded = false;
+                break;
+            }
+
+            case LOAD_MAIN_POSTS_REQUEST: {
+                draft.mainPosts = [];
+                break;
+            }
+
+            case LOAD_MAIN_POSTS_SUCCESS: {
+                draft.mainPosts = action.data;
+                // console.log('reducers의 LOAD_MAIN_POSTS_SUCCESS 값 : ', draft.mainPosts);
+                break;
+            }
+
+            case LOAD_MAIN_POSTS_FAILURE: {
                 break;
             }
         }

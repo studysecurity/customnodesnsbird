@@ -7,6 +7,9 @@ import {
     UPLOAD_IMAGES_REQUEST,
     UPLOAD_IMAGES_SUCCESS,
     UPLOAD_IMAGES_FAILURE, 
+    LOAD_MAIN_POSTS_REQUEST,
+    LOAD_MAIN_POSTS_SUCCESS,
+    LOAD_MAIN_POSTS_FAILURE,
 } from '../reducers/post';
 
 //게시글 이미지 업로드 (시작)
@@ -65,9 +68,36 @@ function* watchAddPost() {
 }
 //게시글 작성 (끝)
 
+//메인 게시글 불러오기(시작)
+//이부분은 무한스크롤링 하면 더 기능 추가해줘야 함
+function loadMainPostsAPI() {
+    return axios.get('/posts');
+}
+
+function* loadMainPosts(action) {
+    //이부분은 무한스크롤링 하면 더 기능 추가해줘야 함
+    try {
+        const result = yield call(loadMainPostsAPI);
+        yield put({
+            type: LOAD_MAIN_POSTS_SUCCESS,
+            data: result.data,
+        });
+    } catch(e) {
+        yield put({
+            type: LOAD_MAIN_POSTS_FAILURE,
+        });
+    }
+}
+
+function* watchLoadMainPosts() {
+    yield takeLatest(LOAD_MAIN_POSTS_REQUEST, loadMainPosts);
+}
+//메인 게시글 불러오기(끝)
+
 export default function* postSaga() {
     yield all([
         fork(watchUploadImages),
         fork(watchAddPost),
+        fork(watchLoadMainPosts),
     ]);
 };

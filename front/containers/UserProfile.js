@@ -3,6 +3,7 @@ import { Card, Avatar, Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { LOGOUT_REQUEST } from '../reducers/user';
 import Link from 'next/link';
+import Router from 'next/router';
 
 const UserProfile = () => {
     const { me } = useSelector(state => state.user);
@@ -17,17 +18,17 @@ const UserProfile = () => {
     return (
         <Card
           actions={[
-            <Link href="/profile" key="twit" prefetch>
+            <Link href="/profile" key="twit" >
             <a>
                 <div>작성<br />{me.Posts.length}</div>
             </a>
             </Link>,
-            <Link href="/profile" key="following" prefetch>
+            <Link href="/profile" key="following" >
             <a>
                 <div>팔로잉<br />{me.Followings.length}</div>
             </a>
             </Link>,
-            <Link href="/profile" key="follower" prefetch>
+            <Link href="/profile" key="follower" >
             <a>
                 <div>팔로워<br />{me.Followers.length}</div>
             </a>
@@ -38,7 +39,11 @@ const UserProfile = () => {
             avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"></Avatar>}
             title={me && me.userNick}
         />
-        <Button type="primary" onClick={onLogout}>로그아웃</Button>
+        <Link href="/">
+            <a>
+                <Button type="primary" onClick={onLogout}>로그아웃</Button>
+            </a>
+        </Link>
         </Card>
     );
 };

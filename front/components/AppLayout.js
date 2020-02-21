@@ -16,6 +16,8 @@ import Link from 'next/link';
 import UserProfile from '../containers/UserProfile';
 import SideMenu from './SideMenu';
 import Header from '../components/Header';
+import { LOAD_USER_REQUEST } from '../reducers/user';
+import Router from 'next/router';
 
 const IntroWraper = styled.div`
     min-width: 360px;
@@ -58,11 +60,15 @@ const useWindowSize = () => {
     return windowSize;
 }
 
+
+
 const AppLayout = ({children}) => {
     //반응형 디바이스 가로 크기 측정 
     const size = useWindowSize();
     const dispatch = useDispatch();
     const { me } = useSelector(state => state.user);
+
+    // console.log('AppLayout 값 : ', me);
 
     return (
       <>
