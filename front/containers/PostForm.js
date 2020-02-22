@@ -11,15 +11,16 @@ import { faTimes, faImage } from '@fortawesome/free-solid-svg-icons';
 
 import TagsInput from 'react-tagsinput';
 import styled from 'styled-components';
+import { backUrl } from '../config/config';
 
-const PostFormWrapper = styled.div`
-    background: white;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    transition: 0.3s;
-    width: auto;
-    margin: 0px -1px 60px;
-    clear: both;
-`;
+// const PostFormWrapper = styled.div`
+//     background: white;
+//     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+//     transition: 0.3s;
+//     width: auto;
+//     margin: 0px -1px 60px;
+//     clear: both;
+// `;
 
 const PostForm = () => {
     const dispatch = useDispatch();
@@ -158,13 +159,13 @@ const PostForm = () => {
                 <div style={{marginTop: '8px'}}>
                     <input type="file" multiple hidden ref={imageInput} onChange={onChangeImages} />
                     <FontAwesomeIcon cursor='pointer' style={{height: '32px', width: '50px'}} icon={faImage} onClick={onClickImageUpload} />
-                    <Button type="primary" style={{float: 'right'}} htmlType="submit" loading={isAddingPost} >등록</Button>
+                    <Button type="primary" style={{float: 'right'}} htmlType="submit" loading={isAddingPost} disabled={disableButton} >등록</Button>
                 </div>
                 <div style={{overflow: 'auto', whiteSpace: 'nowrap'}}>
                     {imagePaths.map((v, i) => (
                     <div key={v} style={{position: 'relative', display: 'inline-block', border: '1px solid #E2E2E2'}}>
                         <img 
-                            src={`http://localhost:3065/${v}`} 
+                            src={`${backUrl}/${v}`} 
                             style={{
                                 maxWidth: '250px', 
                                 maxHeight: '160px',

@@ -10,6 +10,9 @@ import {
     LOAD_MAIN_POSTS_REQUEST,
     LOAD_MAIN_POSTS_SUCCESS,
     LOAD_MAIN_POSTS_FAILURE,
+    REMOVE_POST_REQUEST,
+    REMOVE_POST_SUCCESS,
+    REMOVE_POST_FAILURE,
 } from '../reducers/post';
 
 //게시글 이미지 업로드 (시작)
@@ -94,10 +97,39 @@ function* watchLoadMainPosts() {
 }
 //메인 게시글 불러오기(끝)
 
+//게시글 삭제(시작)
+function removePostAPI(postId) {
+    return axios.delete(`/post/${postId}`, {
+        withCredentials: true,
+    });
+}
+
+function* removePost(action) {
+    try {
+        const result = yield call(removePostAPI, action.data);
+        // console.log('removePost 값 : ', result);
+        yield put({
+            type: REMOVE_POST_SUCCESS,
+            data: result.data,
+        });
+    } catch(e) {
+        console.error(e);
+        yield put({
+            type: REMOVE_POST_FAILURE,
+        })
+    }
+}
+
+function* watchRemovePost() {
+    yield takeLatest(REMOVE_POST_REQUEST, removePost);
+}
+//게시글 삭제(끝)
+
 export default function* postSaga() {
     yield all([
         fork(watchUploadImages),
         fork(watchAddPost),
         fork(watchLoadMainPosts),
+        fork(watchRemovePost),
     ]);
 };

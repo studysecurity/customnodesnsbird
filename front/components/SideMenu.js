@@ -28,7 +28,7 @@ const SideMenu = () => {
             <div style={{display: 'inline-block'}}>
               <Link href="/board">
                 <a style={{color: 'inherit'}}>
-                  자유 게시판
+                  준비중
                 </a>
               </Link>
             </div>

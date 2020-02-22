@@ -22,6 +22,10 @@ export const LOAD_MAIN_POSTS_REQUEST = 'LOAD_MAIN_POSTS_REQUEST';
 export const LOAD_MAIN_POSTS_SUCCESS = 'LOAD_MAIN_POSTS_SUCCESS';
 export const LOAD_MAIN_POSTS_FAILURE = 'LOAD_MAIN_POSTS_FAILURE';
 
+export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
+export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
+export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
+
 export default (state = initialState, action) => {
     return produce(state, (draft) => {
         switch (action.type) {
@@ -80,6 +84,21 @@ export default (state = initialState, action) => {
             }
 
             case LOAD_MAIN_POSTS_FAILURE: {
+                break;
+            }
+
+            case REMOVE_POST_REQUEST: {
+                break;
+            }
+
+            case REMOVE_POST_SUCCESS: {
+                const index = draft.mainPosts.findIndex(v => v.id === action.data);
+                // console.log('REMOVE_POST_SUCCESS action.data 값 : ',action.data );
+                draft.mainPosts.splice(index, 1);
+                break;
+            }
+
+            case REMOVE_POST_FAILURE: {
                 break;
             }
         }
