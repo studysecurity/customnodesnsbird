@@ -41,8 +41,10 @@ const PostImages = ({ images }) => {
                                 src={`${backUrl}/${v.src}`} 
                                 style={{
                                     objectFit: 'cover',
+                                    minWidth: '100%',
+                                    minHeight: '300px',
                                     maxWidth: '100%',
-                                    maxHeight: '350px',
+                                    maxHeight: '300px',
                                     width: '100%',
                                     height: '100%',
                                 }}

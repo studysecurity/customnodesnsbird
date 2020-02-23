@@ -15,8 +15,7 @@ router.get('/', async (req, res, next) => {
                 attributes: ['id', 'src', 'PostId'],
             }, {
                 model: db.Hashtag,
-                //이거 주석 풀기
-                // attributes: ['id', 'tagName'],
+                attributes: ['id', 'tagName'],
                 through: {
                     attributes: ['HashtagId'],
                 },

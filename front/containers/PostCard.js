@@ -1,6 +1,6 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { Card, Avatar, Popover, Button } from 'antd';
+import { Card, Avatar, Popover, Button, Modal } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRetweet, faEllipsisH, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { faHeart, faCommentDots } from '@fortawesome/free-regular-svg-icons';
@@ -8,6 +8,7 @@ import PostImages from '../components/PostImages';
 import moment from 'moment';
 import { useSelector, useDispatch } from 'react-redux';
 import { REMOVE_POST_REQUEST } from '../reducers/post';
+import Hashtag from '../components/Hashtag';
 
 const CardWrapper = styled.div`
     /* border: solid 1px #CCEEFF;  */
@@ -38,12 +39,24 @@ const CardHeader = styled.div`
     }
 `;
 
+const CustomModal = styled(Modal)`
+    .ant-modal-body {
+        padding: 0px;
+    }
+
+    & span {
+        font-weight: bold;
+    }
+`;
+
 const PostCard = memo(({ post }) => {
     const dispatch = useDispatch();
     //유저의 아이디 인덱스 값
     const id = useSelector(state => state.user.me && state.user.me.id);
-    //유저 닉네임
-    const userNick = useSelector(state => state.user.me && state.user.me.userNick);
+    //모달창
+    const [visible, setVisible] = useState(false);
+
+    console.log('PostCard의 post 값 : ', post);
 
     //게시글 삭제
     const onRemovePost = useCallback(postId => () => {
@@ -53,7 +66,17 @@ const PostCard = memo(({ post }) => {
         });
     });
 
+    //모달 창
+    const showModal = useCallback(() => {
+        setVisible(true);
+    }, []);
+
+    const handleCancel = useCallback(() => {
+        setVisible(false);
+    }, []);
+
     return (
+    <>
         <CardWrapper>
             <CardHeader>
                 <div>
@@ -61,18 +84,19 @@ const PostCard = memo(({ post }) => {
                 </div>
                 <div>
                     <span>
-                        {userNick && userNick}
+                        {post.User.userNick}
                     </span>
-                    <span style={{float: 'right', paddingLeft: '15px'}}>
+                    <span style={{float: 'right'}}>
                         <FontAwesomeIcon 
                             key="eslipsisHHeader" 
                             icon={faEllipsisH} 
+                            onClick={showModal}
                             style={{
                                 cursor: 'pointer',
                             }}
                         />
                     </span>
-                    <span style={{float: 'right'}}>
+                    <span style={{float: 'right', paddingRight: '15px'}}>
                         {moment(post.createdAt).format('YYYY.MM.DD HH:mm')}
                     </span>
                 </div>
@@ -108,17 +132,38 @@ const PostCard = memo(({ post }) => {
                 <span style={{fontWeight: 'bold'}}>
                     {post.content}
                 </span>
-                <span style={{fontWeight: 'bold', float: 'right'}}>
-                    팔로우중 여부
-                </span>
             </div>
             <div style={{marginTop: '15px'}}>
                 <span style={{fontWeight: 'bold'}}>
                        좋아요 ~개 혹은 조회 ~회
                 </span>
             </div>
+            <div style={{marginTop: '15px'}}>
+                <Hashtag hashtag={post.Hashtags} />
+            </div>
             </Card>
         </CardWrapper>
+        <CustomModal
+          centered={true}
+          closable={false}
+          visible={visible}
+          footer={null}
+        >
+            <Button block={true}>
+                <span>
+                    팔로우 혹은 팔로우 취소
+                </span>
+            </Button>
+            <Button block={true}>
+                <span>
+                    게시물로 이동
+                </span>
+            </Button>
+            <Button block={true} onClick={handleCancel} type="danger">
+                취소
+            </Button>
+        </CustomModal>
+    </>
     );
 });
 

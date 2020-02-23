@@ -14,6 +14,7 @@ import {
     REMOVE_POST_SUCCESS,
     REMOVE_POST_FAILURE,
 } from '../reducers/post';
+import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
 //게시글 이미지 업로드 (시작)
 function uploadImagesAPI(formData) {
@@ -53,9 +54,13 @@ function addPostAPI(postData) {
 function* addPost(action) {
     try {
         const result = yield call(addPostAPI, action.data);
-        yield put({
+        yield put({ // post reducer의 데이터를 수정
            type: ADD_POST_SUCCESS,
            data: result.data,
+        });
+        yield put({ // user reducer의 데이터를 수정
+            type: ADD_POST_TO_ME,
+            data: result.data.id,
         });
     } catch(e) {
         console.error(e);
@@ -110,6 +115,10 @@ function* removePost(action) {
         // console.log('removePost 값 : ', result);
         yield put({
             type: REMOVE_POST_SUCCESS,
+            data: result.data,
+        });
+        yield put({
+            type: REMOVE_POST_OF_ME,
             data: result.data,
         });
     } catch(e) {

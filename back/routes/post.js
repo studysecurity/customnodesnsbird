@@ -87,6 +87,16 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
                attributes: ['id', 'userNick'],
             }, {
                 model: db.Image,
+                attributes: ['id', 'src', 'PostId'],
+            }, {
+                model: db.Hashtag,
+                attributes: ['id', 'tagName'],
+                through: {
+                    attributes: ['HashtagId'],
+                },
+            }, {
+                model: db.PostAuthority,
+                attributes: ['auth'],
             }],
         }); 
 

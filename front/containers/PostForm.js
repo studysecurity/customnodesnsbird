@@ -83,12 +83,12 @@ const PostForm = () => {
     }, [postAdded]);
 
     useEffect(() => {
-        if (text && text.trim() && setting && tags.tags.length !== 0) {
+        if (text && text.trim() && setting && tags.tags.length !== 0 && imagePaths.length !== 0) {
             setdisableButton(false);
         } else {
             setdisableButton(true);
         }
-    }, [text, setting, tags.tags]);
+    }, [text, setting, tags.tags, imagePaths]);
 
     //게시물 업로드
     const onSubmit = useCallback((e) => {
@@ -169,9 +169,11 @@ const PostForm = () => {
                             style={{
                                 maxWidth: '250px', 
                                 maxHeight: '160px',
+                                minWidth: '250px',
+                                minHeight: '160px',
                                 width: 'auto',
                                 height: 'auto',
-                                objectFit: 'contain',
+                                objectFit: 'cover',
                             }} 
                             alt={v} 
                         />
@@ -185,29 +187,6 @@ const PostForm = () => {
                 </div>
                 <hr style={{border: 'solid 5px rgb(230, 236, 240)', marginBottom: '2px', }} />
             </Form>
-            {/* <Form style={{backgroundColor: 'white', zIndex: 2, width: '48%' ,position: 'fixed', paddingTop: '15px'}} encType="multipart/form-data" onSubmit={onSubmit}>
-                <Input.TextArea style={{height: '80px'}} maxLength={200} placeholder="무슨 일이 일어나고 있나요?" value={text} onChange={onChangeText} />
-                <div>
-                    <input type="file" multiple hidden ref={imageInput} onChange={onChangeImages} />
-                    <Button onClick={onClickImageUpload}>이미지 업로드</Button>
-                    <Button type="primary" style={{float: 'right'}} htmlType="submit" loading={isAddingPost} disabled={disableButton}>등록</Button>
-                </div>
-                <div>
-                    {
-                        console.log('imagepaths : ',imagePaths),
-                        imagePaths.map((v, i) => {
-                            <div key={v} style={{ display: 'inline-block' }}>
-                                <img src={`http://localhost:3065/${v}`} style={{ width: '200px' }} alt={v} />
-                                {console.log(`http://localhost:3065/${v}`)}
-                                <div>
-                                <Button onClick={onRemoveImage(i)}>제거</Button>
-                                </div>
-                            </div>
-                        })
-                    }
-                </div>
-            <hr style={{border: 'solid 5px rgb(230, 236, 240)', marginBottom: '2px', }} />
-            </Form> */}
         </>
     );
 };
