@@ -125,4 +125,92 @@ router.delete('/:id', isLoggedIn, async (req, res, next) => {
     }
 });
 
+//좋아요
+router.post('/:id/like', isLoggedIn, async (req, res, next) => {
+    try {
+        const post = await db.Post.findOne({ where: { id: req.params.id }});
+        if(!post) {
+            return res.status(404).send('포스트가 존재하지 않습니다.');
+        }
+
+        await post.addLiker(req.user.id);
+        res.json({ userId: req.user.id });
+    } catch(e) {
+        console.error(e);
+        next(e);
+    }
+});
+
+//좋아요 취소
+router.delete('/:id/like', isLoggedIn, async (req, res, next) => {
+    try {
+        const post = await db.Post.findOne({ where: { id: req.params.id }});
+        if(!post) {
+            return res.status(404).send('포스트가 존재하지 않습니다.');
+        }
+
+        await post.removeLiker(req.user.id);
+        res.json({ userId: req.user.id });
+    } catch(e) {
+        console.error(e);
+        next(e);
+    }
+});
+
+//댓글 추가
+router.post('/:id/comment', isLoggedIn, async (req, res, next) => {
+    try {
+        const post = await db.Post.findOne({ where: { id: req.params.id }});
+        if (!post) {
+            return res.status(404).send('포스트가 존재하지 않습니다.');
+        }
+        
+        const newComment = await db.Comment.create({
+            PostId: post.id,
+            UserId: req.user.id,
+            content: req.body.content,
+        });
+        await post.addComment(newComment.id);
+        const comment = await db.Comment.findOne({
+            where: {
+                id: newComment.id,
+            },
+            include: [{
+                model: db.User,
+                attributes: ['id', 'userNick'],
+            }],
+        });
+        return res.json(comment);
+    } catch(e) {
+        console.error(e);
+        next(e);
+    }
+});
+
+//댓글 내용 가져오기
+router.get('/:id/comments', async (req, res, next) => {
+    try {   
+        const post = await db.Post.findOne({ where: { id: req.params.id }});
+        if (!post) {
+            return res.status(404).send('포스트가 존재하지 않습니다.');
+        }
+        const comments = await db.Comment.findAll({
+            where: {
+                PostId: req.params.id,
+            },
+            order: [['createdAt', 'ASC']],
+            include: [{
+                model: db.User,
+                attributes: ['id', 'userNick'],
+            }],
+        });
+        console.log('comments 댓글 가져오기 값 : ',comments);
+        res.json(comments);
+    } catch(e) {
+        console.error(e);
+        next(e);
+    }
+});
+
+
 module.exports = router;

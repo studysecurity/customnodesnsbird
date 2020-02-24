@@ -22,6 +22,11 @@ router.get('/', async (req, res, next) => {
             }, {
                 model: db.PostAuthority,
                 attributes: ['auth'],
+            }, {
+                model: db.User,
+                through: 'Like',
+                as: 'Likers',
+                attributes: ['id'],
             }],
             order: [['createdAt', 'DESC']], //DESC 내림차순
         });

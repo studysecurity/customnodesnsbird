@@ -1,14 +1,20 @@
 import React, { memo, useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { Card, Avatar, Popover, Button, Modal } from 'antd';
+import { Card, Avatar, Popover, Button, Modal, List } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRetweet, faEllipsisH, faUserCircle } from '@fortawesome/free-solid-svg-icons';
-import { faHeart, faCommentDots } from '@fortawesome/free-regular-svg-icons';
+import { faRetweet, faEllipsisH, faUserCircle, faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faCommentDots } from '@fortawesome/free-regular-svg-icons';
 import PostImages from '../components/PostImages';
 import moment from 'moment';
 import { useSelector, useDispatch } from 'react-redux';
-import { REMOVE_POST_REQUEST } from '../reducers/post';
+import { 
+    REMOVE_POST_REQUEST, 
+    LIKE_POST_REQUEST, 
+    UNLIKE_POST_REQUEST,
+    LOAD_COMMENTS_REQUEST,
+} from '../reducers/post';
 import Hashtag from '../components/Hashtag';
+import CommentForm from '../containers/CommentForm';
 
 const CardWrapper = styled.div`
     /* border: solid 1px #CCEEFF;  */
@@ -55,7 +61,10 @@ const PostCard = memo(({ post }) => {
     const id = useSelector(state => state.user.me && state.user.me.id);
     //모달창
     const [visible, setVisible] = useState(false);
-
+    //좋아요
+    const liked = id && post.Likers && post.Likers.find(v => v.id === id);
+    //댓글
+    const [commentFormOpened, setCommentFormOpened] = useState(false);
     console.log('PostCard의 post 값 : ', post);
 
     //게시글 삭제
@@ -73,6 +82,32 @@ const PostCard = memo(({ post }) => {
 
     const handleCancel = useCallback(() => {
         setVisible(false);
+    }, []);
+
+    //좋아요 기능
+    const onToggleLike = useCallback(() => {
+        if (liked) { //좋아요 누른 상태
+            dispatch({
+                type: UNLIKE_POST_REQUEST,
+                data: post.id,
+            });
+        } else { //좋아요 안누른 상태   
+            dispatch({
+                type: LIKE_POST_REQUEST,
+                data: post.id,
+            });
+        }
+    }, [id, post && post.id, liked]);
+
+    //댓글
+    const onToggleComment = useCallback(() => {
+        setCommentFormOpened(prev => !prev);
+        if (!commentFormOpened) {
+            dispatch({
+                type: LOAD_COMMENTS_REQUEST,
+                data: post.id,
+            });
+        }
     }, []);
 
     return (
@@ -105,8 +140,13 @@ const PostCard = memo(({ post }) => {
                 cover={post.Images && <PostImages images={post.Images} />}
                 actions={[
                     <FontAwesomeIcon key="retweet" icon={faRetweet} />,
-                    <FontAwesomeIcon key="heart" icon={faHeart} />,
-                    <FontAwesomeIcon key="dots" icon={faCommentDots} />,
+                    <FontAwesomeIcon 
+                        key="heart" 
+                        icon={faHeart} 
+                        onClick={onToggleLike}
+                        style={liked ? {color: 'red'} : {color: 'none'}} 
+                    />,
+                    <FontAwesomeIcon key="dots" icon={faCommentDots} onClick={onToggleComment} />,
                     <Popover
                         key="ellipsis"
                         content={(
@@ -135,13 +175,35 @@ const PostCard = memo(({ post }) => {
             </div>
             <div style={{marginTop: '15px'}}>
                 <span style={{fontWeight: 'bold'}}>
-                       좋아요 ~개 혹은 조회 ~회
+                    좋아요 {post.Likers.length.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}개
                 </span>
             </div>
             <div style={{marginTop: '15px'}}>
                 <Hashtag hashtag={post.Hashtags} />
             </div>
             </Card>
+            {
+                commentFormOpened && (
+                    <>
+                        <CommentForm post={post} />
+                        <List
+                            header={`${post.Comments ? post.Comments.length : 0} 댓글`}
+                            itemLayout="horizontal"
+                            dataSource={post.Comments || []}
+                            renderItem={item => (
+                                console.log('item 값 : ', item),
+                                <List.Item>
+                                    <List.Item.Meta
+                                        avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                                        title={item.User.userNick}
+                                        description={item.content}
+                                    />
+                                </List.Item>
+                            )}
+                        />
+                    </>
+                )
+            }
         </CardWrapper>
         <CustomModal
           centered={true}

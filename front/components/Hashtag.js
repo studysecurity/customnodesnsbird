@@ -16,7 +16,7 @@ const Hashtag = ({ hashtag }) => {
             {
                 hashtag.map((v) => {
                     return(
-                        <TagWrap>
+                        <TagWrap key={v.id}>
                             #{v.tagName}
                         </TagWrap>    
                     )
