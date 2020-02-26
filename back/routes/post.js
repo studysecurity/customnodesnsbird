@@ -41,8 +41,10 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
         const hashtags = req.body.tags.match(/[^",]+/gi);
 
         //게시물
+        //0(전체 공개), 1(팔로우만 공개), 2(나만 공개)만 저장
         const newPost = await db.Post.create({
             content: req.body.content,
+            auth: req.body.postVisibility,
             UserId: req.user.id, //association db.Post.belongsTo(db.User); 와 연관있음.
         });
 
@@ -52,19 +54,6 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
         })));
         // console.log('post의 result 값 : ', result);
         await newPost.addHashtags(result.map(r => r[0]));
-
-        //게시물 공개여부 권한 설정 디비에 저장
-        if (parseInt(req.body.postVisibility) > 0) { //1(팔로우만 공개), 2(나만 공개)만 저장
-            // console.log('권한 설정이 0 초과임');
-            const auth = await db.PostAuthority.create({ 
-                auth: req.body.postVisibility,
-                PostId: newPost.id,
-            });
-            // console.log('post의 auth 값 : ', auth);
-        } 
-        // else {
-        //     console.log('권한 설정이 0임');
-        // }
 
         //이미지 디비에 저장
         if (req.body.image) { // 이미지 주소를 여러개 올리면 image: [주소1, 주소2]
@@ -94,9 +83,6 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
                 through: {
                     attributes: ['HashtagId'],
                 },
-            }, {
-                model: db.PostAuthority,
-                attributes: ['auth'],
             }],
         }); 
 
@@ -170,7 +156,7 @@ router.post('/:id/comment', isLoggedIn, async (req, res, next) => {
             UserId: req.user.id,
             content: req.body.content,
         });
-        await post.addComment(newComment.id);
+        // await post.addComment(newComment.id);
         const comment = await db.Comment.findOne({
             where: {
                 id: newComment.id,
@@ -204,7 +190,7 @@ router.get('/:id/comments', async (req, res, next) => {
                 attributes: ['id', 'userNick'],
             }],
         });
-        console.log('comments 댓글 가져오기 값 : ',comments);
+        // console.log('comments 댓글 가져오기 값 : ',comments);
         res.json(comments);
     } catch(e) {
         console.error(e);

@@ -173,7 +173,7 @@ const PostForm = () => {
                                 minHeight: '160px',
                                 width: 'auto',
                                 height: 'auto',
-                                objectFit: 'cover',
+                                objectFit: 'fill',
                             }} 
                             alt={v} 
                         />

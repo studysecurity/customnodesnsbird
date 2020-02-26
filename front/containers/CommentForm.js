@@ -1,6 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Form, Input, Button } from 'antd';
-import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { ADD_COMMENT_REQUEST } from '../reducers/post';
 
@@ -41,8 +40,5 @@ const CommentForm = ({post}) => {
     );
 };
 
-CommentForm.PropTypes = {
-    post: PropTypes.object.isRequired,
-};
 
 export default CommentForm;

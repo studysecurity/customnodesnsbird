@@ -8,6 +8,7 @@ const TagWrap = styled.span`
     color: white;
     font-weight: bold;
     margin-right: 5px;
+    word-wrap: break-word;
 `;
 
 const Hashtag = ({ hashtag }) => {
@@ -16,9 +17,11 @@ const Hashtag = ({ hashtag }) => {
             {
                 hashtag.map((v) => {
                     return(
+                    <div style={{display: 'inline-block', marginTop: '10px'}}> 
                         <TagWrap key={v.id}>
                             #{v.tagName}
                         </TagWrap>    
+                    </div>
                     )
                 })
             }

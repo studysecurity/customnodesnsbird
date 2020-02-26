@@ -3,6 +3,9 @@ module.exports = (sequelize, DataTypes) => {
         content: {
             type: DataTypes.TEXT, //매우 긴 글
             allowNull: false, //널값 허용하지 않음
+        }, auth: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
         },
     }, {
         charset: 'utf8mb4', // 한글 + 이모티콘
@@ -13,7 +16,6 @@ module.exports = (sequelize, DataTypes) => {
         db.Post.belongsTo(db.User); 
         db.Post.hasMany(db.Comment);
         db.Post.hasMany(db.Image);
-        db.Post.hasOne(db.PostAuthority);
         db.Post.belongsToMany(db.Hashtag, { through: 'PostHashtag' });
         db.Post.belongsToMany(db.User, { through: 'Like', as: 'Likers'});
     };

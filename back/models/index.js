@@ -9,7 +9,6 @@ db.User = require('./user')(sequelize, Sequelize);
 db.Post = require('./post')(sequelize, Sequelize);
 db.Image = require('./image')(sequelize, Sequelize);
 db.Hashtag = require('./hashtag')(sequelize, Sequelize);
-db.PostAuthority = require('./postauthority')(sequelize, Sequelize);
 db.Comment = require('./comment')(sequelize, Sequelize);
 
 Object.keys(db).forEach(modelName => {

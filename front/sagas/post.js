@@ -91,7 +91,9 @@ function* watchAddPost() {
 //메인 게시글 불러오기(시작)
 //이부분은 무한스크롤링 하면 더 기능 추가해줘야 함
 function loadMainPostsAPI() {
-    return axios.get('/posts');
+    return axios.get('/posts', {
+        withCredentials: true,
+    });
 }
 
 function* loadMainPosts(action) {
