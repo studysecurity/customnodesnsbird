@@ -22,7 +22,10 @@ import { backUrl } from '../config/config';
 //     clear: both;
 // `;
 
-const PostForm = () => {
+//{modifyPost={modifyPost : {}}}
+
+const PostForm = ({ modifyPost }) => {
+    console.log('modifyPost 값 : ', modifyPost);
     const dispatch = useDispatch();
     const [text, setText] = useState('');
     //작성글이 없을 때 비활성화
@@ -189,6 +192,10 @@ const PostForm = () => {
             </Form>
         </>
     );
+};
+
+PostForm.defaultProps = {
+    modifyPost: {},
 };
 
 export default PostForm;

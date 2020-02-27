@@ -15,6 +15,7 @@ import {
 } from '../reducers/post';
 import Hashtag from '../components/Hashtag';
 import CommentForm from '../containers/CommentForm';
+import PostForm from '../containers/PostForm';
 
 const CardWrapper = styled.div`
     /* border: solid 1px #CCEEFF;  */
@@ -59,23 +60,47 @@ const PostCard = memo(({ post }) => {
     const dispatch = useDispatch();
     //유저의 아이디 인덱스 값
     const id = useSelector(state => state.user.me && state.user.me.id);
-    //모달창
+    //상단 모달창
     const [visible, setVisible] = useState(false);
+    //글 수정 모달창
+    const [modifyModal, setModifyModal] = useState(false);
     //좋아요
     const liked = id && post.Likers && post.Likers.find(v => v.id === id);
     //댓글
     const [commentFormOpened, setCommentFormOpened] = useState(false);
+    //글 수정 모달을 가리는 popover을 없애기
+    const [visiblePopover, setVisiblePopover] = useState(false);
+
     console.log('PostCard의 post 값 : ', post);
+
+
+    //popover 창 제어
+    const onChangePopover = useCallback(() => {
+        setVisiblePopover(prev => !prev);
+    }, []);
 
     //게시글 삭제
     const onRemovePost = useCallback(postId => () => {
+        onChangePopover();
         dispatch({
             type: REMOVE_POST_REQUEST,
             data: postId,
         });
-    });
+    }, []);
 
-    //모달 창
+    //게시글 수정 모달창
+    const onModifyPost = useCallback(() => {
+        //글수정 모달 띄워주고 popover이 글 수정 모달을 덮어버리므로 지우기
+        onChangePopover();
+        //글수정 모달 보여주기
+        setModifyModal(true);
+    }, []);
+
+    const onModifyPostCancel = useCallback(() => {
+        setModifyModal(false);
+    }, []);
+
+    //상단 모달창
     const showModal = useCallback(() => {
         setVisible(true);
     }, []);
@@ -149,13 +174,14 @@ const PostCard = memo(({ post }) => {
                     <FontAwesomeIcon key="dots" icon={faCommentDots} onClick={onToggleComment} />,
                     <Popover
                         key="ellipsis"
+                        visible={visiblePopover}
                         content={(
                             <Button.Group>
                                 {
                                     id && post.UserId === id ? 
                                         (
                                             <>
-                                                {/* <Button>수정</Button> */}
+                                                <Button style={{color: '#adc6ff'}} onClick={onModifyPost}>수정</Button>
                                                 <Button type="danger" onClick={onRemovePost(post.id)}>삭제</Button>
                                             </>
                                         )
@@ -164,7 +190,7 @@ const PostCard = memo(({ post }) => {
                             </Button.Group>
                         )}
                     >
-                        <FontAwesomeIcon key="eslipsisH" icon={faEllipsisH} />
+                        <FontAwesomeIcon key="eslipsisH" icon={faEllipsisH} onClick={onChangePopover} />
                     </Popover>,
                 ]}
             >
@@ -205,6 +231,7 @@ const PostCard = memo(({ post }) => {
                 )
             }
         </CardWrapper>
+
         <CustomModal
           centered={true}
           closable={false}
@@ -224,6 +251,20 @@ const PostCard = memo(({ post }) => {
             <Button block={true} onClick={handleCancel} type="danger">
                 취소
             </Button>
+        </CustomModal>
+
+        <CustomModal
+          centered={true}
+          closable={false}
+          visible={modifyModal}
+          onOk={onModifyPostCancel}
+          cancelText="수정"
+          okText="취소"
+        //   footer={null}
+        >
+        <div style={{padding: '10px'}}>
+            <PostForm modifyPost={post} />
+        </div>
         </CustomModal>
     </>
     );

@@ -17,8 +17,8 @@ const Hashtag = ({ hashtag }) => {
             {
                 hashtag.map((v) => {
                     return(
-                    <div style={{display: 'inline-block', marginTop: '10px'}}> 
-                        <TagWrap key={v.id}>
+                    <div key={v.id} style={{display: 'inline-block', marginTop: '10px'}}> 
+                        <TagWrap>
                             #{v.tagName}
                         </TagWrap>    
                     </div>
