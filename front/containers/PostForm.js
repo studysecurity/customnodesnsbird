@@ -5,6 +5,7 @@ import {
     ADD_POST_REQUEST, 
     UPLOAD_IMAGES_REQUEST, 
     REMOVE_IMAGE,
+    MODIFY_LOAD_POST_IMAGES_REQUEST,
 } from '../reducers/post';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faImage } from '@fortawesome/free-solid-svg-icons';
@@ -25,7 +26,6 @@ import { backUrl } from '../config/config';
 //{modifyPost={modifyPost : {}}}
 
 const PostForm = ({ modifyPost }) => {
-    console.log('modifyPost 값 : ', modifyPost);
     const dispatch = useDispatch();
     const [text, setText] = useState('');
     //작성글이 없을 때 비활성화
@@ -85,6 +85,7 @@ const PostForm = ({ modifyPost }) => {
         }
     }, [postAdded]);
 
+    //작성란을 다 안채우면 작성 버튼 비활성화
     useEffect(() => {
         if (text && text.trim() && setting && tags.tags.length !== 0 && imagePaths.length !== 0) {
             setdisableButton(false);
@@ -92,6 +93,27 @@ const PostForm = ({ modifyPost }) => {
             setdisableButton(true);
         }
     }, [text, setting, tags.tags, imagePaths]);
+
+    //게시글 수정
+    useEffect(() => {
+        //modifyPost 객체 값이 없는지 판별
+        if (Object.keys(modifyPost).length !== 0) {
+            // console.log('modifyPost 있다 : ', modifyPost);
+            setSetting(modifyPost.auth);
+            setText(modifyPost.content);
+            const tags = modifyPost.Hashtags.map(v => {
+                const tagNames = v.tagName;
+                // console.log('tagNames 값 : ', tagNames);
+                return tagNames;
+            });
+            // console.log('result 값 : ',tags);
+            setTags({tags});
+            dispatch({
+                type: MODIFY_LOAD_POST_IMAGES_REQUEST,
+                data: modifyPost.Images,
+            });
+        } 
+    }, [Object.keys(modifyPost).length !== 0]);
 
     //게시물 업로드
     const onSubmit = useCallback((e) => {
@@ -146,13 +168,21 @@ const PostForm = ({ modifyPost }) => {
             <Select
                 showSearch
                 style={{ width: '200px' }}
-                placeholder="게시물 공개 여부 설정"
                 optionFilterProp="children"
+                labelInValue
+                defaultValue={ 
+                    Object.keys(modifyPost).length !== 0 ? 
+                    {key: `${modifyPost.auth}`} 
+                    : 
+                    {key: ""}
+                }
+                placeholder="게시물 공개 여부 설정"
                 onChange={onChangeSetting}
                 filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
             >
+                <Select.Option value="" disabled><span style={{color: '#d9d9d9'}}>게시물 공개 여부 설정</span></Select.Option>
                 <Select.Option value="0">전체공개</Select.Option>
                 <Select.Option value="1">친구만 공개</Select.Option>
                 <Select.Option value="2">나만보기</Select.Option>
@@ -162,7 +192,10 @@ const PostForm = ({ modifyPost }) => {
                 <div style={{marginTop: '8px'}}>
                     <input type="file" multiple hidden ref={imageInput} onChange={onChangeImages} />
                     <FontAwesomeIcon cursor='pointer' style={{height: '32px', width: '50px'}} icon={faImage} onClick={onClickImageUpload} />
-                    <Button type="primary" style={{float: 'right'}} htmlType="submit" loading={isAddingPost} disabled={disableButton} >등록</Button>
+                    {
+                        Object.keys(modifyPost).length === 0 &&
+                        <Button type="primary" style={{float: 'right'}} htmlType="submit" loading={isAddingPost} disabled={disableButton} >등록</Button>
+                    }
                 </div>
                 <div style={{overflow: 'auto', whiteSpace: 'nowrap'}}>
                     {imagePaths.map((v, i) => (
@@ -194,6 +227,7 @@ const PostForm = ({ modifyPost }) => {
     );
 };
 
+//글 수정이 아니라 메인화면의 글쓰는 부분이면 modifyPost가 null이므로 초기화 작업을 해줘야 에러가 안뜸.
 PostForm.defaultProps = {
     modifyPost: {},
 };

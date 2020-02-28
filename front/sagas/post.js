@@ -25,6 +25,9 @@ import {
     LOAD_COMMENTS_REQUEST,
     LOAD_COMMENTS_SUCCESS,
     LOAD_COMMENTS_FAILURE,
+    MODIFY_POST_REQUEST,
+    MODIFY_POST_SUCCESS,
+    MODIFY_POST_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
@@ -266,6 +269,29 @@ function* watchLoadComments() {
 }
 //댓글 내용 가져오기 (끝)
 
+//게시글 수정(시작)
+function modifyPostAPI() {
+    
+}
+
+function* modifyPost(action) {
+    try {
+        // const result = yield call(modifyPostAPI, action.data);
+        // yield put({
+        //     type: MODIFY_POST_SUCCESS,
+        // });
+    } catch(e) {
+        console.error(e);
+        yield put({
+            type: MODIFY_POST_FAILURE,
+        });
+    }
+}
+
+function* watchModifyPost() {
+    yield takeLatest(MODIFY_POST_REQUEST, modifyPost);
+}
+//게시글 수정(끝)
 
 export default function* postSaga() {
     yield all([
@@ -277,5 +303,6 @@ export default function* postSaga() {
         fork(watchUnlikePost),
         fork(watchAddComment),
         fork(watchLoadComments),
+        fork(watchModifyPost),
     ]);
 };

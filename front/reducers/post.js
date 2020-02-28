@@ -44,6 +44,13 @@ export const LOAD_COMMENTS_REQUEST = 'LOAD_COMMENTS_REQUEST';
 export const LOAD_COMMENTS_SUCCESS = 'LOAD_COMMENTS_SUCCESS';
 export const LOAD_COMMENTS_FAILURE = 'LOAD_COMMENTS_FAILURE';
 
+export const MODIFY_LOAD_POST_IMAGES_REQUEST = 'MODIFY_LOAD_POST_IMAGES_REQUEST'; 
+export const MODIFY_LOAD_POST_IMAGES_CLEARED = 'MODIFY_LOAD_POST_IMAGES_CLEARED';
+
+export const MODIFY_POST_REQUEST = 'MODIFY_POST_REQUEST';
+export const MODIFY_POST_SUCCESS = 'MODIFY_POST_SUCCESS';
+export const MODIFY_POST_FAILURE = 'MODIFY_POST_FAILURE';
+
 export default (state = initialState, action) => {
     return produce(state, (draft) => {
         switch (action.type) {
@@ -179,6 +186,31 @@ export default (state = initialState, action) => {
             }
             
             case LOAD_COMMENTS_FAILURE: {
+                break;
+            }
+
+            case MODIFY_LOAD_POST_IMAGES_REQUEST: {
+                // console.log('IMAGES_REQUEST : ', action.data);
+                action.data.forEach((p) => {
+                    draft.imagePaths.push(p.src);
+                });
+                break;
+            }
+
+            case MODIFY_LOAD_POST_IMAGES_CLEARED: {
+                draft.imagePaths = [];
+                break;
+            }
+
+            case MODIFY_POST_REQUEST: {
+                break;
+            }
+
+            case MODIFY_POST_SUCCESS: {
+                break;
+            }
+
+            case MODIFY_POST_FAILURE: {
                 break;
             }
         }
