@@ -5,10 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
-import { SIGN_UP_FAILURE, LOGIN_REQUEST, LOAD_USER_REQUEST } from '../reducers/user';
+import { SIGN_UP_FAILURE, LOGIN_REQUEST } from '../reducers/user';
 import PostForm from '../containers/PostForm';
 import PostCard from '../containers/PostCard';
-import { LOAD_MAIN_POSTS_REQUEST } from '../reducers/post';
+import { 
+    LOAD_MAIN_POSTS_REQUEST,
+} from '../reducers/post';
 
 
 //styled component 리로드시 적용 안되는 문제점 해결
@@ -43,7 +45,7 @@ const Index = () => {
     const { isSignedUp, isLoggingIn, me, isLoginErrorReason } = useSelector(state => state.user);
     
     //메인화면의 게시글 정보 가져오기
-    const { mainPosts } = useSelector(state => state.post);
+    const { mainPosts, imagePaths } = useSelector(state => state.post);
 
     // 로그인 버튼 클릭
     const onSubmitForm = useCallback((e) => {

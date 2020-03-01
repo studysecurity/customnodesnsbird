@@ -13,7 +13,7 @@ import {
     UNLIKE_POST_REQUEST,
     LOAD_COMMENTS_REQUEST,
     MODIFY_LOAD_POST_IMAGES_CLEARED,
-    MODIFY_POST_REQUEST,
+    MODIFY_LOAD_POST_IMAGES_REQUEST,
 } from '../reducers/post';
 import Hashtag from '../components/Hashtag';
 import CommentForm from '../containers/CommentForm';
@@ -75,7 +75,6 @@ const PostCard = memo(({ post }) => {
 
     // console.log('PostCard의 post 값 : ', post);
 
-
     //popover 창 제어
     const onChangePopover = useCallback(() => {
         setVisiblePopover(prev => !prev);
@@ -96,23 +95,19 @@ const PostCard = memo(({ post }) => {
         onChangePopover();
         //글수정 모달 보여주기
         setModifyModal(true);
+        //게시글 이미지 가져오기
+        return dispatch({
+            type: MODIFY_LOAD_POST_IMAGES_REQUEST,
+            data: post.Images,
+        });
     }, []);
 
     //게시글 수정 모달창 취소버튼 클릭
     const onModifyPostCancel = useCallback(() => {
         setModifyModal(false);
-        //이미지 경로 제거(안그러면 이미지가 남아있음.)
         return dispatch({
             type: MODIFY_LOAD_POST_IMAGES_CLEARED,
         });
-    }, []);
-
-    //게시글 수정 모달창 수정버튼 클릭
-    const onModifyPostOk = useCallback(() => {
-        dispatch({
-            type: MODIFY_POST_REQUEST,
-        });
-        setModifyModal(false);
     }, []);
 
     //상단 모달창
@@ -272,14 +267,18 @@ const PostCard = memo(({ post }) => {
           centered={true}
           closable={false}
           visible={modifyModal}
-          cancelText="수정"
-          onCancel={onModifyPostOk}
-          okText="취소"
-          onOk={onModifyPostCancel}
-        //   footer={null}
+        //   footer={[
+            // <Button type="primary" form="postForm" key="submit" htmlType="submit" >
+            //     수정
+            // </Button>,
+            // <Button type="danger" key="cancel" onClick={onModifyPostCancel}>
+            //     취소
+            // </Button>
+        //   ]}
+          footer={null}
         >
         <div style={{padding: '10px'}}>
-            <PostForm modifyPost={post} />
+            <PostForm modifyPost={post} onModifyPostCancel={onModifyPostCancel} />
         </div>
         </CustomModal>
     </>

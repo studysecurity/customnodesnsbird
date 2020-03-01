@@ -270,16 +270,18 @@ function* watchLoadComments() {
 //댓글 내용 가져오기 (끝)
 
 //게시글 수정(시작)
-function modifyPostAPI() {
-    
+function modifyPostAPI(postData) {
+    return axios.post('/post/modify', postData, {
+        withCredentials: true,
+    });
 }
 
 function* modifyPost(action) {
     try {
-        // const result = yield call(modifyPostAPI, action.data);
-        // yield put({
-        //     type: MODIFY_POST_SUCCESS,
-        // });
+        const result = yield call(modifyPostAPI, action.data);
+        yield put({
+            type: MODIFY_POST_SUCCESS,
+        });
     } catch(e) {
         console.error(e);
         yield put({

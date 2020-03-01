@@ -1,11 +1,11 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react';
+import React, { memo, useCallback, useState, useEffect, useRef } from 'react';
 import { Form, Input, Button, Select } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
     ADD_POST_REQUEST, 
     UPLOAD_IMAGES_REQUEST, 
     REMOVE_IMAGE,
-    MODIFY_LOAD_POST_IMAGES_REQUEST,
+    MODIFY_POST_REQUEST,
 } from '../reducers/post';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faImage } from '@fortawesome/free-solid-svg-icons';
@@ -25,13 +25,16 @@ import { backUrl } from '../config/config';
 
 //{modifyPost={modifyPost : {}}}
 
-const PostForm = ({ modifyPost }) => {
+const PostForm = memo(({ modifyPost, onModifyPostCancel }) => {
     const dispatch = useDispatch();
     const [text, setText] = useState('');
     //작성글이 없을 때 비활성화
     const [disableButton, setdisableButton] = useState(true);
     const { imagePaths, isAddingPost, postAdded } = useSelector(state => state.post);
     const imageInput = useRef();
+
+    // console.log('modifyPost 값 : ', modifyPost);
+    // console.log('Object.keys(modifyPost).length 값 : ', Object.keys(modifyPost).length);
 
     //정규표현식 (한글, 영어 태그 인식)
     // const hashtags = /#([ㄱ-ㅎ|ㅏ-ㅣ|가-힣|a-z|A-Z])+/gi;
@@ -108,15 +111,12 @@ const PostForm = ({ modifyPost }) => {
             });
             // console.log('result 값 : ',tags);
             setTags({tags});
-            dispatch({
-                type: MODIFY_LOAD_POST_IMAGES_REQUEST,
-                data: modifyPost.Images,
-            });
         } 
-    }, [Object.keys(modifyPost).length !== 0]);
+    }, [Object.keys(modifyPost).length]);
 
     //게시물 업로드
     const onSubmit = useCallback((e) => {
+        console.log('게시물 업로드 쪽 왔다..');
         e.preventDefault();
 
         //게시글 작성
@@ -129,12 +129,36 @@ const PostForm = ({ modifyPost }) => {
         //formData에 글 추가
         formData.append('content', text);
         //formData에 게시물 공개여부 및 태그 내용 추가
-        formData.append('postVisibility', setting);
+        formData.append('postVisibility', setting.key);
         // console.log('tags.tags 값 : ',tags);
         formData.append('tags', tags.tags);
 
-        dispatch({
+        //이부분에서 게시글 업로드인지 수정인지 판별하고 싶어요!!
+        return dispatch({
             type: ADD_POST_REQUEST,
+            data: formData,
+        });
+    }, [text, imagePaths, tags.tags, setting && setting.key]);
+
+    //게시글 수정
+    const onModify = useCallback((e) => {   
+        console.log('게시물 수정 쪽 왔다.');
+        e.preventDefault();
+
+        //게시글 수정
+        const formData = new FormData();
+
+        imagePaths.forEach((i) => {
+            formData.append('image', i);
+        });
+
+        formData.append('content', text);
+        formData.append('postVisibility', setting.key ? setting.key : setting);
+        formData.append('tags', tags.tags);
+        formData.append('postId', modifyPost.id);
+
+        return dispatch({
+            type: MODIFY_POST_REQUEST,
             data: formData,
         });
     }, [text, imagePaths, tags.tags, setting]);
@@ -162,8 +186,11 @@ const PostForm = ({ modifyPost }) => {
                 // position: 'fixed', 
                 padding: '10px 0 0px' 
                 }} 
-                encType="multipart/form-data" 
-                onSubmit={onSubmit}
+                encType="multipart/form-data"
+                id="postForm"
+                onSubmit={
+                    modifyPost.id ? onModify : onSubmit
+                }
             >
             <Select
                 showSearch
@@ -222,10 +249,19 @@ const PostForm = ({ modifyPost }) => {
                     ))}
                 </div>
                 <hr style={{border: 'solid 5px rgb(230, 236, 240)', marginBottom: '2px', }} />
+                {
+                    
+                    Object.keys(modifyPost).length !== 0 && 
+                        <div>
+                            <Button type="primary" htmlType="submit" onClick={onModifyPostCancel} style={{marginLeft: '370px'}}>수정</Button>
+                            <Button type="danger" onClick={onModifyPostCancel} style={{marginLeft: '10px'}}>취소</Button>
+                        </div>
+                    }
             </Form>
+            
         </>
     );
-};
+});
 
 //글 수정이 아니라 메인화면의 글쓰는 부분이면 modifyPost가 null이므로 초기화 작업을 해줘야 에러가 안뜸.
 PostForm.defaultProps = {

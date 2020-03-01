@@ -52,10 +52,10 @@ router.get('/', isLoggedIn, async (req, res, next) => {
                 }],
                 order: [['createdAt', 'DESC']], //DESC 내림차순
             });
-            console.log('posts 값 : ', JSON.stringify(posts));
+            // console.log('posts 값 : ', JSON.stringify(posts));
 
             const test = user.Followings.map(following => following.id);
-            console.log('test 값 : ', test); 
+            // console.log('test 값 : ', test); 
             const followPosts = await db.Post.findAll({
                 where: {
                     auth: {
@@ -86,10 +86,10 @@ router.get('/', isLoggedIn, async (req, res, next) => {
                 }],
                 order: [['createdAt', 'DESC']], //DESC 내림차순
             });
-            console.log('followPosts 값 : ', JSON.stringify(followPosts));
+            // console.log('followPosts 값 : ', JSON.stringify(followPosts));
 
             const mainPosts = posts.concat(followPosts).reverse();
-            console.log('mainPosts 값 : ', JSON.stringify(mainPosts));
+            // console.log('mainPosts 값 : ', JSON.stringify(mainPosts));
             
             res.status(200).json(mainPosts);
     } catch(e) {
