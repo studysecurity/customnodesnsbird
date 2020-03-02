@@ -279,8 +279,10 @@ function modifyPostAPI(postData) {
 function* modifyPost(action) {
     try {
         const result = yield call(modifyPostAPI, action.data);
+        console.log('modifyPost result 값 : ', result);
         yield put({
             type: MODIFY_POST_SUCCESS,
+            data: result.data.id,
         });
     } catch(e) {
         console.error(e);

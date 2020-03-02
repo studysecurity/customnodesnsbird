@@ -6,6 +6,7 @@ import {
     UPLOAD_IMAGES_REQUEST, 
     REMOVE_IMAGE,
     MODIFY_POST_REQUEST,
+    MODIFY_LOAD_POST_IMAGES_CLEARED,
 } from '../reducers/post';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faImage } from '@fortawesome/free-solid-svg-icons';
@@ -25,13 +26,16 @@ import { backUrl } from '../config/config';
 
 //{modifyPost={modifyPost : {}}}
 
-const PostForm = memo(({ modifyPost, onModifyPostCancel }) => {
+const PostForm = memo(({ modifyPost, onModifyPostCancel, onModifyPostOk }) => {
     const dispatch = useDispatch();
     const [text, setText] = useState('');
     //작성글이 없을 때 비활성화
     const [disableButton, setdisableButton] = useState(true);
     const { imagePaths, isAddingPost, postAdded } = useSelector(state => state.post);
     const imageInput = useRef();
+
+    //글 수정 버튼 비활성화
+    const [disabledModifyButton, setdisabledModifyButton] = useState(false);
 
     // console.log('modifyPost 값 : ', modifyPost);
     // console.log('Object.keys(modifyPost).length 값 : ', Object.keys(modifyPost).length);
@@ -90,18 +94,34 @@ const PostForm = memo(({ modifyPost, onModifyPostCancel }) => {
 
     //작성란을 다 안채우면 작성 버튼 비활성화
     useEffect(() => {
-        if (text && text.trim() && setting && tags.tags.length !== 0 && imagePaths.length !== 0) {
-            setdisableButton(false);
+        if(!modifyPost.id) {
+            // console.log('글작성 부분');
+            if (text && text.trim() && setting && tags.tags.length !== 0 && imagePaths.length !== 0) {
+                setdisableButton(false);
+            } else {
+                setdisableButton(true);
+            }
         } else {
-            setdisableButton(true);
+            // console.log('글 수정 부분');
+            // console.log('text 값 : ',text);
+            // console.log('settings 값 : ',setting);
+            // console.log('tags.tags 값 : ', tags.tags);
+            // console.log('imagePaths 값 : ', imagePaths);
+            // console.log('분기 값 : ', text && text.trim() && tags.tags.length !== 0 && imagePaths.length !== 0 );
+            //게시글 수정 버튼 활성화 여부
+            if ( text && text.trim() && tags.tags.length !== 0 && imagePaths.length !== 0) {
+                setdisabledModifyButton(false);
+            } else {
+                setdisabledModifyButton(true);
+            }
         }
-    }, [text, setting, tags.tags, imagePaths]);
+    }, [text, setting, tags.tags, imagePaths, modifyPost.id]);
 
-    //게시글 수정
+    //게시글 수정 초기값 설정
     useEffect(() => {
         //modifyPost 객체 값이 없는지 판별
         if (Object.keys(modifyPost).length !== 0) {
-            // console.log('modifyPost 있다 : ', modifyPost);
+            console.log('modifyPost 있다 : ', modifyPost);
             setSetting(modifyPost.auth);
             setText(modifyPost.content);
             const tags = modifyPost.Hashtags.map(v => {
@@ -142,12 +162,13 @@ const PostForm = memo(({ modifyPost, onModifyPostCancel }) => {
 
     //게시글 수정
     const onModify = useCallback((e) => {   
-        console.log('게시물 수정 쪽 왔다.');
+        // console.log('게시물 수정 쪽 onModify 실행');
         e.preventDefault();
 
         //게시글 수정
         const formData = new FormData();
 
+        // console.log('게시물 수정 imagePaths: ',imagePaths);
         imagePaths.forEach((i) => {
             formData.append('image', i);
         });
@@ -157,10 +178,14 @@ const PostForm = memo(({ modifyPost, onModifyPostCancel }) => {
         formData.append('tags', tags.tags);
         formData.append('postId', modifyPost.id);
 
-        return dispatch({
+        dispatch({
             type: MODIFY_POST_REQUEST,
             data: formData,
         });
+
+        dispatch({
+            type: MODIFY_LOAD_POST_IMAGES_CLEARED,
+        })
     }, [text, imagePaths, tags.tags, setting]);
 
     //이미지 삭제
@@ -250,10 +275,9 @@ const PostForm = memo(({ modifyPost, onModifyPostCancel }) => {
                 </div>
                 <hr style={{border: 'solid 5px rgb(230, 236, 240)', marginBottom: '2px', }} />
                 {
-                    
                     Object.keys(modifyPost).length !== 0 && 
                         <div>
-                            <Button type="primary" htmlType="submit" onClick={onModifyPostCancel} style={{marginLeft: '370px'}}>수정</Button>
+                            <Button type="primary" onClick={onModifyPostOk} htmlType="submit" style={{marginLeft: '370px'}} disabled={disabledModifyButton}>수정</Button>
                             <Button type="danger" onClick={onModifyPostCancel} style={{marginLeft: '10px'}}>취소</Button>
                         </div>
                     }

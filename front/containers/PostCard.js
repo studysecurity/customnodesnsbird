@@ -102,6 +102,12 @@ const PostCard = memo(({ post }) => {
         });
     }, []);
 
+    //게시글 수정 모달창 수정버튼 클릭
+    const onModifyPostOk = useCallback(() => {
+        // console.log('게시글 수정 모달창 수정버튼 클릭 시작');
+        setModifyModal(false);
+    }, []);
+
     //게시글 수정 모달창 취소버튼 클릭
     const onModifyPostCancel = useCallback(() => {
         setModifyModal(false);
@@ -278,7 +284,11 @@ const PostCard = memo(({ post }) => {
           footer={null}
         >
         <div style={{padding: '10px'}}>
-            <PostForm modifyPost={post} onModifyPostCancel={onModifyPostCancel} />
+            <PostForm 
+                modifyPost={post} 
+                onModifyPostCancel={onModifyPostCancel} 
+                onModifyPostOk={onModifyPostOk}
+            />
         </div>
         </CustomModal>
     </>
