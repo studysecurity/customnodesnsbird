@@ -3,7 +3,6 @@ import { Card, Avatar, Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { LOGOUT_REQUEST } from '../reducers/user';
 import Link from 'next/link';
-import Router from 'next/router';
 
 const UserProfile = () => {
     const { me } = useSelector(state => state.user);
@@ -18,17 +17,17 @@ const UserProfile = () => {
     return (
         <Card
           actions={[
-            <Link href="/profile" key="twit" >
+            <Link href="/myprofile/myposts" key="twit" >
             <a>
                 <div>작성<br />{me.Posts.length}</div>
             </a>
             </Link>,
-            <Link href="/profile" key="following" >
+            <Link href="/myprofile/following" key="following" >
             <a>
                 <div>팔로잉<br />{me.Followings.length}</div>
             </a>
             </Link>,
-            <Link href="/profile" key="follower" >
+            <Link href="/myprofile/follower" key="follower" >
             <a>
                 <div>팔로워<br />{me.Followers.length}</div>
             </a>

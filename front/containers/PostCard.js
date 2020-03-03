@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Card, Avatar, Popover, Button, Modal, List } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -273,18 +273,11 @@ const PostCard = memo(({ post }) => {
           centered={true}
           closable={false}
           visible={modifyModal}
-        //   footer={[
-            // <Button type="primary" form="postForm" key="submit" htmlType="submit" >
-            //     수정
-            // </Button>,
-            // <Button type="danger" key="cancel" onClick={onModifyPostCancel}>
-            //     취소
-            // </Button>
-        //   ]}
           footer={null}
         >
         <div style={{padding: '10px'}}>
-            <PostForm 
+            <PostForm
+                key="modifyPost" 
                 modifyPost={post} 
                 onModifyPostCancel={onModifyPostCancel} 
                 onModifyPostOk={onModifyPostOk}

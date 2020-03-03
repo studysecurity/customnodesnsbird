@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const { Op } = require('sequelize');
 
 const db = require('../models');
 const { isLoggedIn } = require('./middleware');
@@ -62,7 +63,7 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
                 const images = await Promise.all(req.body.image.map((image) => {
                     return db.Image.create({ src: image });
                 }));
-                console.log('게시물 업로드 images 값 : ', JSON.stringify(images));
+                // console.log('게시물 업로드 images 값 : ', JSON.stringify(images));
                 await newPost.addImages(images);
             } else { //이미지를 하나만 올리면 image: 주소1
                 const image = await db.Image.create({ src: req.body.image});
@@ -105,6 +106,9 @@ router.delete('/:id', isLoggedIn, async (req, res, next) => {
         }
         await db.Post.destroy({ 
             where: { id: req.params.id },
+        });
+        await db.Image.destroy({
+            where: { PostId: null },
         });
         res.send(req.params.id);
     } catch(e) {
@@ -235,16 +239,24 @@ router.post('/modify', isLoggedIn, upload.none(), async (req, res, next) => {
         await updatePost.setHashtags(result.map(r => r[0]));
 
         //이미지 디비에 저장
-        console.log('req.body.image 값 : ', JSON.stringify(req.body.image));
+        // console.log('req.body.image 값 : ', JSON.stringify(req.body.image));
         if (req.body.image) { // 이미지 주소를 여러개 올리면 image: [주소1, 주소2]
             if (Array.isArray(req.body.image)) {
-                // const images = await Promise.all(req.body.image.map(image => db.Image.findOrCreate({ 
-                //         where: { src: image }, 
-                // })));
+                const images = await Promise.all(req.body.image.map(image => db.Image.findOrCreate({ 
+                        where: { 
+                            src: image, 
+                            PostId: req.body.postId,
+                        }, 
+                })));
                 // console.log('게시글 수정 images 값 : ', JSON.stringify(images));
-                // if (images) {
-                //     await updatePost.addImages(images.map(r => r[0]));
-                // } 
+                
+                await updatePost.setImages(images.map(r => r[0]));
+                await db.Image.destroy({
+                    where: {
+                        PostId: null,
+                    },
+                });
+                   
             } else { //이미지를 하나만 올리면 image: 주소1
                 const image = await db.Image.findOrCreate({ //값이 있으면 이미지가 없으므로 생성해준 것임.
                     where: { 
@@ -252,12 +264,17 @@ router.post('/modify', isLoggedIn, upload.none(), async (req, res, next) => {
                         PostId: req.body.postId,
                     },
                 });
-                // console.log('image 값 : ', JSON.stringify(image));
 
-                if (image) { //같은 이름의 이미지 파일이 없으므로 새로 생성
-                    console.log('image map 값 : ', JSON.stringify(image.map(r => r[0])));
-                    await updatePost.setImage(image.map(r => r[0]));
-                } 
+                if (image[1]) { //false 면 수정된 이미지가 없음, true면 수정된 이미지가 있음
+                    //수정된 이미지 외에 기존 이미지는 행을 삭제
+                    await updatePost.setImages(image[0]);
+                    //postId null값 인 것
+                    await db.Image.destroy({
+                        where: {
+                            PostId: null,
+                        },
+                    });
+                }
             }
         }
 

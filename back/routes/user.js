@@ -193,4 +193,61 @@ router.delete('/follow/:id', isLoggedIn, async (req, res, next) => {
     }
 });
 
+//나의 프로필에 팔로잉 정보 가져오기
+router.get('/:id/followings', isLoggedIn, async (req, res, next) => {
+    try {
+        const user = await db.User.findOne({
+            where: { 
+                id: parseInt(req.params.id, 10) ||
+                (req.user && req.user.id) ||
+                0
+            },
+        });
+        
+        const followings = await user.getFollowings({
+            attributes: ['id', 'userNick'],
+            limit: parseInt(req.query.limit, 10),
+            offset: parseInt(req.query.offset, 10),
+        });
+        console.log('myprofile followings 값 : ', JSON.stringify(followings));
+        res.status(200).json(followings);
+    } catch(e) {
+        console.error(e);
+        next(e);
+    }
+});
+
+//나의 프로필에 팔로워 정보 가져오기
+router.get('/:id/followers', isLoggedIn, async (req, res, next) => {
+    try {
+        const user = await db.User.findOne({
+            where: { id: parseInt(req.params.id, 10) || (req.user && req.user.id) || 0},
+        });
+        console.dir('나의 프로필 followers 값 : ', JSON.stringify(user));
+        const followers = await user.getFollowers({
+            attributes: ['id', 'userNick'],
+            limit: parseInt(req.query.limit, 10),
+            offset: parseInt(req.query.offset, 10),
+        });
+        res.status(200).json(followers);
+    } catch(e) {
+        console.error(e);
+        next(e);
+    }
+});
+
+//나의 프로필에 팔로워 정보 지우기
+router.delete('/:id/follower', isLoggedIn, async (req, res, next) => {
+    try {
+        const me = await db.User.findOne({
+            where: { id: req.user.id },
+        });
+        await me.removeFollower(req.params.id);
+        res.status(200).send(req.params.id);
+    } catch(e) {
+        console.error(e);
+        next(e);
+    }
+});
+
 module.exports = router;

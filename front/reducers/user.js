@@ -15,6 +15,10 @@ export const initialState = {
     loadFollowList: [], //팔로우 리스트의 유저 정보들(팔로우 검색 및 유저 검색하여 팔로우 할 수 있게)
     loadFollowListErrorReason: '', //팔로우 리스트 에러 이유
     followErrorReason: '', //팔로우 요청시 에러 이유
+    followingList: [], //팔로잉 리스트
+    hasMoreFollowing: false, //팔로잉 정보 더 가져오기버튼
+    followerList: [], //팔로워 리스트
+    hasMoreFollower: false, //팔로워 정보 더 가져오기 버튼
 };
 
 export const ID_CHECK_REQUEST = 'ID_CHECK_REQUEST';
@@ -57,6 +61,18 @@ export const UNFOLLOW_USER_FAILURE = 'UNFOLLOW_USER_FAILURE';
 
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
+
+export const LOAD_FOLLOWINGS_REQUEST = 'LOAD_FOLLOWINGS_REQUEST';
+export const LOAD_FOLLOWINGS_SUCCESS = 'LOAD_FOLLOWINGS_SUCCESS';
+export const LOAD_FOLLOWINGS_FAILURE = 'LOAD_FOLLOWINGS_FAILURE';
+
+export const LOAD_FOLLOWERS_REQUEST = 'LOAD_FOLLOWERS_REQUEST';
+export const LOAD_FOLLOWERS_SUCCESS = 'LOAD_FOLLOWERS_SUCCESS';
+export const LOAD_FOLLOWERS_FAILURE = 'LOAD_FOLLOWERS_FAILURE';
+
+export const REMOVE_FOLLOWER_REQUEST = 'REMOVE_FOLLOWER_REQUEST';
+export const REMOVE_FOLLOWER_SUCCESS = 'REMOVE_FOLLOWER_SUCCESS';
+export const REMOVE_FOLLOWER_FAILURE = 'REMOVE_FOLLOWER_FAILURE';
 
 export default (state = initialState, action) => {
     return produce(state, (draft) => {
@@ -217,6 +233,8 @@ export default (state = initialState, action) => {
                 //같으면 팔로우 했다는 것이므로 팔로우 해제 
                 const index = draft.me.Followings.findIndex(v => v.id === action.data);
                 draft.me.Followings.splice(index, 1);
+                const index2 = draft.followingList.findIndex(v => v.id === action.data);
+                draft.followingList.splice(index2, 1);
                 break;
             }
 
@@ -232,6 +250,58 @@ export default (state = initialState, action) => {
             case REMOVE_POST_OF_ME: {
                 const index = draft.me.Posts.findIndex(v => v.id === action.data);
                 draft.me.Posts.splice(index, 1);
+                break;
+            }
+
+            case LOAD_FOLLOWINGS_REQUEST: {
+                draft.followingList = !action.offset ? [] : draft.followingList;
+                draft.hasMoreFollowing = action.offset ? draft.hasMoreFollowing : true;
+                break;
+            }
+
+            case LOAD_FOLLOWINGS_SUCCESS: {
+                action.data.forEach((d) => {
+                    draft.followingList.push(d);
+                });
+                draft.hasMoreFollowing = action.data.length === 3;
+                break;
+            }
+
+            case LOAD_FOLLOWINGS_FAILURE: {
+                break;
+            }
+
+            case LOAD_FOLLOWERS_REQUEST: {
+                draft.followerList = !action.offset ? [] : draft.followerList;
+                draft.hasMoreFollower = action.offset ? draft.hasMoreFollower : true;
+                break;
+            }
+
+            case LOAD_FOLLOWERS_SUCCESS: {
+                action.data.forEach((d) => {
+                    draft.followerList.push(d);
+                });
+                draft.hasMoreFollower = action.data.length === 3;
+                break;
+            }
+
+            case LOAD_FOLLOWERS_FAILURE: {
+                break;
+            }
+
+            case REMOVE_FOLLOWER_REQUEST: {
+                break;
+            }
+
+            case REMOVE_FOLLOWER_SUCCESS: {
+                const index = draft.me.Followers.findIndex(v => v.id === action.data);
+                draft.me.Followers.splice(index, 1);
+                const index2 = draft.followerList.findIndex(v => v.id === action.data);
+                draft.followerList.splice(index2, 1);
+                break;
+            }
+            
+            case REMOVE_FOLLOWER_FAILURE: {
                 break;
             }
         }
