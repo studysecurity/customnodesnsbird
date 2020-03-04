@@ -6,13 +6,13 @@ import {
     faUser, 
 } from '@fortawesome/free-solid-svg-icons';
 import { faHeart, faCompass } from '@fortawesome/free-regular-svg-icons';
+import Router from 'next/router';
 
 const Header = () => {
 
-    //??
-    const onSearch = useCallback({
-
-    }, []);
+    const onSearch = (value) => {
+        Router.push({ pathname: '/hashtag', query: { tag: value }}, `/hashtag/${value}`);
+    };
 
     return (
         <div style={{borderBottom: '1px solid #E2E2E2' ,backgroundColor: 'white', height: '77px', margin: '0 auto', display: 'flex'}}>

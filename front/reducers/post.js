@@ -51,6 +51,14 @@ export const MODIFY_POST_REQUEST = 'MODIFY_POST_REQUEST';
 export const MODIFY_POST_SUCCESS = 'MODIFY_POST_SUCCESS';
 export const MODIFY_POST_FAILURE = 'MODIFY_POST_FAILURE';
 
+export const LOAD_USER_POSTS_REQUEST = 'LOAD_USER_POSTS_REQUEST';
+export const LOAD_USER_POSTS_SUCCESS = 'LOAD_USER_POSTS_SUCCESS';
+export const LOAD_USER_POSTS_FAILURE = 'LOAD_USER_POSTS_FAILURE';
+
+export const LOAD_HASHTAG_POSTS_REQUEST = 'LOAD_HASHTAG_POSTS_REQUEST';
+export const LOAD_HASHTAG_POSTS_SUCCESS = 'LOAD_HASHTAG_POSTS_SUCCESS';
+export const LOAD_HASHTAG_POSTS_FAILURE = 'LOAD_HASHTAG_POSTS_FAILURE';
+
 export default (state = initialState, action) => {
     return produce(state, (draft) => {
         switch (action.type) {
@@ -213,6 +221,34 @@ export default (state = initialState, action) => {
             }
 
             case MODIFY_POST_FAILURE: {
+                break;
+            }
+
+            case LOAD_USER_POSTS_REQUEST: {
+                draft.mainPosts = [];
+                break;
+            }
+
+            case LOAD_USER_POSTS_SUCCESS: {
+                draft.mainPosts = action.data;
+                break;
+            }
+
+            case LOAD_USER_POSTS_FAILURE: {
+                break;
+            }
+
+            case LOAD_HASHTAG_POSTS_REQUEST: {
+                draft.mainPosts = [];
+                break;
+            }
+
+            case LOAD_HASHTAG_POSTS_SUCCESS: {
+                draft.mainPosts = action.data;
+                break;
+            }
+
+            case LOAD_HASHTAG_POSTS_FAILURE: {
                 break;
             }
         }

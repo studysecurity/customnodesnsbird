@@ -87,6 +87,7 @@ NodeSnsBird.getInitialProps = async (context) => {
         // 404 status 반환하는 문제가 있음 (서버에서 확인해야함)
         pageProps = await Component.getInitialProps(ctx) || {};
     }
+    // console.log('_app.js 실행');
     return { pageProps };
 };
 

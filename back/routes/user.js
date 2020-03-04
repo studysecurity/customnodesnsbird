@@ -250,4 +250,36 @@ router.delete('/:id/follower', isLoggedIn, async (req, res, next) => {
     }
 });
 
+//내가 작성한 게시글 정보 가져오기
+router.get('/:id/posts', isLoggedIn, async (req, res, next) => {
+    try {
+        const posts = await db.Post.findAll({
+            where: {
+                UserId: parseInt(req.params.id, 10) || (req.user && req.user.id) || 0,
+            },
+            include: [{
+                model: db.User,
+                attributes: ['id', 'userNick'],
+            }, {
+                model: db.Image,
+            }, {
+                model: db.Hashtag,
+                attributes: ['id', 'tagName'],
+                through: {
+                    attributes: ['HashtagId'],
+                },
+            }, {
+                model: db.User,
+                through: 'Like',
+                as: 'Likers',
+                attributes: ['id'],
+            }],
+        });
+        res.status(200).json(posts);
+    } catch(e) {
+        console.error(e);
+        next(e);
+    }
+});
+
 module.exports = router;

@@ -28,6 +28,12 @@ import {
     MODIFY_POST_REQUEST,
     MODIFY_POST_SUCCESS,
     MODIFY_POST_FAILURE,
+    LOAD_USER_POSTS_REQUEST,
+    LOAD_USER_POSTS_SUCCESS,
+    LOAD_USER_POSTS_FAILURE,
+    LOAD_HASHTAG_POSTS_REQUEST,
+    LOAD_HASHTAG_POSTS_SUCCESS,
+    LOAD_HASHTAG_POSTS_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
@@ -93,8 +99,8 @@ function* watchAddPost() {
 
 //메인 게시글 불러오기(시작)
 //이부분은 무한스크롤링 하면 더 기능 추가해줘야 함
-function loadMainPostsAPI() {
-    return axios.get('/posts', {
+function loadMainPostsAPI(lastId = 0, limit = 2) {
+    return axios.get(`/posts?lastId=${lastId}&limit=${limit}`, {
         withCredentials: true,
     });
 }
@@ -102,7 +108,7 @@ function loadMainPostsAPI() {
 function* loadMainPosts(action) {
     //이부분은 무한스크롤링 하면 더 기능 추가해줘야 함
     try {
-        const result = yield call(loadMainPostsAPI);
+        const result = yield call(loadMainPostsAPI, action.lastId);
         yield put({
             type: LOAD_MAIN_POSTS_SUCCESS,
             data: result.data,
@@ -297,6 +303,61 @@ function* watchModifyPost() {
 }
 //게시글 수정(끝)
 
+//내가 작성한 게시글 가져오기(시작)
+function loadUserPostsAPI(userId) {
+    return axios.get(`/user/${userId || 0}/posts`, {
+        withCredentials: true,
+    });
+}
+
+function* loadUserPosts(action) {
+    try {
+        const result = yield call(loadUserPostsAPI, action.data);
+        yield put({
+            type: LOAD_USER_POSTS_SUCCESS,
+            data: result.data,
+        });
+    } catch(e) {
+        console.error(e);
+        yield put({
+            type: LOAD_USER_POSTS_FAILURE,
+        });
+    }
+}
+
+function* watchLoadUserPosts() {
+    yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
+}
+//내가 작성한 게시글 가져오기(끝)
+
+//검색(해쉬태그) (시작)
+function loadHashtagPostsAPI(tag) {
+    return axios.get(`/hashtag/${encodeURIComponent(tag)}`, {
+        withCredentials: true,
+    });
+}
+
+function* loadHashtagPosts(action) {
+    try {
+        const result = yield call(loadHashtagPostsAPI, action.data); //action.data는 hash태그 내용
+        console.log('loadHashtagPosts 값 : ', JSON.stringify(result.data));
+        yield put({
+            type: LOAD_HASHTAG_POSTS_SUCCESS,
+            data: result.data,
+        });
+    } catch(e) {
+        console.error(e);
+        yield put({
+           type: LOAD_HASHTAG_POSTS_FAILURE, 
+        });
+    }
+}
+
+function* watchLoadHashtagPosts() {
+    yield takeLatest(LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
+}
+//검색(해쉬태그) (끝)
+
 export default function* postSaga() {
     yield all([
         fork(watchUploadImages),
@@ -308,5 +369,7 @@ export default function* postSaga() {
         fork(watchAddComment),
         fork(watchLoadComments),
         fork(watchModifyPost),
+        fork(watchLoadUserPosts),
+        fork(watchLoadHashtagPosts),
     ]);
 };

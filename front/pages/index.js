@@ -1,11 +1,11 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { Form, Input, Checkbox, Button, Divider } from 'antd';
+import { Form, Input, Checkbox, Button, Divider, Empty } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
-import { SIGN_UP_FAILURE, LOGIN_REQUEST } from '../reducers/user';
+import { SIGN_UP_FAILURE, LOGIN_REQUEST, LOAD_USER_REQUEST } from '../reducers/user';
 import PostForm from '../containers/PostForm';
 import PostCard from '../containers/PostCard';
 import { 
@@ -45,7 +45,33 @@ const Index = () => {
     const { isSignedUp, isLoggingIn, me, isLoginErrorReason } = useSelector(state => state.user);
     
     //메인화면의 게시글 정보 가져오기
-    const { mainPosts, imagePaths } = useSelector(state => state.post);
+    const { mainPosts, hasMorePost } = useSelector(state => state.post);
+    //인피니티 스크롤 페이징
+    const countRef = useRef([]);
+
+    //인피니티 스크롤 페이징
+    const onScroll = useCallback(() => {
+        console.log(window.scrollY, document.documentElement.clientHeight, document.documentElement.scrollHeight);
+        if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 600){
+            if (hasMorePost) {
+                const lastId = mainPosts[mainPosts.length - 1].id;
+                console.log('lastId 값 : ', lastId);
+                dispatch({
+                    type: LOAD_MAIN_POSTS_REQUEST,
+                    lastId,
+                });
+                countRef.current.push(lastId);
+            }
+        }
+    }, [hasMorePost, mainPosts.length]);
+
+    useEffect(() => {
+        window.addEventListener('scroll', onScroll);
+        return () => {
+            window.removeEventListener('scroll', onScroll);
+        };
+    }, [mainPosts.length]);
+
 
     // 로그인 버튼 클릭
     const onSubmitForm = useCallback((e) => {
@@ -125,11 +151,14 @@ const Index = () => {
             <>
                 <PostForm />
                 {
+                    // mainPosts.length !== 0 ?
                     mainPosts.map((c) => {
                         return (
                             <PostCard key={c.id} post={c} /> 
                         );
                     })
+                    // :
+                    // <Empty />
                 }
             </>
             )
@@ -138,11 +167,13 @@ const Index = () => {
     );
 }
 
-// Index.getInitialProps = async (context) => {
-//     //메인화면 게시글 정보 가져오기
-//     context.store.dispatch({
-//         type: LOAD_MAIN_POSTS_REQUEST,
-//     });
-// };
+Index.getInitialProps = async (context) => {
+    const state = context.store.getState();
+
+    // console.log('index.js 실행 : ', state.user.me && state.user.me.id);
+    // context.store.dispatch({
+    //     type: LOAD_MAIN_POSTS_REQUEST,
+    // });
+};
 
 export default Index;

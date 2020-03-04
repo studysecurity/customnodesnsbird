@@ -13,6 +13,7 @@ const db = require('./models');
 const userAPIRouter = require('./routes/user');
 const postAPIRouter = require('./routes/post');
 const postsAPIRouter = require('./routes/posts');
+const hashtagAPIRouter = require('./routes/hashtag');
 
 const prod = process.env.NODE_ENV === 'production';
 
@@ -31,7 +32,8 @@ if (prod) {
     app.use(helmet());
     app.use(morgan('combined'));
     app.use(cors({
-
+        origin: /nodesnsbird\.ga$/,
+        credentials: true,
     }));
 } else {
     //서버의 로그기록 남기는데 사용 (express에서 로그를 안남겨주므로 별도로 해줘야함)
@@ -83,6 +85,7 @@ app.get('/', (req, res) => {
 app.use('/api/user', userAPIRouter);
 app.use('/api/post', postAPIRouter);
 app.use('/api/posts', postsAPIRouter);
+app.use('/api/hashtag', hashtagAPIRouter);
 
 app.listen(prod ? process.env.PORT : 3065, () => {
     console.log(`server is running on ${process.env.PORT}`);
