@@ -26,7 +26,7 @@ router.get('/', isLoggedIn, async (req, res, next) => {
             // console.log('백엔드 follow 값 :', JSON.stringify(user));
 
             //인피니티 스크롤
-            console.log('lastId 값 : ', req.query.lastId);
+            // console.log('lastId 값 : ', req.query.lastId);
             let where = {};
             if (parseInt(req.query.lastId, 10)) {
                 where = {
@@ -38,6 +38,7 @@ router.get('/', isLoggedIn, async (req, res, next) => {
                     },
                 };
             }
+            // console.log('where 1값 : ', where);
 
             //전체 게시글
             const posts = await db.Post.findAll({
@@ -72,11 +73,13 @@ router.get('/', isLoggedIn, async (req, res, next) => {
                 limit: parseInt(req.query.limit, 10),
             });
             // console.log('posts 값 : ', JSON.stringify(posts));
+            // console.log('where 2값 : ', where);
 
             const test = user.Followings.map(following => following.id);
             // console.log('test 값 : ', test); 
-            const followPosts = await db.Post.findAll({
-                where: {
+
+            if (parseInt(req.query.lastId, 10)) {
+                where = {
                     auth: {
                         [Op.eq]: 1,
                     },
@@ -87,7 +90,23 @@ router.get('/', isLoggedIn, async (req, res, next) => {
                     id: {
                         [Op.lt]: parseInt(req.query.lastId, 10),
                     },
-                },
+                };
+            }
+            // console.log('where 3값 : ', where);
+            const followPosts = await db.Post.findAll({
+                where,
+                // where: {
+                //     auth: {
+                //         [Op.eq]: 1,
+                //     },
+                //     UserId: {
+                //         //이부분에 팔로우한 사람의 정보를 가져오는 조건문
+                //         [Op.in]: test,
+                //     },
+                //     id: {
+                //         [Op.lt]: parseInt(req.query.lastId, 10),
+                //     },
+                // },
                 include: [{
                     model: db.User,
                     attributes: ['id', 'userNick'],
@@ -109,6 +128,7 @@ router.get('/', isLoggedIn, async (req, res, next) => {
                 order: [['createdAt', 'DESC']], //DESC 내림차순
                 limit: parseInt(req.query.limit, 10),
             });
+            // console.log('where 4값 : ', where);
             // console.log('followPosts 값 : ', JSON.stringify(followPosts));
 
             //reverse() 지웠음 

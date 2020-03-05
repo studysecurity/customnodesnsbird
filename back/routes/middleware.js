@@ -1,4 +1,5 @@
 exports.isLoggedIn = (req, res, next) => {
+    // console.log('궁금한 값 : ', req.headers);
     if(req.isAuthenticated()) {
         //next()안에 인자 안넣으면 다음 미들웨어로 넘김 ex) post에 isLoggedIn 실행 후 다음 내용 실행
         next();

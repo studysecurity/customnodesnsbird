@@ -51,16 +51,19 @@ const Index = () => {
 
     //인피니티 스크롤 페이징
     const onScroll = useCallback(() => {
-        console.log(window.scrollY, document.documentElement.clientHeight, document.documentElement.scrollHeight);
+        // console.log(window.scrollY, document.documentElement.clientHeight, document.documentElement.scrollHeight);
         if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 600){
             if (hasMorePost) {
                 const lastId = mainPosts[mainPosts.length - 1].id;
-                console.log('lastId 값 : ', lastId);
-                dispatch({
-                    type: LOAD_MAIN_POSTS_REQUEST,
-                    lastId,
-                });
-                countRef.current.push(lastId);
+                // console.log('lastId 값 : ', lastId);
+                //페이지네이션시 리덕스요청이 여러개 보내는 현상이 있는데 요청을 한번만 가게 제한.
+                if (!countRef.current.includes(lastId)) { 
+                    dispatch({
+                        type: LOAD_MAIN_POSTS_REQUEST,
+                        lastId,
+                    });
+                    countRef.current.push(lastId);
+                }
             }
         }
     }, [hasMorePost, mainPosts.length]);
@@ -152,9 +155,9 @@ const Index = () => {
                 <PostForm />
                 {
                     // mainPosts.length !== 0 ?
-                    mainPosts.map((c) => {
+                    mainPosts.map((c, i) => {
                         return (
-                            <PostCard key={c.id} post={c} /> 
+                            <PostCard key={i} post={c} /> 
                         );
                     })
                     // :
@@ -168,9 +171,8 @@ const Index = () => {
 }
 
 Index.getInitialProps = async (context) => {
-    const state = context.store.getState();
-
     // console.log('index.js 실행 : ', state.user.me && state.user.me.id);
+    // console.log('여기 실행됨?');
     // context.store.dispatch({
     //     type: LOAD_MAIN_POSTS_REQUEST,
     // });

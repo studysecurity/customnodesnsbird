@@ -14,6 +14,7 @@ import axios from 'axios';
 import { LOAD_USER_REQUEST } from '../reducers/user';
 
 import 'react-tagsinput/react-tagsinput.css';
+import { LOAD_MAIN_POSTS_REQUEST } from '../reducers/post';
 
 //Fontawesome SSR
 config.autoAddCss = false; // Tell Font Awesome to skip adding the CSS automatically since it's being imported above
@@ -22,7 +23,7 @@ const NodeSnsBird = ({ Component, store, pageProps }) => {
     return (
         <Provider store={store}> {/* 모든 컴포넌트의 redux state의 값을 사용할 수 있도록 제공 */}
             <Helmet
-                title="NdoeSnsBird"
+                title="NodeSnsBird"
                 htmlAttributes={{ lang: 'ko'}}
                 meta={[{
                     charSet: 'UTF-8',

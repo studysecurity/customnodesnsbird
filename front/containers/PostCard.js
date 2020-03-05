@@ -217,7 +217,7 @@ const PostCard = memo(({ post }) => {
             </div>
             <div style={{marginTop: '15px'}}>
                 <span style={{fontWeight: 'bold'}}>
-                    좋아요 {post.Likers.length.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}개
+                    좋아요 {post.Likers && post.Likers.length !== 0 ? post.Likers.length.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0}개
                 </span>
             </div>
             <div style={{marginTop: '15px'}}>

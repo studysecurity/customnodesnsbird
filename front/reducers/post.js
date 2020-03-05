@@ -105,18 +105,30 @@ export default (state = initialState, action) => {
                 break;
             }
 
-            case LOAD_MAIN_POSTS_REQUEST: {
-                draft.mainPosts = [];
+            case LOAD_MAIN_POSTS_REQUEST:
+            case LOAD_HASHTAG_POSTS_REQUEST: 
+            case LOAD_USER_POSTS_REQUEST: {
+                draft.mainPosts = !action.lastId ? [] : draft.mainPosts;
+                draft.hasMorePost = action.lastId ? draft.hasMorePost : true;
+                console.log('LOAD_POSTS_REQUEST hasMorePost 값 : ', draft.hasMorePost);
                 break;
             }
 
-            case LOAD_MAIN_POSTS_SUCCESS: {
-                draft.mainPosts = action.data;
-                // console.log('reducers의 LOAD_MAIN_POSTS_SUCCESS 값 : ', draft.mainPosts);
+            case LOAD_MAIN_POSTS_SUCCESS: 
+            case LOAD_HASHTAG_POSTS_SUCCESS:
+            case LOAD_USER_POSTS_SUCCESS: {
+                // console.log('LOAD_HASHTAG_POSTS_SUCCESS : ', action.data);
+                action.data.forEach((d) => {
+                    draft.mainPosts.push(d);
+                });
+                draft.hasMorePost = action.data.length === 10;
+                console.log('LOAD_POSTS_SUCCESS hasMorePost 값 : ', draft.hasMorePost);
                 break;
             }
 
-            case LOAD_MAIN_POSTS_FAILURE: {
+            case LOAD_MAIN_POSTS_FAILURE: 
+            case LOAD_HASHTAG_POSTS_FAILURE:
+            case LOAD_USER_POSTS_FAILURE: {
                 break;
             }
 
@@ -221,34 +233,6 @@ export default (state = initialState, action) => {
             }
 
             case MODIFY_POST_FAILURE: {
-                break;
-            }
-
-            case LOAD_USER_POSTS_REQUEST: {
-                draft.mainPosts = [];
-                break;
-            }
-
-            case LOAD_USER_POSTS_SUCCESS: {
-                draft.mainPosts = action.data;
-                break;
-            }
-
-            case LOAD_USER_POSTS_FAILURE: {
-                break;
-            }
-
-            case LOAD_HASHTAG_POSTS_REQUEST: {
-                draft.mainPosts = [];
-                break;
-            }
-
-            case LOAD_HASHTAG_POSTS_SUCCESS: {
-                draft.mainPosts = action.data;
-                break;
-            }
-
-            case LOAD_HASHTAG_POSTS_FAILURE: {
                 break;
             }
         }

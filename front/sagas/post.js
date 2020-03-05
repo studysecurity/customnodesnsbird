@@ -1,4 +1,4 @@
-import { all, fork, takeLatest, put, call } from 'redux-saga/effects';
+import { all, fork, takeLatest, put, call, throttle } from 'redux-saga/effects';
 import axios from 'axios';
 import { 
     ADD_POST_REQUEST,
@@ -99,7 +99,8 @@ function* watchAddPost() {
 
 //메인 게시글 불러오기(시작)
 //이부분은 무한스크롤링 하면 더 기능 추가해줘야 함
-function loadMainPostsAPI(lastId = 0, limit = 2) {
+function loadMainPostsAPI(lastId = 0, limit = 10) {
+    // console.log('쿠키 값 : ', axios.defaults.headers.Cookie);
     return axios.get(`/posts?lastId=${lastId}&limit=${limit}`, {
         withCredentials: true,
     });
@@ -121,7 +122,7 @@ function* loadMainPosts(action) {
 }
 
 function* watchLoadMainPosts() {
-    yield takeLatest(LOAD_MAIN_POSTS_REQUEST, loadMainPosts);
+    yield throttle(2000, LOAD_MAIN_POSTS_REQUEST, loadMainPosts);
 }
 //메인 게시글 불러오기(끝)
 
@@ -331,16 +332,17 @@ function* watchLoadUserPosts() {
 //내가 작성한 게시글 가져오기(끝)
 
 //검색(해쉬태그) (시작)
-function loadHashtagPostsAPI(tag) {
-    return axios.get(`/hashtag/${encodeURIComponent(tag)}`, {
+function loadHashtagPostsAPI(tag, lastId) {
+    // console.log('saga lastId 값 : ', lastId);
+    return axios.get(`/hashtag/${encodeURIComponent(tag)}?lastId=${lastId}&limit=10`, {
         withCredentials: true,
     });
 }
 
 function* loadHashtagPosts(action) {
     try {
-        const result = yield call(loadHashtagPostsAPI, action.data); //action.data는 hash태그 내용
-        console.log('loadHashtagPosts 값 : ', JSON.stringify(result.data));
+        const result = yield call(loadHashtagPostsAPI, action.data, action.lastId); //action.data는 hash태그 내용
+        // console.log('loadHashtagPosts 값 : ', JSON.stringify(result.data));
         yield put({
             type: LOAD_HASHTAG_POSTS_SUCCESS,
             data: result.data,
@@ -354,7 +356,7 @@ function* loadHashtagPosts(action) {
 }
 
 function* watchLoadHashtagPosts() {
-    yield takeLatest(LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
+    yield throttle(2000, LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
 }
 //검색(해쉬태그) (끝)
 

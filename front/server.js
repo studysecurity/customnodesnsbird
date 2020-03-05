@@ -40,6 +40,10 @@ app.prepare().then(() => {
         return handle(req, res);
     });
 
+    server.get('/hashtag/:tag', (req, res) => {
+        return app.render(req, res, '/hashtag', { tag: req.params.tag });
+    });
+
     server.listen(prod ? process.env.PORT : 3060, () => {
         console.log(`next+express running on port ${process.env.PORT}`);
     });
