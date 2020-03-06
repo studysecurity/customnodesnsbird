@@ -302,4 +302,129 @@ router.post('/modify', isLoggedIn, upload.none(), async (req, res, next) => {
     }
 });
 
+//좋아요한 게시글들 가져오기
+router.get('/like', isLoggedIn, async (req, res, next) => {
+    try {
+        let where = {};
+        //페이지네이션
+        if (parseInt(req.query.lastId, 10)) {
+            where = {
+                id: {
+                    [Op.lt]: parseInt(req.query.lastId, 10),
+                },
+            };
+        }
+
+        const likePosts = await db.Post.findAll({
+            where,
+            include: [{
+                model: db.Hashtag,
+                attributes: ['id', 'tagName'],
+            }, {
+                model: db.Image,
+                attributes: ['id', 'src'],
+            }, {
+                model: db.User,
+                attributes: ['id', 'userNick'],
+            }, {
+                model: db.User,
+                through: 'Like',
+                as: 'Likers',
+                attributes: ['id'],
+                where: {
+                    id: {
+                        [Op.eq]: req.user.id,
+                    },
+                },
+            }],
+            order: [['createdAt', 'DESC']],
+            limit: parseInt(req.query.limit, 10),
+        });
+
+        // console.log('value value value : ', JSON.stringify(likePosts));
+        res.status(200).json(likePosts);
+    } catch(e) {
+        console.error(e);
+        next(e);
+    }
+});
+
+//팔로우한 게시글들 가져오기
+router.get('/followPosts', isLoggedIn, async (req, res, next) => {
+    try {
+        const loginUser = await db.User.findOne({
+            where: {
+                id: req.user.id,
+            },
+            attributes: ['id', 'userNick'],
+            include: [{
+                model: db.User,
+                through: 'Follow',
+                as: 'Followings',
+                attributes: ['id'],
+            }],
+        });
+        // console.log('loginUser 값 : ', JSON.stringify(loginUser));
+
+        const followings = loginUser.Followings.map(following => following.id);
+        // console.log('followings 값 : ', JSON.stringify(followings));
+
+        let where = {};
+        //페이지네이션
+        if (parseInt(req.query.lastId, 10)) {
+            where = {
+                auth: {
+                    [Op.eq]: 1,
+                },
+                UserId: {
+                    //팔로우한 사람의 정보를 가져오는 조건문
+                    [Op.in]: followings,
+                },
+                id: {
+                    [Op.lt]: parseInt(req.query.lastId, 10),
+                },
+            };
+        } else {
+            where = {
+                auth: {
+                    [Op.eq]: 1,
+                },
+                UserId: {
+                    //팔로우한 사람의 정보를 가져오는 조건문
+                    [Op.in]: followings,
+                },
+            };
+        }
+
+        const followingPosts = await db.Post.findAll({
+            where,
+            include: [{
+                model: db.User,
+                attributes: ['id', 'userNick'],
+            }, {
+                model: db.Image,
+                attributes: ['id', 'src', 'PostId'],
+            }, {
+                model: db.Hashtag,
+                attributes: ['id', 'tagName'],
+                through: {
+                    attributes: ['HashtagId'],
+                },
+            }, {
+                model: db.User,
+                through: 'Like',
+                as: 'Likers',
+                attributes: ['id'],
+            }],
+            order: [['createdAt', 'DESC']], //DESC 내림차순
+            limit: parseInt(req.query.limit, 10),
+        });
+        // console.log('value value value : ', JSON.stringify(followingPosts));
+        res.status(200).json(followingPosts);
+    } catch(e) {
+        console.error(e);
+        next(e);
+    }
+});
+
 module.exports = router;

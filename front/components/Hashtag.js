@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Link from 'next/link';
 
 const TagWrap = styled.span`
     border-radius: 50%;
@@ -17,11 +18,17 @@ const Hashtag = ({ hashtag }) => {
             {
                 hashtag.map((v) => {
                     return(
-                    <div key={v.id} style={{display: 'inline-block', marginTop: '10px'}}> 
-                        <TagWrap>
-                            #{v.tagName}
-                        </TagWrap>    
-                    </div>
+                        <Link
+                            href={{ pathname: '/hashtag', query: { tag: v.tagName }}}
+                            as={`/hashtag/${v.tagName}`}
+                            key={v.id}
+                        >
+                            <div style={{display: 'inline-block', marginTop: '10px'}}> 
+                                <TagWrap>
+                                    #{v.tagName}
+                                </TagWrap>    
+                            </div>
+                        </Link>
                     )
                 })
             }

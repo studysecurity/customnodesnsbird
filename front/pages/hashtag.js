@@ -9,21 +9,22 @@ const Hashtag = ({ tag }) => {
     const dispatch = useDispatch();
     const { mainPosts, hasMorePost } = useSelector(state => state.post);
 
-    //???? ??? ???
-    const countRef = useRef([]);
+    //infinite scroll paging
+    const hashcountRef = useRef([]);
 
     const onScroll = useCallback(() => {
         if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 600) {
             // console.log('hashtag.js lastId 값 : ', mainPosts[mainPosts.length - 1]);
             if (hasMorePost) {
                 const lastId = mainPosts[mainPosts.length - 1] && mainPosts[mainPosts.length - 1].id;
-                if(!countRef.current.includes(lastId)) {
+                // console.log('front lastId ? : ', lastId);
+                if(!hashcountRef.current.includes(lastId)) {
                     dispatch({
                         type: LOAD_HASHTAG_POSTS_REQUEST,
                         lastId,
                         data: tag,
                     });
-                    countRef.current.push(lastId);
+                    hashcountRef.current.push(lastId);
                 }
             }
         }
@@ -40,8 +41,8 @@ const Hashtag = ({ tag }) => {
         <div style={{marginTop: '30px'}}>
             {
                 mainPosts.length !== 0 ?
-                    mainPosts.map(c => (
-                        <PostCard key={c.id} post={c} />
+                    mainPosts.map((c, i) => (
+                        <PostCard key={i} post={c} />
                     ))
                     :
                     <Empty />

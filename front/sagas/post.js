@@ -34,6 +34,12 @@ import {
     LOAD_HASHTAG_POSTS_REQUEST,
     LOAD_HASHTAG_POSTS_SUCCESS,
     LOAD_HASHTAG_POSTS_FAILURE,
+    LOAD_LIKE_POSTS_REQUEST,
+    LOAD_LIKE_POSTS_SUCCESS,
+    LOAD_LIKE_POSTS_FAILURE,
+    LOAD_FOLLOW_POSTS_REQUEST,
+    LOAD_FOLLOW_POSTS_SUCCESS,
+    LOAD_FOLLOW_POSTS_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
@@ -332,7 +338,7 @@ function* watchLoadUserPosts() {
 //내가 작성한 게시글 가져오기(끝)
 
 //검색(해쉬태그) (시작)
-function loadHashtagPostsAPI(tag, lastId) {
+function loadHashtagPostsAPI(tag, lastId = 0) {
     // console.log('saga lastId 값 : ', lastId);
     return axios.get(`/hashtag/${encodeURIComponent(tag)}?lastId=${lastId}&limit=10`, {
         withCredentials: true,
@@ -356,9 +362,64 @@ function* loadHashtagPosts(action) {
 }
 
 function* watchLoadHashtagPosts() {
+    // console.log('LOAD_HASHTAG_POSTS_REQUEST EXECUTE');
     yield throttle(2000, LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
 }
 //검색(해쉬태그) (끝)
+
+//좋아요한 게시글들 불러오기(시작)
+function loadLikePostsAPI(lastId = 0, limit = 10) {
+    return axios.get(`/post/like?lastId=${lastId}&limit=${limit}`, {
+        withCredentials: true,
+    });
+}
+
+function* loadLikePosts(action) {
+    try {
+        const result = yield call(loadLikePostsAPI, action.data);
+        yield put({
+            type: LOAD_LIKE_POSTS_SUCCESS,
+            data: result.data,
+        });
+    } catch(e) {
+        console.error(e);
+        yield put({
+            type: LOAD_LIKE_POSTS_FAILURE,
+        });
+    }
+}
+
+function* watchLoadLikePosts() {
+    yield throttle(2000, LOAD_LIKE_POSTS_REQUEST, loadLikePosts);
+}
+//좋아요한 게시글들 불러오기(끝)
+
+//팔로우들의 게시글 가져오기(시작)
+function loadFollowPostsAPI(lastId = 0, limit = 10) {
+    return axios.get(`/post/followPosts?lastId=${lastId}&limit=${limit}`, {
+        withCredentials: true,
+    });
+}
+
+function* loadFollowPosts(action) {
+    try {
+        const result = yield call(loadFollowPostsAPI, action.data);
+        yield put({
+            type: LOAD_FOLLOW_POSTS_SUCCESS,
+            data: result.data,
+        });
+    } catch(e) {
+        console.error(e);
+        yield put({
+            type: LOAD_FOLLOW_POSTS_FAILURE,
+        });
+    }
+}
+
+function* watchLoadFollowPosts() {
+    yield throttle(2000, LOAD_FOLLOW_POSTS_REQUEST, loadFollowPosts);
+}
+//팔로우들의 게시글 가져오기(끝)
 
 export default function* postSaga() {
     yield all([
@@ -373,5 +434,7 @@ export default function* postSaga() {
         fork(watchModifyPost),
         fork(watchLoadUserPosts),
         fork(watchLoadHashtagPosts),
+        fork(watchLoadLikePosts),
+        fork(watchLoadFollowPosts),
     ]);
 };

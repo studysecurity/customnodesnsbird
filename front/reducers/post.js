@@ -59,6 +59,14 @@ export const LOAD_HASHTAG_POSTS_REQUEST = 'LOAD_HASHTAG_POSTS_REQUEST';
 export const LOAD_HASHTAG_POSTS_SUCCESS = 'LOAD_HASHTAG_POSTS_SUCCESS';
 export const LOAD_HASHTAG_POSTS_FAILURE = 'LOAD_HASHTAG_POSTS_FAILURE';
 
+export const LOAD_LIKE_POSTS_REQUEST = 'LOAD_LIKE_POSTS_REQUEST';
+export const LOAD_LIKE_POSTS_SUCCESS = 'LOAD_LIKE_POSTS_SUCCESS';
+export const LOAD_LIKE_POSTS_FAILURE = 'LOAD_LIKE_POSTS_FAILURE';
+
+export const LOAD_FOLLOW_POSTS_REQUEST = 'LOAD_FOLLOW_POSTS_REQUEST';
+export const LOAD_FOLLOW_POSTS_SUCCESS = 'LOAD_FOLLOW_POSTS_SUCCESS';
+export const LOAD_FOLLOW_POSTS_FAILURE = 'LOAD_FOLLOW_POSTS_FAILURE';
+
 export default (state = initialState, action) => {
     return produce(state, (draft) => {
         switch (action.type) {
@@ -106,15 +114,20 @@ export default (state = initialState, action) => {
             }
 
             case LOAD_MAIN_POSTS_REQUEST:
+            case LOAD_LIKE_POSTS_REQUEST:
+            case LOAD_FOLLOW_POSTS_REQUEST:
             case LOAD_HASHTAG_POSTS_REQUEST: 
             case LOAD_USER_POSTS_REQUEST: {
                 draft.mainPosts = !action.lastId ? [] : draft.mainPosts;
                 draft.hasMorePost = action.lastId ? draft.hasMorePost : true;
-                console.log('LOAD_POSTS_REQUEST hasMorePost 값 : ', draft.hasMorePost);
+                // console.log('LOAD_POSTS_REQUEST hasMorePost 값 : ', draft.hasMorePost);
+                // console.log('LastId value : ', action.lastId && action.lastId);
                 break;
             }
 
             case LOAD_MAIN_POSTS_SUCCESS: 
+            case LOAD_LIKE_POSTS_SUCCESS:
+            case LOAD_FOLLOW_POSTS_SUCCESS:
             case LOAD_HASHTAG_POSTS_SUCCESS:
             case LOAD_USER_POSTS_SUCCESS: {
                 // console.log('LOAD_HASHTAG_POSTS_SUCCESS : ', action.data);
@@ -122,11 +135,13 @@ export default (state = initialState, action) => {
                     draft.mainPosts.push(d);
                 });
                 draft.hasMorePost = action.data.length === 10;
-                console.log('LOAD_POSTS_SUCCESS hasMorePost 값 : ', draft.hasMorePost);
+                // console.log('LOAD_POSTS_SUCCESS hasMorePost 값 : ', draft.hasMorePost);
                 break;
             }
 
             case LOAD_MAIN_POSTS_FAILURE: 
+            case LOAD_LIKE_POSTS_FAILURE:
+            case LOAD_FOLLOW_POSTS_FAILURE:
             case LOAD_HASHTAG_POSTS_FAILURE:
             case LOAD_USER_POSTS_FAILURE: {
                 break;

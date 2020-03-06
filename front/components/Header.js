@@ -36,12 +36,16 @@ const Header = () => {
                         <FontAwesomeIcon icon={faCompass} size="2x" style={{marginRight: '25px'}}/>
                     </a>
                 </Link>
-                <Link href="/follow">
+                <Link href="/like">
                     <a style={{color : 'inherit'}}>
                         <FontAwesomeIcon icon={faHeart} size="2x" style={{marginRight: '25px'}}/>
                     </a>
                 </Link>
-                <FontAwesomeIcon icon={faUser} size="2x" />
+                <Link href="/followposts">
+                    <a style={{color: 'inherit'}}>
+                        <FontAwesomeIcon icon={faUser} size="2x" />
+                    </a>
+                </Link>
             </div>
         </div>
     );

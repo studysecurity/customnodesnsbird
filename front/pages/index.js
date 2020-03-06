@@ -54,8 +54,7 @@ const Index = () => {
         // console.log(window.scrollY, document.documentElement.clientHeight, document.documentElement.scrollHeight);
         if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 600){
             if (hasMorePost) {
-                const lastId = mainPosts[mainPosts.length - 1].id;
-                // console.log('lastId 값 : ', lastId);
+                const lastId = mainPosts[mainPosts.length - 1] && mainPosts[mainPosts.length - 1].id;
                 //페이지네이션시 리덕스요청이 여러개 보내는 현상이 있는데 요청을 한번만 가게 제한.
                 if (!countRef.current.includes(lastId)) { 
                     dispatch({
@@ -99,7 +98,7 @@ const Index = () => {
     }, [isSignedUp]);
 
     useEffect(() => {
-        return dispatch({
+        dispatch({
             type: LOAD_MAIN_POSTS_REQUEST,
         });
     }, []);
@@ -155,9 +154,9 @@ const Index = () => {
                 <PostForm />
                 {
                     // mainPosts.length !== 0 ?
-                    mainPosts.map((c, i) => {
+                    mainPosts.map((c) => {
                         return (
-                            <PostCard key={i} post={c} /> 
+                            <PostCard key={c.id} post={c} /> 
                         );
                     })
                     // :

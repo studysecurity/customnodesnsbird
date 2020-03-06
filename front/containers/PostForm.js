@@ -136,7 +136,7 @@ const PostForm = memo(({ modifyPost, onModifyPostCancel, onModifyPostOk }) => {
 
     //게시물 업로드
     const onSubmit = useCallback((e) => {
-        console.log('게시물 업로드 쪽 왔다..');
+        // console.log('게시물 업로드 쪽 왔다..');
         e.preventDefault();
 
         //게시글 작성
