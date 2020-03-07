@@ -121,7 +121,7 @@ const PostForm = memo(({ modifyPost, onModifyPostCancel, onModifyPostOk }) => {
     useEffect(() => {
         //modifyPost 객체 값이 없는지 판별
         if (Object.keys(modifyPost).length !== 0) {
-            console.log('modifyPost 있다 : ', modifyPost);
+            // console.log('modifyPost 있다 : ', modifyPost);
             setSetting(modifyPost.auth);
             setText(modifyPost.content);
             const tags = modifyPost.Hashtags.map(v => {

@@ -23,11 +23,13 @@ const Hashtag = ({ hashtag }) => {
                             as={`/hashtag/${v.tagName}`}
                             key={v.id}
                         >
-                            <div style={{display: 'inline-block', marginTop: '10px'}}> 
-                                <TagWrap>
-                                    #{v.tagName}
-                                </TagWrap>    
-                            </div>
+                            <a>
+                                <div style={{display: 'inline-block', marginTop: '10px'}}> 
+                                    <TagWrap>
+                                        #{v.tagName}
+                                    </TagWrap>    
+                                </div>
+                            </a>
                         </Link>
                     )
                 })

@@ -40,6 +40,9 @@ import {
     LOAD_FOLLOW_POSTS_REQUEST,
     LOAD_FOLLOW_POSTS_SUCCESS,
     LOAD_FOLLOW_POSTS_FAILURE,
+    LOAD_SINGLE_POST_REQUEST,
+    LOAD_SINGLE_POST_SUCCESS,
+    LOAD_SINGLE_POST_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
@@ -421,6 +424,33 @@ function* watchLoadFollowPosts() {
 }
 //팔로우들의 게시글 가져오기(끝)
 
+//게시글 이동(게시글 내용 가져오기 시작)
+function loadSinglePostAPI(postId) {
+    return axios.get(`/post/single/${postId}` ,{
+        withCredentials: true,
+    });
+}
+
+function* loadSinglePost(action) {
+    try {
+        const result = yield call(loadSinglePostAPI, action.data);
+        yield put({
+            type: LOAD_SINGLE_POST_SUCCESS,
+            data: result.data,
+        });
+    } catch(e) {
+        console.error(e);
+        yield put({
+            type: LOAD_SINGLE_POST_FAILURE,
+        });
+    }
+}
+
+function* watchLoadSinglePost() {
+    yield takeLatest(LOAD_SINGLE_POST_REQUEST, loadSinglePost);
+}
+//게시글 이동(게시글 내용 가져오기 끝)
+
 export default function* postSaga() {
     yield all([
         fork(watchUploadImages),
@@ -436,5 +466,6 @@ export default function* postSaga() {
         fork(watchLoadHashtagPosts),
         fork(watchLoadLikePosts),
         fork(watchLoadFollowPosts),
+        fork(watchLoadSinglePost),
     ]);
 };

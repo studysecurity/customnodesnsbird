@@ -67,6 +67,10 @@ export const LOAD_FOLLOW_POSTS_REQUEST = 'LOAD_FOLLOW_POSTS_REQUEST';
 export const LOAD_FOLLOW_POSTS_SUCCESS = 'LOAD_FOLLOW_POSTS_SUCCESS';
 export const LOAD_FOLLOW_POSTS_FAILURE = 'LOAD_FOLLOW_POSTS_FAILURE';
 
+export const LOAD_SINGLE_POST_REQUEST = 'LOAD_SINGLE_POST_REQUEST';
+export const LOAD_SINGLE_POST_SUCCESS = 'LOAD_SINGLE_POST_SUCCESS';
+export const LOAD_SINGLE_POST_FAILURE = 'LOAD_SINGLE_POST_FAILURE';
+
 export default (state = initialState, action) => {
     return produce(state, (draft) => {
         switch (action.type) {
@@ -248,6 +252,20 @@ export default (state = initialState, action) => {
             }
 
             case MODIFY_POST_FAILURE: {
+                break;
+            }
+
+            case LOAD_SINGLE_POST_REQUEST: {
+                draft.mainPosts = [];
+                break;
+            }
+
+            case LOAD_SINGLE_POST_SUCCESS: {
+                draft.mainPosts = action.data;
+                break;
+            }
+
+            case LOAD_SINGLE_POST_FAILURE: {
                 break;
             }
         }

@@ -427,4 +427,35 @@ router.get('/followPosts', isLoggedIn, async (req, res, next) => {
     }
 });
 
+router.get('/single/:id', isLoggedIn, async (req, res, next) => {
+    try {
+        const singlePost = await db.Post.findOne({
+            where: { id: req.params.id },
+            include: [{
+                model: db.User,
+                attributes: ['id', 'userNick'],
+            }, {
+                model: db.Image,
+                attributes: ['id', 'src', 'PostId'],
+            }, {
+                model: db.Hashtag,
+                attributes: ['id', 'tagName'],
+                through: {
+                    attributes: ['HashtagId'],
+                },
+            }, {
+                model: db.User,
+                through: 'Like',
+                as: 'Likers',
+                attributes: ['id'],
+            }],
+        });
+
+        res.status(200).json(singlePost);
+    } catch(e) {
+        console.error(e);
+        next(e);
+    }
+});
+
 module.exports = router;

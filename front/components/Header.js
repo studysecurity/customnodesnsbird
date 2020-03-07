@@ -18,9 +18,9 @@ const Header = () => {
         <div style={{borderBottom: '1px solid #E2E2E2' ,backgroundColor: 'white', height: '77px', margin: '0 auto', display: 'flex'}}>
             <div style={{width: '33.3%', margin: 'auto 0', textAlign: 'center'}}>
                 <Link href="/">
-                <a style={{fontWeight: 'bold', fontStyle: 'italic', fontSize: '17px'}}>
-                    NodeSNSBird
-                </a>
+                    <a style={{fontWeight: 'bold', fontStyle: 'italic', fontSize: '17px'}}>
+                        NodeSNSBird
+                    </a>
                 </Link>
             </div>
             <div style={{width: '33.3%', margin: 'auto 0', textAlign: 'center'}}>

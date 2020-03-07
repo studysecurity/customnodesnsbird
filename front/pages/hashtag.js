@@ -51,7 +51,7 @@ const Hashtag = ({ tag }) => {
     );
 };
 
-Hashtag.prototype = {
+Hashtag.propTypes = {
     tag: PropTypes.string.isRequired,
 };
 

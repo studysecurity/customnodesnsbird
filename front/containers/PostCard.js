@@ -1,8 +1,8 @@
-import React, { memo, useCallback, useState, useEffect } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { Card, Avatar, Popover, Button, Modal, List } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRetweet, faEllipsisH, faUserCircle, faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisH, faUserCircle, faHeart } from '@fortawesome/free-solid-svg-icons';
 import { faCommentDots } from '@fortawesome/free-regular-svg-icons';
 import PostImages from '../components/PostImages';
 import moment from 'moment';
@@ -15,9 +15,14 @@ import {
     MODIFY_LOAD_POST_IMAGES_CLEARED,
     MODIFY_LOAD_POST_IMAGES_REQUEST,
 } from '../reducers/post';
+import {
+    FOLLOW_USER_REQUEST,
+    UNFOLLOW_USER_REQUEST,
+} from '../reducers/user';
 import Hashtag from '../components/Hashtag';
 import CommentForm from '../containers/CommentForm';
 import PostForm from '../containers/PostForm';
+import Link from 'next/link';
 
 const CardWrapper = styled.div`
     /* border: solid 1px #CCEEFF;  */
@@ -72,8 +77,32 @@ const PostCard = memo(({ post }) => {
     const [commentFormOpened, setCommentFormOpened] = useState(false);
     //글 수정 모달을 가리는 popover을 없애기
     const [visiblePopover, setVisiblePopover] = useState(false);
-
+    //팔로우 여부판단
+    const following = useSelector(state => state.user.me.Followings && state.user.me.Followings);
     // console.log('PostCard의 post 값 : ', post);
+
+    //팔로우 클릭
+    const onFollow = useCallback(userId => () => {
+        // console.log('팔로우 id 값 : ',userId);
+        //팔로우 하는 아이디와 로그인한 아이디가 같으면
+        if (userId === id) { 
+            return alert('자기자신은 팔로우 할 수 없습니다.');
+        } 
+
+        dispatch({
+            type: FOLLOW_USER_REQUEST,
+            data: userId, 
+        });
+    }, []);
+
+    //팔로우 취소 클릭 (언팔로우)
+    const onUnFollow = useCallback(userId => () => {
+        // console.log('팔로우 취소 id 값 : ',userId);
+        dispatch({
+            type: UNFOLLOW_USER_REQUEST,
+            data: userId,
+        });
+    }, []);
 
     //popover 창 제어
     const onChangePopover = useCallback(() => {
@@ -180,12 +209,11 @@ const PostCard = memo(({ post }) => {
             <Card
                 cover={post.Images && <PostImages images={post.Images} />}
                 actions={[
-                    <FontAwesomeIcon key="retweet" icon={faRetweet} />,
                     <FontAwesomeIcon 
                         key="heart" 
                         icon={faHeart} 
                         onClick={onToggleLike}
-                        style={liked ? {color: 'red'} : {color: 'none'}} 
+                        style={liked ? {color: 'red'} : {color: 'inherit'}} 
                     />,
                     <FontAwesomeIcon key="dots" icon={faCommentDots} onClick={onToggleComment} />,
                     <Popover
@@ -254,16 +282,32 @@ const PostCard = memo(({ post }) => {
           visible={visible}
           footer={null}
         >
-            <Button block={true}>
-                <span>
-                    팔로우 혹은 팔로우 취소
-                </span>
-            </Button>
-            <Button block={true}>
-                <span>
-                    게시물로 이동
-                </span>
-            </Button>
+            {
+                (following.filter(following => following.id === post.User.id)).length === 0 ?
+                    <Button block={true} onClick={onFollow(post.User.id)}>
+                        <span>
+                            팔로우
+                        </span>
+                    </Button>
+                    :
+                    <Button block={true} onClick={onUnFollow(post.User.id)}>
+                        <span>
+                            팔로우 취소
+                        </span>
+                    </Button>
+            }
+            <Link
+                 href={{ pathname: '/singlepost', query: { id: post.id }}}
+                 as={`/singlepost/${post.id}`}
+            >
+                <a style={{color: 'inherit'}}>
+                    <Button block={true}>
+                        <span>
+                            게시물로 이동
+                        </span>
+                    </Button>
+                </a>
+            </Link>
             <Button block={true} onClick={handleCancel} type="danger">
                 취소
             </Button>

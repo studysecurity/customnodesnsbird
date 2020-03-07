@@ -16,8 +16,6 @@ import Link from 'next/link';
 import UserProfile from '../containers/UserProfile';
 import SideMenu from './SideMenu';
 import Header from '../components/Header';
-import { LOAD_USER_REQUEST } from '../reducers/user';
-import Router from 'next/router';
 
 const IntroWraper = styled.div`
     min-width: 360px;
