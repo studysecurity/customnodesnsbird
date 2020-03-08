@@ -314,6 +314,8 @@ router.get('/like', isLoggedIn, async (req, res, next) => {
                 },
             };
         }
+        // console.log('백엔드 좋아요 lastId 값 : ', req.query.lastId);
+        // console.log('백엔드 좋아요 where 값 : ', where);
 
         const likePosts = await db.Post.findAll({
             where,

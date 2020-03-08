@@ -372,6 +372,7 @@ function* watchLoadHashtagPosts() {
 
 //좋아요한 게시글들 불러오기(시작)
 function loadLikePostsAPI(lastId = 0, limit = 10) {
+    // console.log('사가 쪽 lastId 값 : ', lastId);
     return axios.get(`/post/like?lastId=${lastId}&limit=${limit}`, {
         withCredentials: true,
     });
@@ -379,7 +380,7 @@ function loadLikePostsAPI(lastId = 0, limit = 10) {
 
 function* loadLikePosts(action) {
     try {
-        const result = yield call(loadLikePostsAPI, action.data);
+        const result = yield call(loadLikePostsAPI, action.lastId);
         yield put({
             type: LOAD_LIKE_POSTS_SUCCESS,
             data: result.data,
@@ -406,7 +407,7 @@ function loadFollowPostsAPI(lastId = 0, limit = 10) {
 
 function* loadFollowPosts(action) {
     try {
-        const result = yield call(loadFollowPostsAPI, action.data);
+        const result = yield call(loadFollowPostsAPI, action.lastId);
         yield put({
             type: LOAD_FOLLOW_POSTS_SUCCESS,
             data: result.data,

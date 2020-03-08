@@ -79,6 +79,7 @@ export default (state = initialState, action) => {
             }
 
             case UPLOAD_IMAGES_SUCCESS: {
+                // console.log('UPLOAD_IMAGES_SUCCESS : ', JSON.stringify(action.data));
                 action.data.forEach((p) => {
                     draft.imagePaths.push(p);
                 });

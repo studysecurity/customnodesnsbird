@@ -78,7 +78,7 @@ const AppLayout = ({children}) => {
               size.width < 768 ?
               (
               <>
-              <Row style={{height: '45px', width: '100%', position: 'fixed', borderBottom: '1px solid #87CEFA'}}>
+              <Row style={{background: 'white', zIndex: '100', top: 0, height: '45px', width: '100%', position: 'fixed', borderBottom: '1px solid #87CEFA'}}>
                 <Col md={24}>
                   <div style={{height: '45px',  display: 'flex'}}>
                     <FontAwesomeIcon icon={faDove} style={{color: '#87CEFA', margin: 'auto 10'}} size="2x"/>
@@ -92,11 +92,10 @@ const AppLayout = ({children}) => {
               </Row>
               <Row style={{top: '45px', bottom: '45px', width: '100%'}}>
                 <Col md={24}>
-                  본문 내용
-                  {/* 나중에 손봐야함*/}
+                  {children}
                 </Col>
               </Row>
-              <Row type="flex" style={{height: '45px', position: 'fixed', bottom: '0', width: '100%', borderTop: '1px solid #87CEFA'}}>
+              <Row type="flex" style={{zIndex: 100, bottom: 0, background: 'white', height: '45px', position: 'fixed', bottom: '0', width: '100%', borderTop: '1px solid #87CEFA'}}>
                 <Col md={6} span={6} style={{margin: 'auto auto', textAlign: 'center'}}>
                   <FontAwesomeIcon icon={faHome} size="2x" />
                 </Col>

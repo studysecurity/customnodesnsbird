@@ -16,7 +16,7 @@ const Like = () => {
             // console.log('hashtag.js lastId ê°’ : ', mainPosts[mainPosts.length - 1]);
             if (hasMorePost) {
                 const lastId = mainPosts[mainPosts.length - 1] && mainPosts[mainPosts.length - 1].id;
-                // console.log('front lastId ? : ', lastId);
+                // console.log('like front lastId ? : ', lastId);
                 if(!likecountRef.current.includes(lastId)) {
                     dispatch({
                         type: LOAD_LIKE_POSTS_REQUEST,

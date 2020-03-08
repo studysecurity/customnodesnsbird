@@ -25,9 +25,9 @@ module.exports = withCSS(withBundleAnalyzer({
             module: {
                 ...config.module,
                 rules: [
-                    ...config.module.rules,
+                  ...config.module.rules,
                 ],
-            },
+              },
             plugins,
         }
     },

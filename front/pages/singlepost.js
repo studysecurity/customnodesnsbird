@@ -21,12 +21,13 @@ const SinglePost = () => {
 
 SinglePost.getInitialProps = async (context) => {
     const singlePostId = parseInt(context.query.id, 10);
-    console.log('Single Post getInitialProps : ', singlePostId);
+    // console.log('Single Post getInitialProps : ', singlePostId);
 
     context.store.dispatch({
         type: LOAD_SINGLE_POST_REQUEST,
         data: singlePostId,
     });
+    return { singlePostId };
 };
 
 export default SinglePost;

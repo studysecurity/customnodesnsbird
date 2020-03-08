@@ -13,8 +13,10 @@ import rootSaga from '../sagas';
 import axios from 'axios';
 import { LOAD_USER_REQUEST } from '../reducers/user';
 
+//tagsinput
 import 'react-tagsinput/react-tagsinput.css';
-import { LOAD_MAIN_POSTS_REQUEST } from '../reducers/post';
+//video
+import "video-react/dist/video-react.css";
 
 //Fontawesome SSR
 config.autoAddCss = false; // Tell Font Awesome to skip adding the CSS automatically since it's being imported above

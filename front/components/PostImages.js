@@ -3,6 +3,8 @@ import Slider from 'react-slick';
 import { backUrl } from '../config/config';
 import styled from 'styled-components';
 
+import { Player } from 'video-react';
+
 const SliderWrap = styled(Slider)`
     z-index: 50;
 
@@ -24,6 +26,8 @@ const SliderWrap = styled(Slider)`
 
 const PostImages = ({ images }) => {
 
+    // const fileExtension = images.slice(images.lastIndexOf(".")+1).toLowerCase();
+    
     return (
     <>
         <SliderWrap
@@ -36,20 +40,21 @@ const PostImages = ({ images }) => {
             {
                 images.map((v) => {
                     return (
-                        <div key={v.id}>
-                            <img
-                                src={`${backUrl}/${v.src}`} 
-                                style={{
-                                    objectFit: 'fill',
-                                    minWidth: '100%',
-                                    minHeight: '300px',
-                                    maxWidth: '100%',
-                                    maxHeight: '300px',
-                                    width: '100%',
-                                    height: '100%',
-                                }}
-                            />
-                        </div>
+                        // console.log('fileExtension 확인 : ', fileExtension !== 'mp4'),
+                            <div key={v.id}>
+                                <img
+                                    src={`${backUrl}/${v.src}`} 
+                                    style={{
+                                        objectFit: 'fill',
+                                        minWidth: '100%',
+                                        minHeight: '300px',
+                                        maxWidth: '100%',
+                                        maxHeight: '300px',
+                                        width: '100%',
+                                        height: '100%',
+                                    }}
+                                />
+                            </div>
                     );
                 })
             }

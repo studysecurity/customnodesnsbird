@@ -6,6 +6,9 @@ const expressSession = require('express-session');
 const dotenv = require('dotenv');
 const path = require('path');
 
+// const { createServer } = require('http');
+// const { parse }
+
 //배포 여부
 const dev = process.env.NODE_ENV !== 'production';
 const prod = process.env.NODE_ENV === 'production';
@@ -35,13 +38,18 @@ app.prepare().then(() => {
         },
     }));
 
+    
     //개별 포스트 불러오기
-    server.get('*', (req, res) => {
-        return handle(req, res);
-    });
-
     server.get('/hashtag/:tag', (req, res) => {
         return app.render(req, res, '/hashtag', { tag: req.params.tag });
+    });
+    
+    server.get('/singlepost/:id', (req, res) => {
+        return app.render(req, res, '/singlepost', { id: req.params.id });
+    });
+    
+    server.get('*', (req, res) => {
+        return handle(req, res);
     });
 
     server.listen(prod ? process.env.PORT : 3060, () => {
