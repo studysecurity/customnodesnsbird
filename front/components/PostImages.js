@@ -22,12 +22,14 @@ const SliderWrap = styled(Slider)`
     .slick-prev::before {
         color: #f5f5f5;
     }
+
+    .video-react-big-play-button {
+        display: none;
+    }
 `;
 
 const PostImages = ({ images }) => {
 
-    // const fileExtension = images.slice(images.lastIndexOf(".")+1).toLowerCase();
-    
     return (
     <>
         <SliderWrap
@@ -36,12 +38,18 @@ const PostImages = ({ images }) => {
             speed={500}
             slidesToShow={1}
             slidesToScroll={1}
+            adaptiveHeight={true}
         >
             {
                 images.map((v) => {
+                    //확장자
+                    const fileExtension = v.src.slice(v.src.lastIndexOf(".")+1).toLowerCase();
+
                     return (
-                        // console.log('fileExtension 확인 : ', fileExtension !== 'mp4'),
-                            <div key={v.id}>
+                         fileExtension !== 'mp4' ?
+                            <div 
+                                key={v.id}
+                            >
                                 <img
                                     src={`${backUrl}/${v.src}`} 
                                     style={{
@@ -50,10 +58,18 @@ const PostImages = ({ images }) => {
                                         minHeight: '300px',
                                         maxWidth: '100%',
                                         maxHeight: '300px',
-                                        width: '100%',
-                                        height: '100%',
+                                        width: 'auto',
+                                        height: 'auto',
                                     }}
                                 />
+                            </div>
+                            :
+                            <div key={v.id}>
+                                <Player
+                                    playsInline
+                                    src={`${backUrl}/${v.src}`}
+                                >
+                                </Player>
                             </div>
                     );
                 })

@@ -14,6 +14,7 @@ import { faTimes, faImage } from '@fortawesome/free-solid-svg-icons';
 import TagsInput from 'react-tagsinput';
 import styled from 'styled-components';
 import { backUrl } from '../config/config';
+import VideoThumbnail from 'react-video-thumbnail';
 
 // const PostFormWrapper = styled.div`
 //     background: white;
@@ -24,7 +25,17 @@ import { backUrl } from '../config/config';
 //     clear: both;
 // `;
 
-//{modifyPost={modifyPost : {}}}
+const VideoWrapper = styled.div`
+    display: inline-block; 
+    position: relative; 
+    border: 1px solid #E2E2E2;
+
+    /* 동영상 썸네일 크기 */
+    & .react-thumbnail-generator > img {
+        width: 250px;
+        height: 160px;
+    }
+`;
 
 const PostForm = memo(({ modifyPost, onModifyPostCancel, onModifyPostOk }) => {
     const dispatch = useDispatch();
@@ -250,28 +261,55 @@ const PostForm = memo(({ modifyPost, onModifyPostCancel, onModifyPostOk }) => {
                     }
                 </div>
                 <div style={{overflow: 'auto', whiteSpace: 'nowrap'}}>
-                    {imagePaths.map((v, i) => (
-                    <div key={v} style={{position: 'relative', display: 'inline-block', border: '1px solid #E2E2E2'}}>
-                        <img 
-                            src={`${backUrl}/${v}`} 
-                            style={{
-                                maxWidth: '250px', 
-                                maxHeight: '160px',
-                                minWidth: '250px',
-                                minHeight: '160px',
-                                width: 'auto',
-                                height: 'auto',
-                                objectFit: 'fill',
-                            }} 
-                            alt={v} 
-                        />
-                        <FontAwesomeIcon
-                            icon={faTimes} 
-                            style={{position: 'absolute', color: 'white', top: 4, right: 4, height: '20px', width:' 20px', backgroundColor: 'black', borderRadius: '50%'}}
-                            onClick={onRemoveImage(i)}
-                        />
-                    </div>
-                    ))}
+                    {
+                        imagePaths.map((v, i) => {
+                             //확장자
+                            const fileExtension = v.slice(v.lastIndexOf(".")+1).toLowerCase();
+                            return (
+                                fileExtension === 'jfif' || fileExtension === 'png' || fileExtension === 'jpg' ?
+                                    <div key={v} style={{position: 'relative', display: 'inline-block', border: '1px solid #E2E2E2'}}>
+                                        <img 
+                                            src={`${backUrl}/${v}`} 
+                                            style={{
+                                                maxWidth: '250px', 
+                                                maxHeight: '160px',
+                                                minWidth: '250px',
+                                                minHeight: '160px',
+                                                width: 'auto',
+                                                height: 'auto',
+                                                objectFit: 'fill',
+                                            }} 
+                                            alt={v} 
+                                        />
+                                        <FontAwesomeIcon
+                                            icon={faTimes} 
+                                            style={{position: 'absolute', color: 'white', top: 4, right: 4, height: '20px', width:' 20px', backgroundColor: 'black', borderRadius: '50%'}}
+                                            onClick={onRemoveImage(i)}
+                                        />
+                                    </div>
+                                    :
+                                    // <div 
+                                    //     key={v} 
+                                    //     style={{
+                                    //         position: 'relative', 
+                                    //         display: 'inline-block', 
+                                    //         border: '1px solid #E2E2E2',
+                                    //     }}
+                                    // >
+                                    <VideoWrapper key={v}>
+                                        <VideoThumbnail
+                                            videoUrl={`${backUrl}/${v}`}
+                                        />
+                                        <FontAwesomeIcon
+                                            icon={faTimes} 
+                                            style={{position: 'absolute', color: 'white', top: 4, right: 4, height: '20px', width:' 20px', backgroundColor: 'black', borderRadius: '50%'}}
+                                            onClick={onRemoveImage(i)}
+                                        />
+                                    </VideoWrapper>
+                                    // </div>
+                            );
+                        })
+                    }
                 </div>
                 <hr style={{border: 'solid 5px rgb(230, 236, 240)', marginBottom: '2px', }} />
                 {
