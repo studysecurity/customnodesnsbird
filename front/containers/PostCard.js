@@ -261,7 +261,6 @@ const PostCard = memo(({ post }) => {
                             itemLayout="horizontal"
                             dataSource={post.Comments || []}
                             renderItem={item => (
-                                console.log('item 값 : ', item),
                                 <List.Item>
                                     <List.Item.Meta
                                         avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}

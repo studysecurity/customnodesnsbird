@@ -3,6 +3,7 @@ import { Card, Avatar, Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { LOGOUT_REQUEST } from '../reducers/user';
 import Link from 'next/link';
+import Router from 'next/router';
 
 const UserProfile = () => {
     const { me } = useSelector(state => state.user);
@@ -12,6 +13,7 @@ const UserProfile = () => {
         dispatch({
             type: LOGOUT_REQUEST,
         });
+        Router.push('/');
     }, []);
 
     return (
@@ -38,7 +40,7 @@ const UserProfile = () => {
             avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"></Avatar>}
             title={me && me.userNick}
         />
-        <Link href="/">
+        <Link href="/" key="logout">
             <a>
                 <Button type="primary" onClick={onLogout}>로그아웃</Button>
             </a>

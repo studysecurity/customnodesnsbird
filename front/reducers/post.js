@@ -105,7 +105,9 @@ export default (state = initialState, action) => {
 
             case ADD_POST_SUCCESS: {
                 draft.isAddingPost = false;
-                draft.mainPosts.unshift(action.data);
+                if (action.data.auth === 0) {
+                    draft.mainPosts.unshift(action.data);
+                }
                 draft.postAdded = true;
                 draft.imagePaths = [];
                 break;

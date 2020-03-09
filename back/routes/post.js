@@ -89,6 +89,7 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
             }],
         }); 
 
+        //전체공개 게시글만 포스트 추가시 덧붙여서 프론트에 보여주기.
         res.status(200).json(fullPost);
     } catch(e) {
         console.error(e);

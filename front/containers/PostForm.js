@@ -266,7 +266,7 @@ const PostForm = memo(({ modifyPost, onModifyPostCancel, onModifyPostOk }) => {
                              //확장자
                             const fileExtension = v.slice(v.lastIndexOf(".")+1).toLowerCase();
                             return (
-                                fileExtension === 'jfif' || fileExtension === 'png' || fileExtension === 'jpg' ?
+                                fileExtension === 'jfif' || fileExtension === 'png' || fileExtension === 'jpg' || fileExtension === 'jpeg' ?
                                     <div key={v} style={{position: 'relative', display: 'inline-block', border: '1px solid #E2E2E2'}}>
                                         <img 
                                             src={`${backUrl}/${v}`} 
@@ -288,14 +288,6 @@ const PostForm = memo(({ modifyPost, onModifyPostCancel, onModifyPostOk }) => {
                                         />
                                     </div>
                                     :
-                                    // <div 
-                                    //     key={v} 
-                                    //     style={{
-                                    //         position: 'relative', 
-                                    //         display: 'inline-block', 
-                                    //         border: '1px solid #E2E2E2',
-                                    //     }}
-                                    // >
                                     <VideoWrapper key={v}>
                                         <VideoThumbnail
                                             videoUrl={`${backUrl}/${v}`}
@@ -306,7 +298,6 @@ const PostForm = memo(({ modifyPost, onModifyPostCancel, onModifyPostOk }) => {
                                             onClick={onRemoveImage(i)}
                                         />
                                     </VideoWrapper>
-                                    // </div>
                             );
                         })
                     }

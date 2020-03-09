@@ -274,6 +274,7 @@ router.get('/:id/posts', isLoggedIn, async (req, res, next) => {
                 as: 'Likers',
                 attributes: ['id'],
             }],
+            order: [['createdAt', 'DESC']], //DESC 내림차순
         });
         res.status(200).json(posts);
     } catch(e) {

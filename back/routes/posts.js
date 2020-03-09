@@ -20,6 +20,12 @@ router.get('/', isLoggedIn, async (req, res, next) => {
                         [Op.lt]: parseInt(req.query.lastId, 10),
                     },
                 };
+            } else {
+                where = {
+                    auth: {
+                        [Op.eq]: 0,
+                    },
+                }
             }
             // console.log('where 1값 : ', where);
 

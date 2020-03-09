@@ -36,13 +36,6 @@ const Follow = () => {
         });
     }, []);
 
-    //메인 화면으로 이동 (안그러면 follow 링크 그대로 남아있어서 이상하게 나옴)
-    // useEffect(() => {
-    //     if(!me) {
-    //         Router.push('/');
-    //     }
-    // }, [me]);
-
     return (
         <>
             <div>

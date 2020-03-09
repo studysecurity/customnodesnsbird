@@ -134,7 +134,7 @@ const Index = () => {
                     <div style={{color: 'red', fontWeight: 'bold'}}>{isLoginErrorReason}</div>
                     <Form.Item>
                         {/* <Checkbox>자동 로그인</Checkbox> */}
-                        <a style={{float: "right"}}>비밀번호 찾기</a>
+                        {/* <a style={{float: "right"}}>비밀번호 찾기</a> */}
                         <Button 
                             type="primary" htmlType="submit" style={{width: '100%'}}
                             loading={isLoggingIn}

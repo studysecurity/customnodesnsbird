@@ -32,9 +32,9 @@ const CommentForm = ({post}) => {
 
     return (
         <Form onSubmit={onSubmitComment}>
-            <Form.Item>
-                <Input.TextArea rows={4} value={commentText} onChange={onChangeCommentText} style={{width: '90%'}}/>
-                <Button type="primary" htmlType="submit" loading={isAddingComment} style={{width: '10%', height: '98px'}}>댓글</Button>
+            <Form.Item style={{margin: '0 5px'}}>
+                <Input.TextArea rows={4} value={commentText} onChange={onChangeCommentText} style={{width: '85%'}}/>
+                <Button type="primary" htmlType="submit" loading={isAddingComment} style={{width: '15%', height: '98px', paddingRight: '10px'}}>댓글</Button>
             </Form.Item>
         </Form>
     );
