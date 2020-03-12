@@ -7,6 +7,8 @@ const dotenv = require('dotenv');
 const passport = require('passport');
 const hpp = require('hpp');
 const helmet = require('helmet');
+const https = require('https');
+const http = require('http');
 
 const passportConfig = require('./passport')
 const db = require('./models');
@@ -63,7 +65,7 @@ app.use(expressSession({
         //자바스크립트로 쿠키 접근 금지(보안)
         httpOnly: true,
         //https 사용시 true
-        secure: false, 
+        secure: prod, 
         domain: prod && '.nodesnsbird.ga', //서브 도메인도 쿠키 값을 받을 수 있게 사용
     },
     //익스프레스 디폴트 쿠키 아이디를 다른걸로 변경(디폴트 이름이면 익스프레스인지 알수 있어 
@@ -87,6 +89,27 @@ app.use('/api/post', postAPIRouter);
 app.use('/api/posts', postsAPIRouter);
 app.use('/api/hashtag', hashtagAPIRouter);
 
-app.listen(prod ? process.env.PORT : 3065, () => {
-    console.log(`server is running on ${process.env.PORT}`);
-});
+if (prod) {
+    const lex = require('greenlock-express').create({
+        version: 'draft-11',
+        configDir: '/etc/letsencrypt', // 또는 ~/letsencrypt/etc
+        server: 'https://acme-v02.api.letsencrypt.org/directory',
+        approveDomains: (opts, certs, cb) => {
+          if (certs) {
+            opts.domains = ['api.nodesnsbird.ga'];
+          } else {
+            opts.email = 'ssp5746@gmail.com';
+            opts.agreeTos = true;
+          }
+          cb(null, { options: opts, certs });
+        },
+        renewWithin: 81 * 24 * 60 * 60 * 1000,
+        renewBy: 80 * 24 * 60 * 60 * 1000,
+      });
+      https.createServer(lex.httpsOptions, lex.middleware(app)).listen(443);
+      http.createServer(lex.middleware(require('redirect-https')())).listen(80);
+} else {
+    app.listen(prod ? process.env.PORT : 3065, () => {
+        console.log(`server is running on ${process.env.PORT}`);
+    });
+}

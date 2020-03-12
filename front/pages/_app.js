@@ -42,7 +42,7 @@ const NodeSnsBird = ({ Component, store, pageProps }) => {
                 }, {
                     property: 'og:type', content: 'website',
                 }, {
-                    property: 'og:image', content: 'http://nodesnsbird.ga/favicon.ico',
+                    property: 'og:image', content: 'https://nodesnsbird.ga/favicon.ico',
                 }]}
                 link={[{
                     rel: 'shortcut icon', href: '/favicon.ico',
