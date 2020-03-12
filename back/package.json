@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "start": "cross-env NODE_ENV=production PORT=80 pm2 start index.js"
   },
   "author": "ss",
   "license": "ISC",
