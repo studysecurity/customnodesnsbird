@@ -269,7 +269,7 @@ const PostForm = memo(({ modifyPost, onModifyPostCancel, onModifyPostOk }) => {
                                 fileExtension === 'jfif' || fileExtension === 'png' || fileExtension === 'jpg' || fileExtension === 'jpeg' ?
                                     <div key={v} style={{position: 'relative', display: 'inline-block', border: '1px solid #E2E2E2'}}>
                                         <img 
-                                            src={`${backUrl}/${v}`} 
+                                            src={process.env.NODE_ENV !== 'production' ? `${backUrl}/${v}` : `${v}`} 
                                             style={{
                                                 maxWidth: '250px', 
                                                 maxHeight: '160px',
@@ -290,7 +290,7 @@ const PostForm = memo(({ modifyPost, onModifyPostCancel, onModifyPostOk }) => {
                                     :
                                     <VideoWrapper key={v}>
                                         <VideoThumbnail
-                                            videoUrl={`${backUrl}/${v}`}
+                                            videoUrl={process.env.NODE_ENV !== 'production' ? `${backUrl}/${v}` : `${v}`}
                                         />
                                         <FontAwesomeIcon
                                             icon={faTimes} 

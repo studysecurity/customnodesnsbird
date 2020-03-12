@@ -51,7 +51,7 @@ const PostImages = ({ images }) => {
                                 key={v.id}
                             >
                                 <img
-                                    src={`${backUrl}/${v.src}`} 
+                                    src={process.env.NODE_ENV !== 'production' ? `${backUrl}/${v.src}` : `${v.src}`} 
                                     style={{
                                         objectFit: 'fill',
                                         minWidth: '100%',
@@ -67,7 +67,7 @@ const PostImages = ({ images }) => {
                             <div key={v.id}>
                                 <Player
                                     playsInline
-                                    src={`${backUrl}/${v.src}`}
+                                    src={process.env.NODE_ENV !== 'production' ? `${backUrl}/${v.src}` : `${v.src}`}
                                 >
                                 </Player>
                             </div>

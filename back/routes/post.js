@@ -2,32 +2,67 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const { Op } = require('sequelize');
+//aws s3
+const AWS = require('aws-sdk');
+const multerS3 = require('multer-s3');
+//배포여부
+const prod = process.env.NODE_ENV === 'production';
+const 
 
 const db = require('../models');
 const { isLoggedIn } = require('./middleware');
 
 const router = express.Router();
 
-//이미지 업로드
-const upload = multer({
-    storage: multer.diskStorage({
-        destination(req, file, done) {
-            //uploads 폴더에 저장
-            done(null, 'uploads');
-        },
-        filename(req, file, done) {
-         const ext = path.extname(file.originalname);
-         const basename = path.basename(file.originalname, ext); //파일이름.png, ext===png, basename===파일이름
-         done(null, basename + new Date().valueOf() + ext); //첫번째 인자: 서버 에러, 두번째 인자: 성공시
-        },
-    }),
-    limits: { fileSize: 20*1024*1024},
-});
 
-router.post('/images', upload.array('image'), (req, res) => {
-    // console.log('이거머냐 : ',req.files);
-    res.json(req.files.map(v => v.filename));
-});
+//배포 여부에 따라 S3쓸지 아닐지 정함  
+if (prod) {
+    //AWS S3
+    AWS.config.update({
+        region: 'ap-northeast-2',
+        accessKeyId: process.env.S3_ACCESS_KEY_ID,
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+    });
+
+    //AWS S3 업로드
+    const upload = multer({
+        storage: multerS3({
+            s3: new AWS.S3(),
+            bucket: 'nodesnsbird',
+            key(req, file, cb) {
+                cb(null, `original/${+new Date()}${path.basename(file.originalname)}`);
+            },
+        }),
+        limits: { fileSize: 20 * 1024 * 1024 },
+    });
+
+    router.post('/images', upload.array('image'), (req, res) => {
+        // console.log('이거머냐 : ',req.files);
+        res.json(req.files.map(v => v.location));
+    });
+} else {
+    //이미지 업로드
+    const upload = multer({
+        storage: multer.diskStorage({
+            destination(req, file, done) {
+                //uploads 폴더에 저장
+                done(null, 'uploads');
+            },
+            filename(req, file, done) {
+             const ext = path.extname(file.originalname);
+             const basename = path.basename(file.originalname, ext); //파일이름.png, ext===png, basename===파일이름
+             done(null, basename + new Date().valueOf() + ext); //첫번째 인자: 서버 에러, 두번째 인자: 성공시
+            },
+        }),
+        limits: { fileSize: 20*1024*1024},
+    });
+    
+    router.post('/images', upload.array('image'), (req, res) => {
+        // console.log('이거머냐 : ',req.files);
+        res.json(req.files.map(v => v.filename));
+    });
+}
+
 
 //업로드한 게시물 DB에 저장
 router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
