@@ -5,8 +5,6 @@ const { Op } = require('sequelize');
 //aws s3
 const AWS = require('aws-sdk');
 const multerS3 = require('multer-s3');
-//배포여부
-const prod = process.env.NODE_ENV === 'production';
 
 const db = require('../models');
 const { isLoggedIn } = require('./middleware');
@@ -15,7 +13,7 @@ const router = express.Router();
 
 
 //배포 여부에 따라 S3쓸지 아닐지 정함  
-if (prod) {
+if (process.env.NODE_ENV === 'production') {
     //AWS S3
     AWS.config.update({
         region: 'ap-northeast-2',
