@@ -27,7 +27,7 @@ exports.handler = async (event, context, callback) => {
     await S3.putObject({
       Body: resizedImage,
       Bucket,
-      Key: `thumb/${filename}`,
+      Key: `thumb/${decodeURI(filename)}`,
     }).promise();
     console.log('put');
     return callback(null, `thumb/${filename}`);
