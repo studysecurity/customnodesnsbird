@@ -26,15 +26,33 @@ const upload = multer({
         s3: new AWS.S3(),
         bucket: 'nodesnsbird',
         key(req, file, cb) {
-            cb(null, `original/${+new Date()}${path.basename(file.originalname)}`);
+            if(file.mimetype === 'image/jpeg' || 
+            file.mimetype === 'image/png' || 
+            file.mimetype === 'image/jpg' || 
+            file.mimetype === 'image/jfif' ||
+            file.mimetype === 'video/mp4' ||
+            file.mimetype === 'video/mp3'){
+                console.log('확장자 맞음');
+                cb(null, `original/${+new Date()}${path.basename(file.originalname)}`);
+            } else {
+                console.log('확장자 아님');
+                cb(null, false);
+            }
         },
     }),
     limits: { fileSize: 20 * 1024 * 1024 },
 });
 
+//프론트에 image 경로 값 주기.
 router.post('/images', upload.array('image'), (req, res) => {
-    // console.log('이거머냐 : ',req.files);
-    res.json(req.files.map(v => v.location));
+    try {
+        console.log('백엔드 /images req.files 값 : ', req.files && JSON.stringify(req.files));
+        res.json(req.files.map(v => v.location));
+    } catch(e) {
+        console.error(e);
+        next(e);
+        console.log("images 에러 값 : ", e.respone);
+    }
 });
     
 //이미지 업로드
