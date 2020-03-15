@@ -44,10 +44,9 @@ const PostImages = ({ images }) => {
                 images.map((v) => {
                     //확장자
                     const fileExtension = v.src.slice(v.src.lastIndexOf(".")+1).toLowerCase();
-                    console.log('fileExtension 값 : ', fileExtension);
 
                     return (
-                         fileExtension !== 'mp4' || fileExtension !== 'mp3' ?
+                         fileExtension !== 'mp4' && fileExtension !== 'mp3' ?
                             <div 
                                 key={v.id}
                             >
