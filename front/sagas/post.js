@@ -66,6 +66,7 @@ function* uploadImages(action) {
             type: UPLOAD_IMAGES_FAILURE,
             error: e, 
         });
+        alert(e.response && e.respone.data);
     }
 }
 

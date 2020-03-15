@@ -47,11 +47,11 @@ const upload = multer({
 router.post('/images', upload.array('image'), (req, res) => {
     try {
         console.log('백엔드 /images req.files 값 : ', req.files && JSON.stringify(req.files));
-        res.json(req.files.map(v => v.location));
+        res.json(req.files.map(v => decodeURI(v.location)));
     } catch(e) {
         console.error(e);
         next(e);
-        console.log("images 에러 값 : ", e.respone);
+        return res.status(403).send('이미지 및 동영상만 업로드 가능합니다.');
     }
 });
     
