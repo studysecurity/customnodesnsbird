@@ -56,6 +56,8 @@ function uploadImagesAPI(formData) {
 function* uploadImages(action) {
     try {
         const result = yield call(uploadImagesAPI, action.data);
+        console.log('uploadImages 값 : ', result.data);
+        console.log('uplodateImage 디코드 값 : ', decodeURI(result.data));
         yield put({
             type: UPLOAD_IMAGES_SUCCESS,
             data: result.data,
@@ -66,7 +68,7 @@ function* uploadImages(action) {
             type: UPLOAD_IMAGES_FAILURE,
             error: e, 
         });
-        alert(e.response && e.respone.data);
+        alert('이미지 및 동영상만 업로드 가능합니다.');
     }
 }
 

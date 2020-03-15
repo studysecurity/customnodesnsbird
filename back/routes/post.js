@@ -49,7 +49,6 @@ router.post('/images', upload.array('image'), (req, res) => {
     } catch(e) {
         console.error(e);
         next(e);
-        return res.status(403).send('이미지 및 동영상만 업로드 가능합니다.');
     }
 });
     
