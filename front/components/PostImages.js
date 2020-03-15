@@ -46,12 +46,12 @@ const PostImages = ({ images }) => {
                     const fileExtension = v.src.slice(v.src.lastIndexOf(".")+1).toLowerCase();
 
                     return (
-                         fileExtension !== 'mp4' ?
+                         fileExtension !== 'mp4' || fileExtension !== 'mp3' ?
                             <div 
                                 key={v.id}
                             >
                                 <img
-                                    src={process.env.NODE_ENV !== 'production' ? `${backUrl}/${v.src}` : `${v.src}`} 
+                                    src={process.env.NODE_ENV !== 'production' ? `${backUrl}/${v.src}` : `${v.src.replace(/original\//, 'thumb/')}`} 
                                     style={{
                                         objectFit: 'fill',
                                         minWidth: '100%',
@@ -67,7 +67,7 @@ const PostImages = ({ images }) => {
                             <div key={v.id}>
                                 <Player
                                     playsInline
-                                    src={process.env.NODE_ENV !== 'production' ? `${backUrl}/${v.src}` : `${v.src}`}
+                                    src={process.env.NODE_ENV !== 'production' ? `${backUrl}/${v.src}` : `${v.src.replace(/original\//, 'thumb/')}`}
                                 >
                                 </Player>
                             </div>
