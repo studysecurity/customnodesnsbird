@@ -67,7 +67,7 @@ const PostImages = ({ images }) => {
                             <div key={v.id}>
                                 <Player
                                     playsInline
-                                    src={process.env.NODE_ENV !== 'production' ? `${backUrl}/${v.src}` : `${v.src.replace(/original\//, 'thumb/')}`}
+                                    src={process.env.NODE_ENV !== 'production' ? `${backUrl}/${v.src}` : `${decodeURI(v.src)}`}
                                 >
                                 </Player>
                             </div>
