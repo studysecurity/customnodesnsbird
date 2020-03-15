@@ -34,10 +34,7 @@ const upload = multer({
             file.mimetype === 'video/mp3'){
                 console.log('확장자 맞음');
                 cb(null, `original/${+new Date()}${path.basename(file.originalname)}`);
-            } else {
-                console.log('확장자 아님');
-                cb(null, false);
-            }
+            } 
         },
     }),
     limits: { fileSize: 20 * 1024 * 1024 },
@@ -47,6 +44,7 @@ const upload = multer({
 router.post('/images', upload.array('image'), (req, res) => {
     try {
         console.log('백엔드 /images req.files 값 : ', req.files && JSON.stringify(req.files));
+        console.log('v.location 값 : ', req.files.map(v => decodeURI(v.location)));
         res.json(req.files.map(v => decodeURI(v.location)));
     } catch(e) {
         console.error(e);
