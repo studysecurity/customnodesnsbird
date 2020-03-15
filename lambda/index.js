@@ -9,12 +9,13 @@ exports.handler = async (event, context, callback) => {
   const filename = Key.split('/')[Key.split('/').length - 1];
   const ext = Key.split('.')[Key.split('.').length - 1];
   console.log(Key, filename, ext);
-  const requiredFormat = ext === 'jpg' ? 'jpeg' : ext; // sharp에서는 jpg 대신 jpeg사용합니다
+  const requiredFormat = ext === 'jpg' || ext === 'png' || ext === 'jfif' ? 'jpeg' : ext; // sharp에서는 jpg 대신 jpeg사용합니다
   try {
     const s3Object = await S3.getObject({ // S3에서 이미지를 받아 옵니다.
       Bucket,
-      Key,
+      Key: `original/${decodeURI(filename)}`,
     }).promise();
+    console.log('decodeURI filename 값 : ', decodeURI(filename));
     console.log('original', s3Object.Body.length);
     const resizedImage = await Sharp(s3Object.Body)
       .resize(800, 800, {
