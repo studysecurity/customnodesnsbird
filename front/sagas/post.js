@@ -301,7 +301,7 @@ function* modifyPost(action) {
         // console.log('modifyPost result 값 : ', result);
         yield put({
             type: MODIFY_POST_SUCCESS,
-            data: result.data.id,
+            data: result.data,
         });
     } catch(e) {
         console.error(e);
