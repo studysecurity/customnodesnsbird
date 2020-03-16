@@ -55,9 +55,9 @@ const PostImages = ({ images }) => {
                                     style={{
                                         objectFit: 'fill',
                                         minWidth: '100%',
-                                        minHeight: '340px',
+                                        minHeight: '500px',
                                         maxWidth: '100%',
-                                        maxHeight: '340px',
+                                        maxHeight: '500px',
                                         width: 'auto',
                                         height: 'auto',
                                     }}

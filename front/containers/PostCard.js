@@ -211,11 +211,12 @@ const PostCard = memo(({ post }) => {
                 actions={[
                     <FontAwesomeIcon 
                         key="heart" 
-                        icon={faHeart} 
+                        icon={faHeart}
+                        size="2x" 
                         onClick={onToggleLike}
                         style={liked ? {color: 'red'} : {color: 'inherit'}} 
                     />,
-                    <FontAwesomeIcon key="dots" icon={faCommentDots} onClick={onToggleComment} />,
+                    <FontAwesomeIcon key="dots" icon={faCommentDots} onClick={onToggleComment} size="2x" />,
                     <Popover
                         key="ellipsis"
                         visible={visiblePopover}
@@ -234,7 +235,7 @@ const PostCard = memo(({ post }) => {
                             </Button.Group>
                         )}
                     >
-                        <FontAwesomeIcon key="eslipsisH" icon={faEllipsisH} onClick={onChangePopover} />
+                        <FontAwesomeIcon key="eslipsisH" icon={faEllipsisH} onClick={onChangePopover} size="2x" />
                     </Popover>,
                 ]}
             >
