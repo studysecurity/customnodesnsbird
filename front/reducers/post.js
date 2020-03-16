@@ -249,7 +249,7 @@ export default (state = initialState, action) => {
             }
 
             case MODIFY_POST_SUCCESS: {
-                console.log('MODIFY_POST_SUCCESS : ', action.data);
+                // console.log('MODIFY_POST_SUCCESS : ', action.data);
                 draft.mainPosts.unshift(action.data);
                 break;
             }

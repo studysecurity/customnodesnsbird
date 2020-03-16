@@ -189,7 +189,7 @@ const PostCard = memo(({ post }) => {
                 </div>
                 <div>
                     <span>
-                        {post.User.userNick}
+                        {post.User.userNick && post.User.userNick}
                     </span>
                     <span style={{float: 'right'}}>
                         <FontAwesomeIcon 
@@ -264,7 +264,7 @@ const PostCard = memo(({ post }) => {
                                 <List.Item>
                                     <List.Item.Meta
                                         avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                                        title={item.User.userNick}
+                                        title={item.User.userNick && item.User.userNick}
                                         description={item.content}
                                     />
                                 </List.Item>

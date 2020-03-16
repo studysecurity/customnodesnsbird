@@ -56,8 +56,8 @@ function uploadImagesAPI(formData) {
 function* uploadImages(action) {
     try {
         const result = yield call(uploadImagesAPI, action.data);
-        console.log('uploadImages 값 : ', result.data);
-        console.log('uplodateImage 디코드 값 : ', decodeURI(result.data));
+        // console.log('uploadImages 값 : ', result.data);
+        // console.log('uplodateImage 디코드 값 : ', decodeURI(result.data));
         yield put({
             type: UPLOAD_IMAGES_SUCCESS,
             data: result.data,
@@ -298,7 +298,7 @@ function modifyPostAPI(postData) {
 function* modifyPost(action) {
     try {
         const result = yield call(modifyPostAPI, action.data);
-        console.log('modifyPost result 값 : ', result);
+        // console.log('modifyPost result 값 : ', result);
         yield put({
             type: MODIFY_POST_SUCCESS,
             data: result.data.id,
