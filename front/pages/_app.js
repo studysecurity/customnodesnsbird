@@ -78,8 +78,12 @@ NodeSnsBird.getInitialProps = async (context) => {
     const cookie = ctx.isServer ? ctx.req.headers.cookie : '';
     //쿠키 넣기 (백엔드에 보내려고)
     //서버인지, 클라이언트인지 구분
-    if (ctx.isServer && cookie) {
+    //다른 아이디로 로그인 금지..
+    if (ctx.isServer) {
         axios.defaults.headers.Cookie = '';
+    }
+
+    if (ctx.isServer && cookie) {
         axios.defaults.headers.Cookie = cookie;
     }
     if(!state.user.me) {
