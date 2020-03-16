@@ -105,7 +105,7 @@ export default (state = initialState, action) => {
 
             case ADD_POST_SUCCESS: {
                 draft.isAddingPost = false;
-                console.log('ADD_POST_SUCCESS action.data 값 : ', action.data);
+                // console.log('ADD_POST_SUCCESS action.data 값 : ', action.data);
                 if (action.data.auth === 0) {
                     draft.mainPosts.unshift(action.data);
                 }
@@ -250,7 +250,7 @@ export default (state = initialState, action) => {
             }
 
             case MODIFY_POST_SUCCESS: {
-                console.log('MODIFY_POST_SUCCESS action.data 값 : ', action.data);
+                // console.log('MODIFY_POST_SUCCESS action.data 값 : ', action.data);
                 draft.mainPosts.unshift(action.data);
                 break;
             }
