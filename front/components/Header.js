@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Input } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faUser, 
+    faUsers, 
 } from '@fortawesome/free-solid-svg-icons';
 import { faHeart, faCompass } from '@fortawesome/free-regular-svg-icons';
 import Router from 'next/router';
@@ -43,7 +43,7 @@ const Header = () => {
                 </Link>
                 <Link href="/followposts">
                     <a style={{color: 'inherit'}}>
-                        <FontAwesomeIcon icon={faUser} size="2x" />
+                        <FontAwesomeIcon icon={faUsers} size="2x" />
                     </a>
                 </Link>
             </div>
