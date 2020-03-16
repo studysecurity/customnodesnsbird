@@ -76,6 +76,7 @@ NodeSnsBird.getInitialProps = async (context) => {
     //서버 사이드렌더링
     const state = ctx.store.getState();
     const cookie = ctx.isServer ? ctx.req.headers.cookie : '';
+    axios.defaults.headers.Cookie = '';
     //쿠키 넣기 (백엔드에 보내려고)
     //서버인지, 클라이언트인지 구분
     if (ctx.isServer && cookie) {
