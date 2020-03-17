@@ -96,11 +96,11 @@ const Index = () => {
         }
     }, [isSignedUp]);
 
-    useEffect(() => {
-        dispatch({
-            type: LOAD_MAIN_POSTS_REQUEST,
-        });
-    }, []);
+    // useEffect(() => {
+    //     dispatch({
+    //         type: LOAD_MAIN_POSTS_REQUEST,
+    //     });
+    // }, []);
 
     return (
         <>
