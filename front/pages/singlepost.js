@@ -11,21 +11,6 @@ const SinglePost = ({singlePostId}) => {
 
     return (
     <>
-        <Helmet
-            title={`${mainPosts.User.userNick}님의 글`}
-            description={mainPosts.content}
-            meta={[{
-                name: 'description', content: mainPosts.content,
-            }, {
-                property: 'og:title', content: `${mainPosts.User.userNick}님의 게시글`,
-            }, {
-                property: 'og:description', content: mainPosts.content,
-            }, {
-                property: 'og:image', content: mainPosts.Images[0] ? mainPosts.Images[0].src : 'https://nodesnsbird.ga/favicon.ico',
-            }, {
-                property: 'og:url', content: `https://nodesnsbird.ga/singlepost/${singlePostId}`,
-            }]}
-        />
         <div style={{marginTop: '30px'}}>
             {
                 mainPosts.length !== 0 ?
