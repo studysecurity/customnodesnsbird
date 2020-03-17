@@ -470,7 +470,7 @@ router.get('/followPosts', isLoggedIn, async (req, res, next) => {
     }
 });
 
-router.get('/single/:id', isLoggedIn, async (req, res, next) => {
+router.get('/single/:id', async (req, res, next) => {
     try {
         const singlePost = await db.Post.findOne({
             where: { id: req.params.id },
