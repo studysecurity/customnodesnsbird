@@ -171,9 +171,9 @@ const Index = () => {
 Index.getInitialProps = async (context) => {
     // console.log('index.js 실행 : ', state.user.me && state.user.me.id);
     // console.log('여기 실행됨?');
-    // context.store.dispatch({
-    //     type: LOAD_MAIN_POSTS_REQUEST,
-    // });
+    context.store.dispatch({
+        type: LOAD_MAIN_POSTS_REQUEST,
+    });
 };
 
 export default Index;
