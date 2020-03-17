@@ -266,6 +266,7 @@ export default (state = initialState, action) => {
 
             case LOAD_SINGLE_POST_SUCCESS: {
                 draft.mainPosts = action.data;
+                console.log('LOAD_SINGLE_POST_SUCCESS 값 : ', action.data);
                 break;
             }
 
