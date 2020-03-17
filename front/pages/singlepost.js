@@ -7,6 +7,7 @@ import Helmet from 'react-helmet';
 
 const SinglePost = ({singlePostId}) => {
     const { mainPosts } = useSelector(state => state.post); 
+    console.log('SinglePost mainPosts 값 : ', mainPosts);
 
     return (
     <>
