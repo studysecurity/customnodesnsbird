@@ -42,15 +42,9 @@ const upload = multer({
 
 //프론트에 image 경로 값 주기.
 router.post('/images', upload.array('image'), (req, res) => {
-    try {
-        // console.log('백엔드 /images req.files 값 : ', req.files && JSON.stringify(req.files));
-        // console.log('v.location 값 : ', req.files.map(v => decodeURI(v.location)));
-        res.json(req.files.map(v => v.location));
-    } catch(e) {
-        // console.log('images 에러 실행');
-        console.error(e);
-        next(e);
-    }
+    // console.log('백엔드 /images req.files 값 : ', req.files && JSON.stringify(req.files));
+    // console.log('v.location 값 : ', req.files.map(v => decodeURI(v.location)));
+    res.json(req.files.map(v => v.location));
 });
     
 //이미지 업로드
