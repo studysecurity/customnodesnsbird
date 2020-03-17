@@ -25,24 +25,25 @@ const NodeSnsBird = ({ Component, store, pageProps }) => {
     return (
         <Provider store={store}> {/* 모든 컴포넌트의 redux state의 값을 사용할 수 있도록 제공 */}
             <Helmet
-                title="NodeSnsBird"
-                htmlAttributes={{ lang: 'ko'}}
+                title="NodeBird"
+                htmlAttributes={{ lang: 'ko' }}
                 meta={[{
-                    charSet: 'UTF-8',
+                  charset: 'UTF-8',
                 }, {
-                    name: 'viewport', content: 'width=device-width,initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes,viewport-fit=cover',
+                  name: 'viewport',
+                  content: 'width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes,viewport-fit=cover',
                 }, {
-                    'http-equiv': 'X-UA-Compatible', content: 'IE=edge',
+                  'http-equiv': 'X-UA-Compatible', content: 'IE=edge',
                 }, {
-                    name: 'description', content: 'NodeSNSBird',
+                  name: 'description', content: 'NodeSNSBird SNS',
                 }, {
-                    name: 'og:description', content: 'NodeSNSBird',
+                  name: 'og:title', content: 'NodeSNSBird SNS',
                 }, {
-                    name: 'og:title', content: 'NodeSNSBird',
+                  name: 'og:description', content: 'NodeSNSBird SNS',
                 }, {
-                    property: 'og:type', content: 'website',
+                  property: 'og:type', content: 'website',
                 }, {
-                    property: 'og:image', content: 'https://nodesnsbird.ga/favicon.ico',
+                  property: 'og:image', content: 'https://nodesnsbird.ga/favicon.ico',
                 }]}
                 link={[{
                     rel: 'shortcut icon', href: '/favicon.ico',
