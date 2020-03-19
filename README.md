@@ -85,8 +85,8 @@ Technology && Tool
 | sequelize-cli | cli 명령어로 데이터베이스 작업 |
 
 ## result
-URL : https://nodesnsbird.ga
-video : https://www.youtube.com/watch?v=H7fp3aAlG0g&t=5s
+* URL : https://nodesnsbird.ga
+* video : https://www.youtube.com/watch?v=H7fp3aAlG0g&t=5s
 
 
 
