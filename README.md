@@ -42,7 +42,6 @@ Technology && Tool
 
 
 ## 패키지(Package)
-* 프론트
 | 모듈 | 역할 |
 | :---- | :---- |
 | fortawesome/fontawesome-svg-core | 아이콘 라이브러리 |
