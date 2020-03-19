@@ -43,7 +43,7 @@ Technology && Tool
 
 ## 패키지(Package)
 | 모듈 | 역할 |
-| :----: | :----: |
+| :----: | :---- |
 | fortawesome/fontawesome-svg-core | 아이콘 라이브러리 |
 | fortawesome/free-brands-svg-icons | 아이콘 라이브러리 |
 | fortawesome/free-regular-svg-icons | 아이콘 라이브러리 |
