@@ -43,7 +43,16 @@ Technology && Tool
 
 ## 패키지(Package)
 | 모듈 | 역할 |
-| ---- | ---- |
-| axios | HTTP 클라이언트 | 
+| :---- | :----: |
+| fortawesome/fontawesome-svg-core | 아이콘 라이브러리 |
+| fortawesome/free-brands-svg-icons | 아이콘 라이브러리 |
+| fortawesome/free-regular-svg-icons | 아이콘 라이브러리 |
+| fortawesome/free-solid-svg-icons | 아이콘 라이브러리 |
+| fortawesome/react-fontawesome | 아이콘 라이브러리 |
+| next/bundle-analyzer | 웹팩 파일 크기의 시각화 |
+| zeit/next-css | next의 stylesheet css 추가 |
+| antd | ant-design |
+| axios | 통신 라이브러리 |
+
    
   
