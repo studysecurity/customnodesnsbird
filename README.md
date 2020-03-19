@@ -76,6 +76,15 @@ Technology && Tool
 | redux-saga | redux saga |
 | styled-components | custom css 라이브러리 |
 | video-react | 동영상 라이브러리 |
+| aws-sdk | aws sdk 사용 라이브러리 |
+| bcrypt | 암호화 |
+| cors | cross-domain 허용 라이브러리 |
+| hpp | 매개변수 요청 변조 공격 방어 라이브러리(보안) |
+| multer-s3 | s3 업로드 |
+| passport-local | 사용자 이름과 비밀번호로 다시 로그인 인증 |
+| sequelize-cli | cli 명령어로 데이터베이스 작업 |
+
+
 
 
 
