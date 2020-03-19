@@ -84,7 +84,7 @@ Technology && Tool
 | passport-local | 사용자 이름과 비밀번호로 다시 로그인 인증 |
 | sequelize-cli | cli 명령어로 데이터베이스 작업 |
 
-## result
+## 결과 (result)
 * URL : https://nodesnsbird.ga
 * video : https://www.youtube.com/watch?v=H7fp3aAlG0g&t=5s
 
