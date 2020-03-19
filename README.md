@@ -43,7 +43,7 @@ Technology && Tool
 
 ## 패키지(Package)
 | 모듈 | 역할 |
-| :---- | :----: |
+| :----: | :----: |
 | fortawesome/fontawesome-svg-core | 아이콘 라이브러리 |
 | fortawesome/free-brands-svg-icons | 아이콘 라이브러리 |
 | fortawesome/free-regular-svg-icons | 아이콘 라이브러리 |
@@ -53,6 +53,13 @@ Technology && Tool
 | zeit/next-css | next의 stylesheet css 추가 |
 | antd | ant-design |
 | axios | 통신 라이브러리 |
+| compression-webpack-plugin | 웹팩 압축 |
+| cookie-parser | 쿠키 분석 라이브러리 |
+| cross-env | 다양한 OS의 다른 환경변수 설정과는 상관없이 동일한 환경변수 설정 제공 |
+| dotenv | 환경 설정 내용 파일 |
+| express | 웹 프레임워크 |
+| express-session | 세션 |
+
 
    
   
