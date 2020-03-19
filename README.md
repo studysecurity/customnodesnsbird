@@ -87,7 +87,9 @@ Technology && Tool
 ## result
 * URL : https://nodesnsbird.ga
 * video : https://www.youtube.com/watch?v=H7fp3aAlG0g&t=5s
-<img src="./front/img/screenshot_1.jpg" width="40%" height="30%"></img>
+
+<img src="https://github.com/studysecurity/customnodesnsbird/blob/master/front/img/screenshot_1.png" width="40%" height="30%"></img>
+<img src="https://github.com/studysecurity/customnodesnsbird/blob/master/front/img/screenshot_2.png" width="40%" height="30%"></img>
 
 
 
