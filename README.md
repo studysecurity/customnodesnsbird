@@ -1,12 +1,14 @@
 NODESNSBIRD (SNS)
 -------------------------------------------------------
 
+
 Technology && Tool
 -------------------------------------------------------
 * Language & Framework : React.js, Express.js, Next.js, Node.js, Sequelize, Redux.js
 * Database : Mysql, AWS S3
 * Work tools : Visual Studio Code
 * Server : AWS ec2
+
 
 주요기능(main Function)
 -------------------------------
@@ -18,3 +20,18 @@ Technology && Tool
 * 태그 검색 및 태그별 게시글 모아보기
 * 게시글 이동
 
+
+폴더 구조(Folder Structure)
+----------------------------
+* 백엔드(Back-end)
+  * config : Sequelize 환경 설정
+  * models : Sequelize DB 테이블 구성
+  * passport : 로그인 기능
+  * routes : RESTAPI
+  * uploads : local 파일 업로드 폴더(실제 서비스 사용시 AWS S3로 대체됩니다.)
+  
+* 프론트엔드 (Front-end)
+  * components : 재사용 컴포넌트
+ 
+  
+  
