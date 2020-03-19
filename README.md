@@ -32,6 +32,18 @@ Technology && Tool
   
 * 프론트엔드 (Front-end)
   * components : 재사용 컴포넌트
- 
+  * config : Back-end 통신 URL 환경 설정
+  * containers : 리듀서 통신을 하는 컴포넌트
+  * pages : 페이지
+  * reducers : action(동작)
+  * sagas : Back-end 통신
   
+* lambda : AWS S3 업로드시 이미지 리사이징
+
+
+## 패키지(Package)
+| 모듈 | 역할 |
+| ---- | ---- |
+| axios | HTTP 클라이언트 | 
+   
   
